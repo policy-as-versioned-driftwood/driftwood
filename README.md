@@ -1,5 +1,13 @@
 # policy-as-versioned-driftwood
 
+**GitHub org:** [`policy-as-versioned-driftwood`](https://github.com/policy-as-versioned-driftwood) ·
+**Role:** institution — risk-bearer, adopter · **Licence:** [Apache-2.0](LICENSE)
+
+Part of the *Policy as Versioned Code* estate: a shared platform, two regulators, three regulated
+institutions, each its own independent GitHub organisation, exchanging signed, versioned
+dependencies. Full thesis, design decisions (ADRs) and the other five parties:
+[policy-as-versioned-flux](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux).
+
 **Institution — e-comm, PCI + GDPR, the teaching default.** Audit-heavy (loosest
 £ — short-life cart data). Owns its own KinD cluster; this is the **provenance
 base** the whole talk stacks on: Flux reconciling a pinned, signed
@@ -53,7 +61,7 @@ diff — propose only, a human merges.
 array out into this cluster (per-version policies + orphan-guard). driftwood
 consumes the discipline; it never authors it. Opt-in (not in the Phase-0 `apps`
 reconcile) and needs Kyverno + flux-operator installed first — see
-[`estate/platform/distribution/README.md`](../platform/distribution/README.md).
+[`platform`'s `distribution/README.md`](https://github.com/policy-as-versioned-platform/platform/blob/main/distribution/README.md).
 A platform bump arrives as a reviewed PR editing `.spec.ref.tag` here.
 
 ## What's here now vs later
