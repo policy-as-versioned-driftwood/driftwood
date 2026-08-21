@@ -1,0 +1,46 @@
+name: shift-left policy check
+
+# Ticket mo-10: platform/shift-left/ci-check.py (see platform's own README)
+# run for real, cross-org -- driftwood and platform checked out side by side
+# in one run, TWO SEPARATE GitHub orgs, no monorepo assumption. This is the
+# real shape `ci-workflow.example.yml` in the platform repo documents; this
+# file is that shape actually wired into an institution's own CI, as that
+# file says every institution must do for itself.
+#
+# No `paths:` filter: this check must report a status on every PR (including
+# a Renovate bump PR that only touches gitops/platform/platform-pin.yaml, not
+# deploy/pod.yaml) -- a required check gated by `paths:` never runs on a PR
+# that doesn't touch those paths, and GitHub then blocks the merge forever
+# waiting on a status that was never going to arrive (the same gotcha
+# faithful-floor ticket 12 hit and fixed the same way).
+
+on: [pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  shift-left:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: driftwood }
+
+      - uses: actions/checkout@v4
+        with:
+          repository: policy-as-versioned-platform/platform
+          path: platform
+
+      - name: install pinned kyverno cli (binary + checksum, no marketplace action)
+        env:
+          KYVERNO_VERSION: 1.18.2
+          KYVERNO_SHA256: cb2feb8356149fd2fe774c894ccf0969f4a60a83867dd913af724f74ffbbc18b
+        run: |
+          set -euo pipefail
+          curl -sSL -o kyverno.tar.gz "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_x86_64.tar.gz"
+          echo "${KYVERNO_SHA256}  kyverno.tar.gz" | sha256sum -c -
+          tar xzf kyverno.tar.gz kyverno && chmod +x kyverno && sudo mv kyverno /usr/local/bin/kyverno
+          pip install --quiet pyyaml
+
+      - name: version cross-check gate
+        run: python3 platform/shift-left/ci-check.py --resource driftwood/deploy/pod.yaml

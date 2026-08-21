@@ -1,0 +1,10 @@
+# A real driftwood workload manifest, pinned to policy-version 2.0.0 --
+# platform/shift-left/ci-check.py's target resource (see
+# .github/workflows/shift-left.yml). Compliant with both 1.0.0 and 2.0.0, so
+# it passes the whole target ±1 supported window. Ticket mo-10.
+apiVersion: v1
+kind: Pod
+metadata: { name: checkout-svc, labels: { "policy-as-versioned.dev/policy-version": "2.0.0" } }
+spec:
+  securityContext: { runAsNonRoot: true }
+  containers: [{ name: c, image: nginx, securityContext: { readOnlyRootFilesystem: true } }]
