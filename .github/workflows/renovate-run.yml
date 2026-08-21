@@ -27,6 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # renovate@44 requires Node ^24.11 (uses RegExp.escape, ES2025); the
+      # runner's default `node` on the PATH is older and npx fails with
+      # "RegExp.escape is not a function" -- pin the runtime renovate itself
+      # needs, same actions/* trust tier as actions/checkout above.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       - name: run self-hosted renovate against this repo
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
