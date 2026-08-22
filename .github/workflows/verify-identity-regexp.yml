@@ -1,0 +1,47 @@
+name: verify-identity-regexp
+
+# Ticket cs-14 fix round: scripts/verify-identity-regexp.sh proves
+# EXPECTED_IDENTITY_REGEXP (release.yml) is anchored correctly, but nothing
+# ran it automatically -- it was a check a human/agent had to remember to
+# run by hand. This wires it into CI so a drifted or broadened regexp fails
+# a required status instead of waiting to be noticed.
+#
+# paths: scoped to what the check actually inspects -- this isn't a
+# required-on-every-PR gate like shift-left.yml, so no need to run it on
+# unrelated changes.
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/release.yml
+      - scripts/verify-identity-regexp.sh
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/release.yml
+      - scripts/verify-identity-regexp.sh
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: install pinned gitsign (binary + checksum, no marketplace action)
+        env:
+          GITSIGN_VERSION: 0.17.1
+          GITSIGN_SHA256: 69213a8a0813a151e5a47d0060862952ff833a845d57309dff76f7ba6600abae
+        run: |
+          set -euo pipefail
+          curl -sSL -o gitsign "https://github.com/sigstore/gitsign/releases/download/v${GITSIGN_VERSION}/gitsign_${GITSIGN_VERSION}_linux_amd64"
+          echo "${GITSIGN_SHA256}  gitsign" | sha256sum -c -
+          chmod +x gitsign && sudo mv gitsign /usr/local/bin/gitsign
+
+      - name: verify EXPECTED_IDENTITY_REGEXP (real gitsign against real tags + RE2-equivalent negative shapes)
+        run: scripts/verify-identity-regexp.sh
