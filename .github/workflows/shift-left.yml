@@ -36,13 +36,22 @@ name: shift-left policy check
 # adopter-gate.py's own module docstring for why that is platform's bump,
 # re-verified, and not general cross-party composition (out of scope).
 #
-# cs-29: the same verified evidence renders into a PR COMMENT (this job's
-# own existing pattern, immediately below), not a body edit. Renovate itself
-# authors and can overwrite this pull request's BODY on every re-run of its
-# own -- a later CI step editing the body risks being clobbered by the next
-# Renovate pass, or clobbering content Renovate just wrote. A comment is
-# additive and survives that; it is also the exact mechanism this file
-# already uses for the shift-left attestation below, proven and unchanged.
+# cs-29: the same verified evidence renders into the pull request BODY
+# itself -- the literal thing the ticket's title and first acceptance
+# criterion name ("the pull request body carries the evidence document").
+# An earlier draft posted this as a PR comment instead, reasoning that
+# Renovate authors and can overwrite the PR body on its own re-runs; a
+# reviewer correctly flagged that as not satisfying the ticket's own words.
+# That race doesn't actually apply: this job is triggered BY a
+# `pull_request` event, which only fires after Renovate has already pushed
+# and settled its own body content for that push, so the step below always
+# reads and splices onto text Renovate already finished writing, never
+# races it. adopter-gate.py wraps its rendered markdown between two
+# HTML-comment markers (SECTION_START/SECTION_END, see the script); the
+# step fetches the PR's current body, replaces whatever already sits
+# between those markers (a re-run on the same PR) or appends the marked
+# section (first run), and writes the result back with `gh pr edit`.
+# Renovate's own body content is never touched, only the gate's own span.
 
 on: [pull_request]
 
@@ -134,32 +143,54 @@ jobs:
           status=${PIPESTATUS[0]}
           exit "${status}"
 
-      - name: post the adopter-gate evidence as a PR comment (cs-29)
-        # A comment, not a body edit -- see this workflow's own header
-        # comment for the reasoning. `if: always()` so a refusal's own
-        # evidence reaches the reviewer too (spec.md: "the gate emits and
-        # signs the evidence when it refuses, not only when it passes... a
-        # refusal is the most valuable output the gate produces").
+      - name: render the adopter-gate evidence into the pull request BODY (cs-29 -- the body itself, not a comment)
+        # An earlier draft posted this as a PR COMMENT, reasoning Renovate
+        # authors and can overwrite the PR body on its own re-runs -- a
+        # reviewer correctly flagged that as not satisfying the ticket's own
+        # title and first acceptance-criterion line ("the pull request body
+        # carries the evidence document"). This now edits the body for
+        # real: it fetches the PR's CURRENT body (`gh pr view --json body`,
+        # so it always reads whatever Renovate most recently wrote -- this
+        # job is triggered BY the `pull_request` event Renovate's own push
+        # raises, so it never races Renovate's write), then splices the
+        # rendered evidence between adopter-gate.py's own SECTION_START/
+        # SECTION_END markers -- replacing a prior run's span in place, or
+        # appending if this is the first run on this PR -- and writes the
+        # result back with `gh pr edit --body-file`. `if: always()` so a
+        # refusal's own evidence reaches the reviewer too (spec.md: "the
+        # gate emits and signs the evidence when it refuses, not only when
+        # it passes... a refusal is the most valuable output the gate
+        # produces").
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          {
-            echo "### adopter gate: platform's evidence, composed for driftwood"
-            echo
-            if [ -f adopter-gate-comment.md ]; then
+          if [ -f adopter-gate-comment.md ]; then
+            {
+              echo "### adopter gate: platform's evidence, composed for driftwood"
+              echo
               cat adopter-gate-comment.md
-            else
+            } > adopter-gate-section-raw.md
+          else
+            {
+              echo "### adopter gate: platform's evidence, composed for driftwood -- REFUSED"
+              echo
               echo "The adopter gate refused before producing a rendered evidence document."
               echo "Raw output:"
               echo
               echo '```'
               cat adopter-gate-output.txt 2>/dev/null || echo "(no output captured)"
               echo '```'
-            fi
-          } > adopter-gate-pr-comment.md
-          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body-file adopter-gate-pr-comment.md
+            } > adopter-gate-section-raw.md
+          fi
+          python3 driftwood/.github/scripts/adopter-gate.py wrap-section \
+            --in adopter-gate-section-raw.md --out adopter-gate-section.md
+          gh pr view "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" \
+            --json body -q .body > current-body.md
+          python3 driftwood/.github/scripts/adopter-gate.py splice-body \
+            --current-body current-body.md --section adopter-gate-section.md --out-body new-body.md
+          gh pr edit "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body-file new-body.md
 
       - name: build the shift-left attestation
         # Only reached if the gate step above exited 0 -- the attestation

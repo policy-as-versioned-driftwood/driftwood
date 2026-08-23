@@ -43,12 +43,15 @@ Usage:
     adopter-gate.py read-pin <pin-yaml-path>
     adopter-gate.py verify-commit <platform-dir> <pinned-commit>
     adopter-gate.py compose <platform-dir> <old-tag> <new-tag> [--out FILE] [--markdown-out FILE]
+    adopter-gate.py splice-body --current-body FILE --section FILE --out-body FILE
+    adopter-gate.py wrap-section --in FILE --out FILE
     adopter-gate.py --selfcheck
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -83,6 +86,36 @@ EXPECTED_PLATFORM_ISSUER = "https://token.actions.githubusercontent.com"
 # appears inside a movement entry's own `verdict`, which compose() does not
 # rank).
 RANK = {"none": 0, "patch": 1, "minor": 2, "major": 3}
+
+# Ticket cs-29: HTML-comment markers shift-left.yml greps out of the pull
+# request's own CURRENT body to find (and replace) the span this gate owns,
+# or append it if this is the first run on this PR. An earlier draft posted
+# this evidence as a PR COMMENT instead; a reviewer correctly flagged that
+# as not satisfying the ticket's own title and first acceptance-criterion
+# line ("the pull request body carries the evidence document"). This now
+# edits the body for real -- safe against Renovate's own re-runs because
+# shift-left.yml is triggered BY a `pull_request` event, which only fires
+# after Renovate has already pushed and settled its own body content for
+# that push; the splice step below always reads and appends onto text
+# Renovate already finished writing, never races it.
+SECTION_START = "<!-- cs-29:adopter-gate:start -->"
+SECTION_END = "<!-- cs-29:adopter-gate:end -->"
+SECTION_PATTERN = re.compile(re.escape(SECTION_START) + r".*?" + re.escape(SECTION_END), re.DOTALL)
+
+
+def wrap_section(markdown: str) -> str:
+    return f"{SECTION_START}\n{markdown.rstrip()}\n{SECTION_END}\n"
+
+
+def splice_body(current_body: str, section: str) -> str:
+    """`section` is already wrap_section()'d output. Replaces a prior span
+    between the markers in place (a re-run on the same pull request), or
+    appends the whole marked section after whatever's there (the first run
+    -- typically Renovate's own body)."""
+    if SECTION_PATTERN.search(current_body):
+        return SECTION_PATTERN.sub(section.rstrip(), current_body)
+    sep = "\n\n" if current_body.strip() else ""
+    return current_body.rstrip() + sep + section
 
 
 class RefusalError(Exception):
@@ -386,6 +419,21 @@ def main(argv: list[str]) -> int:
     cp.add_argument("--out", help="write the composed result + evidence as JSON here")
     cp.add_argument("--markdown-out", help="write a human-rendered markdown summary here")
 
+    sb = sub.add_parser("splice-body", help="ticket cs-29: merge --section (already "
+                                             "wrap_section()'d) into --current-body between the "
+                                             "SECTION_START/SECTION_END markers, write --out-body")
+    sb.add_argument("--current-body", required=True)
+    sb.add_argument("--section", required=True)
+    sb.add_argument("--out-body", required=True)
+
+    ws = sub.add_parser("wrap-section", help="ticket cs-29: wrap --in (raw markdown, e.g. a "
+                                              "shell-built refusal message) between the "
+                                              "SECTION_START/SECTION_END markers, write --out -- "
+                                              "for the one caller that doesn't already have "
+                                              "adopter-gate.py's own pre-wrapped --markdown-out")
+    ws.add_argument("--in", dest="in_path", required=True)
+    ws.add_argument("--out", dest="out_path", required=True)
+
     args = p.parse_args(argv[1:])
 
     try:
@@ -409,11 +457,23 @@ def main(argv: list[str]) -> int:
                 Path(args.out).write_text(json.dumps(
                     {"result": result, "evidence": evidence_by_version}, indent=2))
             if args.markdown_out:
-                Path(args.markdown_out).write_text(render_markdown(result, evidence_by_version))
+                # wrap_section()'d up front -- ticket cs-29: this file is fed straight to
+                # `splice-body --section` by shift-left.yml, which expects an already-marked span.
+                Path(args.markdown_out).write_text(wrap_section(render_markdown(result, evidence_by_version)))
             if result["composed_bump"] == "major":
                 print("REFUSED: composed bump is major", file=sys.stderr)
                 return 1
             print(f"OK: composed bump is {result['composed_bump']!r}")
+            return 0
+
+        if args.cmd == "splice-body":
+            current = Path(args.current_body).read_text()
+            section = Path(args.section).read_text()
+            Path(args.out_body).write_text(splice_body(current, section))
+            return 0
+
+        if args.cmd == "wrap-section":
+            Path(args.out_path).write_text(wrap_section(Path(args.in_path).read_text()))
             return 0
     except RefusalError as e:
         print(f"REFUSED: {e}", file=sys.stderr)
@@ -681,6 +741,30 @@ def selfcheck() -> None:
     for needed in ("declared", "computed", "not looked at", "corpus checksum".title(), "generator version".title()):
         assert needed.lower() in md.lower(), f"render_markdown missing {needed!r}"
     print("OK render_markdown: no percentage anywhere, every required section present")
+
+    # ---- splice_body: ticket cs-29's actual delivery mechanism -- the PR
+    # BODY itself, not a comment. First run appends after whatever's already
+    # there (Renovate's own body); a re-run replaces only this gate's own
+    # marked span, leaving the rest of the body (Renovate's content) intact.
+    renovate_body = "This PR bumps `platform-pin.yaml` from v1.0.0 to v2.0.0.\n\n---\n\n - [ ] <!-- rebase-check -->"
+    section1 = wrap_section("**Composed bump: `minor`**\n\nrun 1 evidence")
+    spliced1 = splice_body(renovate_body, section1)
+    assert renovate_body in spliced1, spliced1  # Renovate's own content survives
+    assert section1.rstrip() in spliced1, spliced1
+    assert spliced1.count(SECTION_START) == 1, spliced1
+    print("OK splice_body: first run appends the marked section after Renovate's own body, untouched")
+
+    section2 = wrap_section("**Composed bump: `major`**\n\nrun 2 evidence, supersedes run 1")
+    spliced2 = splice_body(spliced1, section2)
+    assert renovate_body in spliced2, spliced2  # still untouched
+    assert "run 1 evidence" not in spliced2, spliced2  # old span is GONE, not appended alongside
+    assert "run 2 evidence" in spliced2, spliced2
+    assert spliced2.count(SECTION_START) == 1, spliced2  # replaced in place, never duplicated
+    print("OK splice_body: a re-run replaces the prior span in place, never duplicates it")
+
+    empty_first = splice_body("", section1)
+    assert empty_first.startswith(SECTION_START), empty_first  # no spurious leading blank lines/separator
+    print("OK splice_body: an empty starting body gets no leading separator")
 
     print(
         "\nselfcheck ok: read_pin parses the real pin shape; verify_pinned_commit matches and refuses "
