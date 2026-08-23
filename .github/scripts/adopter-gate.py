@@ -457,9 +457,11 @@ def main(argv: list[str]) -> int:
                 Path(args.out).write_text(json.dumps(
                     {"result": result, "evidence": evidence_by_version}, indent=2))
             if args.markdown_out:
-                # wrap_section()'d up front -- ticket cs-29: this file is fed straight to
-                # `splice-body --section` by shift-left.yml, which expects an already-marked span.
-                Path(args.markdown_out).write_text(wrap_section(render_markdown(result, evidence_by_version)))
+                # Raw, UNwrapped markdown -- shift-left.yml embeds this under its own
+                # header, then wraps the whole section once via `wrap-section` before
+                # splicing. Pre-wrapping here would nest a second SECTION_START/END
+                # pair inside the outer one.
+                Path(args.markdown_out).write_text(render_markdown(result, evidence_by_version))
             if result["composed_bump"] == "major":
                 print("REFUSED: composed bump is major", file=sys.stderr)
                 return 1
