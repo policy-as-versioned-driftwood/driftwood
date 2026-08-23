@@ -21,6 +21,28 @@ name: shift-left policy check
 # Fulcio-from-Actions-OIDC, logged-to-Rekor pattern cut-release.yml already
 # proves out for release tags) and post the signed result as a PR comment,
 # so the reviewer can verify the check independently of trusting the badge.
+#
+# cs-28: two live bugs fixed here, plus the adopter gate itself
+# (.github/scripts/adopter-gate.py). This job used to check out platform's
+# DEFAULT BRANCH, not the tag under review -- so a Renovate bump pull request
+# that moves gitops/platform/platform-pin.yaml never actually tested the
+# version it was proposing. It now reads that pin from driftwood's own
+# PR-head content, checks platform out at that exact tag, and refuses unless
+# the resolved commit matches the pin's own `commit` field -- ADR-0001's pin,
+# made load-bearing instead of decorative. The adopter gate then verifies
+# platform's cs-27 signed evidence (identity-pinned to a constant driftwood
+# holds itself, never read from platform) and composes driftwood's own bump
+# across the versions gitops/platform/platform-pin.yaml pins -- see
+# adopter-gate.py's own module docstring for why that is platform's bump,
+# re-verified, and not general cross-party composition (out of scope).
+#
+# cs-29: the same verified evidence renders into a PR COMMENT (this job's
+# own existing pattern, immediately below), not a body edit. Renovate itself
+# authors and can overwrite this pull request's BODY on every re-run of its
+# own -- a later CI step editing the body risks being clobbered by the next
+# Renovate pass, or clobbering content Renovate just wrote. A comment is
+# additive and survives that; it is also the exact mechanism this file
+# already uses for the shift-left attestation below, proven and unchanged.
 
 on: [pull_request]
 
@@ -41,10 +63,31 @@ jobs:
       - uses: actions/checkout@v4
         with: { path: driftwood }
 
-      - uses: actions/checkout@v4
+      - name: install pyyaml (adopter-gate.py needs it early, to read the platform pin)
+        run: pip install --quiet pyyaml
+
+      - name: read the platform pin -- the tag under review (PR head) and the tag it replaces (PR base)
+        id: pin
+        run: |
+          set -euo pipefail
+          python3 driftwood/.github/scripts/adopter-gate.py read-pin \
+            driftwood/gitops/platform/platform-pin.yaml | sed 's/^/head_/' >> "$GITHUB_OUTPUT"
+          git -C driftwood fetch --depth=1 origin "${{ github.event.pull_request.base.sha }}"
+          git -C driftwood show "${{ github.event.pull_request.base.sha }}:gitops/platform/platform-pin.yaml" \
+            | python3 driftwood/.github/scripts/adopter-gate.py read-pin /dev/stdin | sed 's/^/base_/' >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+      - name: checkout platform AT THE TAG UNDER REVIEW (bug fix #1 -- not the default branch)
+        uses: actions/checkout@v4
         with:
           repository: policy-as-versioned-platform/platform
           path: platform
+          ref: ${{ steps.pin.outputs.head_tag }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: verify platform's checked-out commit against the pin (bug fix #2 -- the pin is load-bearing)
+        run: python3 driftwood/.github/scripts/adopter-gate.py verify-commit platform "${{ steps.pin.outputs.head_commit }}"
 
       - name: install pinned kyverno cli (binary + checksum, no marketplace action)
         env:
@@ -69,6 +112,54 @@ jobs:
           curl -sSL -o cosign "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64"
           echo "${COSIGN_SHA256}  cosign" | sha256sum -c -
           chmod +x cosign && sudo mv cosign /usr/local/bin/cosign
+
+      - name: adopter gate -- verify platform's signed evidence and compose driftwood's own bump (cs-28)
+        # Does NOT recompute the publisher's answer (spec.md). Verifies
+        # platform's cs-27 evidence for every policy version this pull
+        # request's platform-pin bump would ADD to driftwood's supported
+        # window, identity-pinned against EXPECTED_PLATFORM_IDENTITY_REGEXP
+        # (a literal constant adopter-gate.py holds itself, not read from
+        # platform), then composes: any RETIRED version is always major, and
+        # the strictest of every added version's own recorded computed_bump
+        # otherwise wins. A composed major fails this step for real (a
+        # non-zero exit, not a print). A composed bump weaker than the
+        # publisher's own declared bump prints (see the JSON `reasons`) and
+        # never lowers anything -- there is no override, at any scope.
+        run: |
+          set -uo pipefail
+          python3 driftwood/.github/scripts/adopter-gate.py compose \
+            platform "${{ steps.pin.outputs.base_tag }}" "${{ steps.pin.outputs.head_tag }}" \
+            --out adopter-gate-evidence.json --markdown-out adopter-gate-comment.md \
+            2>&1 | tee adopter-gate-output.txt
+          status=${PIPESTATUS[0]}
+          exit "${status}"
+
+      - name: post the adopter-gate evidence as a PR comment (cs-29)
+        # A comment, not a body edit -- see this workflow's own header
+        # comment for the reasoning. `if: always()` so a refusal's own
+        # evidence reaches the reviewer too (spec.md: "the gate emits and
+        # signs the evidence when it refuses, not only when it passes... a
+        # refusal is the most valuable output the gate produces").
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          {
+            echo "### adopter gate: platform's evidence, composed for driftwood"
+            echo
+            if [ -f adopter-gate-comment.md ]; then
+              cat adopter-gate-comment.md
+            else
+              echo "The adopter gate refused before producing a rendered evidence document."
+              echo "Raw output:"
+              echo
+              echo '```'
+              cat adopter-gate-output.txt 2>/dev/null || echo "(no output captured)"
+              echo '```'
+            fi
+          } > adopter-gate-pr-comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body-file adopter-gate-pr-comment.md
 
       - name: build the shift-left attestation
         # Only reached if the gate step above exited 0 -- the attestation
