@@ -52,7 +52,11 @@ both reconcile Ready and pinned.
 
 A regulator version bump arrives as a reviewable PR:
 `scripts/bump-nist-pin.sh v1.1.0` edits the pin on a branch and prints the
-diff — propose only, a human merges.
+diff — propose only, a human merges. (Ticket 17's cage-tier proposer,
+`.github/workflows/propose-tier.yml`, is the one exception in this repo: it
+actually commits, pushes and opens — see
+[`platform`'s `wargamer/README.md`](https://github.com/policy-as-versioned-platform/platform/blob/main/wargamer/README.md)
+for the safety property that stays the same either way.)
 
 ## Pinned platform dependency (the config-base pattern)
 

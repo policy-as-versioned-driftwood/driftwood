@@ -1,0 +1,72 @@
+name: propose-tier
+
+# Ticket 17 (policy-composition); ADR-0015. The proposer's LAST step, unlike
+# every propose-never-dispose demonstrator elsewhere in this estate
+# (propose-policy-pr.sh, scripts/bump-nist-pin.sh): it actually commits,
+# pushes and opens -- a pull request editing `posture.acme.io/tier` on
+# deploy/pod.yaml, or (for a proposed `deny`) an issue instead. It never
+# merges either: the war-gamer/proposer_bounds/tier_pr chain still exposes
+# no merge()/approve()/dispose() by construction (see each module's own
+# selfcheck), and the opened PR still rides ordinary human review.
+#
+# Reads composed/evidence.json -- driftwood's own committed evidence
+# document (ticket 18 wires composition into this repo's CI and commits it
+# on success; until that PR has landed once, this job finds nothing and
+# exits quietly, same as propose-policy-pr.sh's own "no drift" no-op).
+#
+# Trigger, exactly ADR-0015 point 5: a MERGED pin bump, or a human
+# workflow_dispatch. Nothing timed, ever -- no `schedule:` anywhere.
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - party.yaml
+      - gitops/platform/platform-pin.yaml
+      - gitops/flux-system/gotk-sync-nist.yaml
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  propose-tier:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: driftwood, fetch-depth: 0 }
+
+      - name: install pyyaml (adopter-gate.py needs it to read the platform pin)
+        run: pip install --quiet pyyaml
+
+      - name: read the platform pin -- the tier proposer runs THROUGH the pinned platform dependency
+        id: pin
+        run: python3 driftwood/.github/scripts/adopter-gate.py read-pin driftwood/gitops/platform/platform-pin.yaml >> "$GITHUB_OUTPUT"
+
+      - name: checkout platform AT THE PINNED TAG (same shape shift-left.yml already uses)
+        uses: actions/checkout@v4
+        with:
+          repository: policy-as-versioned-platform/platform
+          path: platform
+          ref: ${{ steps.pin.outputs.tag }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: verify platform's checked-out commit against the pin
+        run: python3 driftwood/.github/scripts/adopter-gate.py verify-commit platform "${{ steps.pin.outputs.commit }}"
+
+      - name: run the proposer -- reads driftwood's own composed/evidence.json, lands PR or issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: policy-as-versioned-driftwood/driftwood
+        run: |
+          set -euo pipefail
+          git -C driftwood config user.email "wargamer-proposer@policy-as-versioned-driftwood.invalid"
+          git -C driftwood config user.name "wargamer proposer"
+          python3 platform/wargamer/tier_pr.py run \
+            --adopter-dir driftwood \
+            --evidence driftwood/composed/evidence.json \
+            --workload driftwood/deploy/pod.yaml \
+            --org driftwood
