@@ -1,0 +1,30 @@
+# The party artefact (policy-composition ticket 11; ADR-0012/ADR-0013). One
+# signed file declaring driftwood: its roles, its parents as party+kind+
+# version, its selected baseline, and its overlay. Signed under the same
+# gitsign tag as every other artefact this repo publishes -- no second
+# mechanism (ADR-0012).
+#
+# `implementations` and `controls` below are checked, on every pull request,
+# against this repo's own Flux pins by platform/party/party_artefact.py
+# (called through the pinned `platform` dependency, in shift-left.yml): they
+# must equal gitops/platform/platform-pin.yaml's and
+# gitops/flux-system/gotk-sync-nist.yaml's own spec.ref.tag, minus the "v".
+# `pricing` and `threat` have no Flux pin anywhere in this estate today --
+# ico ships no git tags, and the threat register is a subdirectory read out
+# of the already-pinned platform checkout -- so the check names both as
+# unchecked rather than silently skipping them.
+party: driftwood
+roles: [risk-bearer, adopter]
+# MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
+# one of the two controls this estate implements (ADR-0013). May add
+# controls to this selection; may never remove one. Mirrored, advisory only,
+# in gitops/apps/nist-pin-configmap.yaml's data.baselineName.
+baseline: MODERATE
+inherits:
+  - { party: platform, kind: implementations, version: "0.1.0" }
+  - { party: nist,     kind: controls,        version: "1.0.0" }
+  - { party: ico,      kind: pricing,         version: "v1" }
+  - { party: platform, kind: threat,          version: "v1" }
+overlay:
+  add: []
+  restate: []
