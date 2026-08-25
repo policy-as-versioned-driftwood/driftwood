@@ -154,14 +154,21 @@ jobs:
         # (versions_from_composed_evidence), not platform's raw
         # distribution/versions.yaml array directly -- "the composed bump is
         # computed after composition." base.sha is already fetched above
-        # (the platform-pin read step); head.sha is this checkout's own tip.
+        # (the platform-pin read step). --head-ref is literally HEAD, not
+        # github.event.pull_request.head.sha: actions/checkout on a
+        # pull_request event checks out GitHub's own synthetic merge commit
+        # (refs/pull/N/merge), shallow -- head.sha itself is never fetched
+        # as a separately addressable commit, so `git show <head.sha>:...`
+        # fails even though the very same content sits in the working tree
+        # right now. HEAD always resolves to whatever is actually checked
+        # out, merge commit included.
         run: |
           set -uo pipefail
           python3 driftwood/.github/scripts/adopter-gate.py compose \
             platform "${{ steps.pin.outputs.base_tag }}" "${{ steps.pin.outputs.head_tag }}" \
             --adopter-dir driftwood \
             --base-ref "${{ github.event.pull_request.base.sha }}" \
-            --head-ref "${{ github.event.pull_request.head.sha }}" \
+            --head-ref HEAD \
             --out adopter-gate-evidence.json --markdown-out adopter-gate-comment.md \
             2>&1 | tee adopter-gate-output.txt
           status=${PIPESTATUS[0]}
