@@ -148,10 +148,20 @@ jobs:
         # non-zero exit, not a print). A composed bump weaker than the
         # publisher's own declared bump prints (see the JSON `reasons`) and
         # never lowers anything -- there is no override, at any scope.
+        #
+        # ticket 18 / ADR-0011: --adopter-dir/--base-ref/--head-ref make
+        # driftwood's own composed/evidence.json member set the subject
+        # (versions_from_composed_evidence), not platform's raw
+        # distribution/versions.yaml array directly -- "the composed bump is
+        # computed after composition." base.sha is already fetched above
+        # (the platform-pin read step); head.sha is this checkout's own tip.
         run: |
           set -uo pipefail
           python3 driftwood/.github/scripts/adopter-gate.py compose \
             platform "${{ steps.pin.outputs.base_tag }}" "${{ steps.pin.outputs.head_tag }}" \
+            --adopter-dir driftwood \
+            --base-ref "${{ github.event.pull_request.base.sha }}" \
+            --head-ref "${{ github.event.pull_request.head.sha }}" \
             --out adopter-gate-evidence.json --markdown-out adopter-gate-comment.md \
             2>&1 | tee adopter-gate-output.txt
           status=${PIPESTATUS[0]}

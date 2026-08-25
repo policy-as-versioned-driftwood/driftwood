@@ -200,6 +200,30 @@ def diff_arrays(old: dict, new: dict) -> tuple[list[str], list[str]]:
     return added, retired
 
 
+def versions_from_composed_evidence(adopter_dir: Path, ref: str) -> set[str]:
+    """ADR-0011: 'the adopter gate reads the composed artefact as its
+    subject.' The set of live policy versions THIS institution's own signed
+    composed/evidence.json records as members, at `ref` (a commit-ish in
+    this adopter's own repo -- ticket 18's compose-check job keeps that file
+    fresh and byte-verified on every pull request, so it is never stale by
+    more than the PR under review). `ref` must already be fetched (a plain
+    `git show` against an unfetched commit fails the same way an unfetched
+    tag does in `read_policy_array_at`). A platform-machinery member (the
+    orphan guard, the governed-namespace guard) carries no `version` --
+    excluded, same as `distribution/versions.yaml`'s own array never lists
+    it either."""
+    proc = subprocess.run(
+        ["git", "-C", str(adopter_dir), "show", f"{ref}:composed/evidence.json"],
+        capture_output=True, text=True,
+    )
+    if proc.returncode != 0:
+        raise RefusalError(
+            f"could not read composed/evidence.json at {ref!r}: {proc.stderr.strip()}"
+        )
+    doc = json.loads(proc.stdout)
+    return {m["version"] for m in doc["members"] if m.get("version") is not None}
+
+
 # --------------------------------------------------------------------------
 # 3. the publisher's signed evidence, verified
 # --------------------------------------------------------------------------
@@ -298,12 +322,37 @@ def compose(added: list[str], retired: list[str], evidence_by_version: dict[str,
     }
 
 
-def run_compose(platform_dir: Path, old_tag: str, new_tag: str) -> tuple[dict, dict[str, dict]]:
-    fetch_tag(platform_dir, old_tag)
-    fetch_tag(platform_dir, new_tag)
-    old_array = read_policy_array_at(platform_dir, old_tag)
-    new_array = read_policy_array_at(platform_dir, new_tag)
-    added, retired = diff_arrays(old_array, new_array)
+def run_compose(platform_dir: Path, old_tag: str, new_tag: str,
+                 adopter_dir: Path | None = None, base_ref: str | None = None,
+                 head_ref: str | None = None) -> tuple[dict, dict[str, dict]]:
+    """ADR-0011: the composed bump is computed after composition. When
+    `adopter_dir`/`base_ref`/`head_ref` are given, added/retired come from
+    diffing THIS institution's own composed/evidence.json member sets at
+    those two commits (versions_from_composed_evidence) -- a version
+    retired from the composed set classifies major with no separate
+    policy-diff case, because it simply stops appearing as a member,
+    exactly like any other retirement. Falls back to platform's raw
+    distribution/versions.yaml array (read_policy_array_at) when those
+    three are omitted -- the pre-ADR-0011 shape, kept for `--selfcheck`'s
+    own narrower fixtures and any caller not yet passing them. Evidence
+    verification (identity-pinned, against platform_dir) is unchanged
+    either way -- ADR-0011 already settled that the adopter gate verifies,
+    never recomputes, the publisher's own answer."""
+    if adopter_dir is not None and base_ref is not None and head_ref is not None:
+        # No platform tag fetch needed: verify_evidence() below reads
+        # computed-semver/evidence/ from whatever platform_dir already has
+        # checked out (the pull request's head_tag, in real CI) -- old_tag/
+        # new_tag are unused in this branch entirely.
+        old_versions = versions_from_composed_evidence(adopter_dir, base_ref)
+        new_versions = versions_from_composed_evidence(adopter_dir, head_ref)
+        added = sorted(new_versions - old_versions)
+        retired = sorted(old_versions - new_versions)
+    else:
+        fetch_tag(platform_dir, old_tag)
+        fetch_tag(platform_dir, new_tag)
+        old_array = read_policy_array_at(platform_dir, old_tag)
+        new_array = read_policy_array_at(platform_dir, new_tag)
+        added, retired = diff_arrays(old_array, new_array)
     evidence_by_version = {v: verify_evidence(platform_dir, v) for v in added}
     return compose(added, retired, evidence_by_version), evidence_by_version
 
@@ -418,6 +467,10 @@ def main(argv: list[str]) -> int:
     cp.add_argument("new_tag")
     cp.add_argument("--out", help="write the composed result + evidence as JSON here")
     cp.add_argument("--markdown-out", help="write a human-rendered markdown summary here")
+    cp.add_argument("--adopter-dir", help="ADR-0011: read added/retired from this institution's own "
+                                           "composed/evidence.json member set, not platform's raw array")
+    cp.add_argument("--base-ref", help="commit-ish for composed/evidence.json 'before' (with --adopter-dir)")
+    cp.add_argument("--head-ref", help="commit-ish for composed/evidence.json 'after' (with --adopter-dir)")
 
     sb = sub.add_parser("splice-body", help="ticket cs-29: merge --section (already "
                                              "wrap_section()'d) into --current-body between the "
@@ -449,7 +502,10 @@ def main(argv: list[str]) -> int:
             return 0
 
         if args.cmd == "compose":
-            result, evidence_by_version = run_compose(Path(args.platform_dir), args.old_tag, args.new_tag)
+            adopter_dir = Path(args.adopter_dir) if args.adopter_dir else None
+            result, evidence_by_version = run_compose(
+                Path(args.platform_dir), args.old_tag, args.new_tag,
+                adopter_dir=adopter_dir, base_ref=args.base_ref, head_ref=args.head_ref)
             print(json.dumps(result, indent=2))
             for reason in result["reasons"]:
                 print(f"  - {reason}")
@@ -605,6 +661,51 @@ def selfcheck() -> None:
     assert added == ["4.0.0"], added
     assert retired == ["2.0.0"], retired
     print("OK read_policy_array_at + diff_arrays: real git tags, add and retirement both detected")
+
+    # ---- ADR-0011: versions_from_composed_evidence + run_compose(adopter_dir=...) --
+    # a REAL adopter repo, two REAL commits, no policy diff anywhere (party.yaml
+    # and every rendered member are identical at both commits) -- only the
+    # composed evidence document's own member set changes, exactly the shape
+    # a retired platform version produces (composition.py's load_implementations
+    # simply stops emitting that version's members; nothing in the adopter's
+    # own repo names the retirement directly). ----
+    adopter = Path(tempfile.mkdtemp(prefix="adopter-gate-adopter-"))
+    _git(adopter, "init", "-q")
+    (adopter / "composed").mkdir()
+
+    def _write_evidence(members_versions: list[str]) -> None:
+        doc = {"members": [{"name": f"member-{v}", "version": v} for v in members_versions]
+                          + [{"name": "policy-version-orphan-guard", "version": None}]}
+        (adopter / "composed" / "evidence.json").write_text(json.dumps(doc))
+
+    _write_evidence(["2.0.0", "3.0.0"])
+    _git(adopter, "add", "-A")
+    _git(adopter, "commit", "-q", "-m", "base: 2.0.0, 3.0.0 live")
+    base_sha = _git(adopter, "rev-parse", "HEAD").stdout.strip()
+
+    _write_evidence(["3.0.0"])  # 2.0.0 retired from the composed set, nothing added
+    _git(adopter, "add", "-A")
+    _git(adopter, "commit", "-q", "-m", "head: 2.0.0 retired, no policy diff")
+    head_sha = _git(adopter, "rev-parse", "HEAD").stdout.strip()
+
+    old_v = versions_from_composed_evidence(adopter, base_sha)
+    new_v = versions_from_composed_evidence(adopter, head_sha)
+    assert old_v == {"2.0.0", "3.0.0"}, old_v
+    assert new_v == {"3.0.0"}, new_v
+    print("OK versions_from_composed_evidence: reads the real member set at a real commit, "
+          "the platform-machinery guard (version: null) excluded")
+
+    result, evidence_by_version = run_compose(
+        platform, "v2.0.0", "v3.0.0",  # unused in this branch -- see run_compose's own docstring
+        adopter_dir=adopter, base_ref=base_sha, head_ref=head_sha,
+    )
+    assert result["retired"] == ["2.0.0"], result
+    assert result["added"] == [], result
+    assert result["composed_bump"] == "major", result
+    assert evidence_by_version == {}, evidence_by_version  # nothing added -- nothing to verify
+    print("OK run_compose(adopter_dir=...): a version retired from the composed artefact's own "
+          "member set classifies major, with no policy diff anywhere in the adopter's own repo "
+          "-- ADR-0011's 'the composed bump is computed after composition', proved end to end")
 
     # fetch_tag against a real clone-of-a-clone (origin/local), proving the network path shape works
     clone = Path(tempfile.mkdtemp(prefix="adopter-gate-clone-"))
