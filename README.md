@@ -73,3 +73,4 @@ A platform bump arrives as a reviewed PR editing `.spec.ref.tag` here.
 Phase 0 (this ticket): cluster + Flux + one reconciled version marker. Later
 tickets add the Kyverno CEL policy set (fanned out from platform's `ResourceSet`
 version array), the `ico` pin, and the risk skin.
+# ticket 18: verify adopter gate reads the composed artefact
