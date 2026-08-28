@@ -1,0 +1,10 @@
+id: cart-pii
+name: Cart and checkout customer records
+kind: data
+evolution: product
+visibility: 0.55
+needs: [cart-checkout-service]
+description: >-
+  The regulated data: name, delivery address, contact details and order lines held for the life of
+  a cart and the returns window. Short-lived by design, which is why driftwood carries the loosest
+  appetite in the estate.

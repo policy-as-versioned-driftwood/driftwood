@@ -1,0 +1,10 @@
+id: cart-checkout-service
+name: Cart and checkout service
+kind: activity
+evolution: product
+visibility: 0.62
+needs: [cloud-compute]
+description: >-
+  The caged workload. Runs in the governed namespace this repo's composed artefact renders, at
+  whatever cage tier the selection lands on; the tier is a Namespace declaration and the pod label
+  is an output of it (ADR-0022).

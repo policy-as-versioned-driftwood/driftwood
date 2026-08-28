@@ -1,0 +1,7 @@
+id: rival-fast-commoditisation
+name: Rival forecast — fast commoditisation
+credence: 0.3
+note: A plausible trajectory held simultaneously with the default. The spread is information.
+beliefs:
+  dvd-rental-revenue-falls-faster-than-streaming-adds: 0.81
+  euv-tool-deliveries-slip-past-2026: 0.7

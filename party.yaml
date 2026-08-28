@@ -18,11 +18,28 @@
 # `feed` kind carrying a `name` -- ico's schema is feed/penalty-schema, and
 # the threat register's publisher moved from platform to the new `feeds`
 # repo as feed/threat-register.
+#
+# 2026-08-28 (ADR-0021, ticket 25): driftwood also publishes now. Its twin
+# emits a forward-intel feed from its own overlay in twin/, so `publisher`
+# joins the roles and the feed gets a publishes[] record -- the set of signed
+# publisher artefacts IS the catalogue (ADR-0019 point 5).
 party: driftwood
-roles: [risk-bearer, adopter]
+roles: [risk-bearer, adopter, publisher]
 reporting_currency: GBP
-# Copied from platform/risk/appetite.json orgs.driftwood.tolerance (loosest
-# in the estate: Audit-heavy, short-life cart PII).
+# This party's own signed size. The percent-of-turnover and per-subject
+# formulas scale against these numbers, and the per-customer restatement of
+# every prices[] entry divides by `customers` (ticket 25, ADR-0020). A stale
+# `as_of` widens the loss triple to the statutory cap; it never refuses.
+size:
+  turnover: { amount: 86000000, currency: GBP }
+  customers: 240000
+  data_subjects: 240000
+  headcount: 410
+  as_of: '2026-06-30'
+# The signed fact the tier selection reads (ADR-0021 point 5). It was
+# platform/risk/appetite.json orgs.driftwood.tolerance; the platform's fixture
+# is retired, because whose money is at risk is this party's own declaration
+# and nobody else's. Loosest in the estate: Audit-heavy, short-life cart PII.
 appetite:
   tolerance: { amount: 40000, currency: GBP }
 # MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
@@ -33,8 +50,19 @@ baseline: MODERATE
 inherits:
   - { party: platform, kind: implementations, version: "1.1.1", since: '2026-08-28' }
   - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
-  - { party: ico,      kind: feed, name: penalty-schema,    version: "v1", since: '2026-08-28' }
+  - { party: ico,      kind: feed, name: penalty-schema,    version: "v3", since: '2026-08-28' }
   - { party: feeds,    kind: feed, name: threat-register,   version: "v1", since: '2026-08-28' }
+# What this party publishes and where it lives in this repo. The twin renders
+# `twin/forward-intel/v1/feed.json` from `twin/orgs/driftwood/` with
+# `twin/emit-forward-intel.py`; rule.yaml and bump.yaml sit beside it. Signed
+# by the same gitsign tag as everything else here (ADR-0012), so an untagged
+# feed.json on a branch is never a signature.
+publishes:
+  - kind: feed
+    name: forward-intel
+    path: twin/forward-intel
+    payload_schema: twin/forward-intel/payload.schema.json
+    revoked: []
 overlay:
   add: []
   restate: []

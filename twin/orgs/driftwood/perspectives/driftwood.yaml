@@ -1,0 +1,26 @@
+id: driftwood
+name: Driftwood Ltd, the employer's own seat
+party: employer
+pays: >-
+  This company's own balance sheet. Lost checkout conversion, the incident response bill and the
+  regulator's penalty all land here, and this is the only seat this overlay carries.
+values:
+  checkout-revenue:
+    amount: 3200000
+    evidence_grade: 2
+    basis: >-
+      One quarter of checkout revenue, from the signed management accounts behind party.yaml's
+      `size.turnover`. Grade 2: measured internally, not independently audited at this cut.
+  brand-trust:
+    evidence_grade: 5
+    basis: >-
+      Asserted, not measured. No evidenced causal path runs from brand trust to checkout revenue in
+      this overlay, so it carries no amount and travels as a register entry instead.
+ruin:
+  cannot-take-payment: >-
+    Checkout unable to take payment for a full trading day in peak. Ruin for this seat is not
+    insolvency but the loss of the only channel the company sells through.
+cash_flow: [checkout-revenue]
+note: >-
+  The currency of these valuations is declared in ../../../currency.yaml until the twin's closed
+  `valuation` schema gains a currency field (ticket 11 answer item 2).

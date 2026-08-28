@@ -1,0 +1,13 @@
+id: run-the-checkout-at-quarantine
+name: Run the checkout workload at cage tier 'quarantine'
+addresses: cart-checkout-service
+cost: { min: 30000, mode: 42000, max: 60000 }
+mitigates:
+  component: cart-pii
+  reduction: { min: 0.55, mode: 0.65, max: 0.75 }
+  evidence_grade: 2
+  basis: >-
+    Restricted dials plus no cross-namespace reach and short-lived credentials. Measured on the same two post-mortems plus the platform's own break-glass drill.
+note: >-
+  One rung of the cage ladder as an option this overlay can price. It is an option, never a
+  recommendation: the ladder is ordered and nothing here ranks one rung above another.

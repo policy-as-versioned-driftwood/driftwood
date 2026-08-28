@@ -18,15 +18,15 @@
       "party": "ico",
       "kind": "feed",
       "name": "penalty-schema",
-      "version": "v1",
-      "sha": "b6f082aa3d820ff912034e043ab3330184da325b9256de48d0284d411b8748da"
+      "version": "v3",
+      "sha": "e1fb8eb5663e50088b13d872a4e44112476f516e"
     },
     {
       "party": "feeds",
       "kind": "feed",
       "name": "threat-register",
       "version": "v1",
-      "sha": "08b93420d29b94484f3aabbae58e4ae6ec41866ae312891c811872ec7c3b9a77"
+      "sha": "ddace466f0cc410f228aeff3b4c5704eeea15a30"
     }
   ],
   "members": [
@@ -1334,19 +1334,60 @@
     {
       "source": "ico",
       "kind": "feed",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 1787177.0751717847,
+      "per_customer": {
+        "amount": 7.446571146549103,
+        "currency": "GBP"
+      },
       "name": "penalty-schema",
-      "old_version": "v1",
-      "new_version": "v1",
-      "old_price": 16901471.55226278,
-      "new_price": 16901471.55226278,
-      "old_tier": "deny",
-      "proposed_tier": "deny",
+      "old_version": "v3",
+      "new_version": "v3",
+      "old_price": 1787177.0751717845,
+      "new_price": 1787177.0751717847,
+      "old_tier": "isolated",
+      "proposed_tier": "isolated",
       "changed": false,
-      "proposed_as": "issue"
+      "proposed_as": "label",
+      "holes": [
+        {
+          "source": "nist",
+          "id": "pl-2",
+          "weight": 0.3,
+          "amount": 536153.1225515354
+        },
+        {
+          "source": "nist",
+          "id": "ra-3",
+          "weight": 0.3,
+          "amount": 536153.1225515354
+        },
+        {
+          "source": "nist",
+          "id": "ca-2",
+          "weight": 0.2,
+          "amount": 357435.41503435693
+        },
+        {
+          "source": "nist",
+          "id": "ir-8",
+          "weight": 0.2,
+          "amount": 357435.41503435693
+        }
+      ],
+      "total": 1787177.0751717847
     },
     {
       "source": "feeds",
       "kind": "feed",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 19558.549772440045,
+      "per_customer": {
+        "amount": 0.08149395738516685,
+        "currency": "GBP"
+      },
       "name": "threat-register",
       "old_version": "v1",
       "new_version": "v1",
@@ -1354,6 +1395,38 @@
       "new_price": 19558.549772440045,
       "old_tier": "baseline",
       "proposed_tier": "baseline",
+      "changed": false,
+      "proposed_as": "label",
+      "holes": [],
+      "total": null
+    },
+    {
+      "source": "twin",
+      "kind": "twin",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 1897646.1130078766,
+      "per_customer": {
+        "amount": 7.906858804199485,
+        "currency": "GBP"
+      },
+      "name": "forward-intel",
+      "feed_version": "1.0.0",
+      "tail": "bounded-pert",
+      "policy_version": "1.0.0",
+      "policy_basis": "loosest tier whose caged residual (37952.92 GBP) is within the tolerance (40000.00 GBP)",
+      "residuals": {
+        "baseline": 1328352.2791055136,
+        "restricted": 569293.8339023631,
+        "quarantine": 151811.68904063004,
+        "isolated": 37952.92226015757
+      },
+      "curve_hash": "sha256:70e5e9f6dee9d0d08e3d7f4ff4eb96ebb2c5320e659eced417cfd96901d2858e",
+      "shock": "An exfiltration of the cart record store suppresses checkout conversion for a quarter.",
+      "horizon": 1,
+      "lef_from": "threat-register",
+      "old_tier": "isolated",
+      "proposed_tier": "isolated",
       "changed": false,
       "proposed_as": "label"
     }

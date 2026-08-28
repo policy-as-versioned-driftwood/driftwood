@@ -1,0 +1,13 @@
+id: run-the-checkout-at-baseline
+name: Run the checkout workload at cage tier 'baseline'
+addresses: cart-checkout-service
+cost: { min: 5000, mode: 8000, max: 12000 }
+mitigates:
+  component: cart-pii
+  reduction: { min: 0.00, mode: 0.05, max: 0.10 }
+  evidence_grade: 2
+  basis: >-
+    Namespace defaults only. Measured on this estate's own two prior incident post-mortems: the governed namespace shortened detection, and nothing else moved.
+note: >-
+  One rung of the cage ladder as an option this overlay can price. It is an option, never a
+  recommendation: the ladder is ordered and nothing here ranks one rung above another.

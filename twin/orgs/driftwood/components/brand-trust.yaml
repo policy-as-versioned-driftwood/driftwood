@@ -1,0 +1,9 @@
+id: brand-trust
+name: Brand trust
+kind: capability
+evolution: genesis
+visibility: 0.95
+description: >-
+  Named so that it is visible and unpriced, rather than absent. No evidenced causal path runs from
+  here to a declared cash flow, so the perspective grades it outside the pricing threshold and it
+  leaves the payload as a register entry with no figure -- never as a shadow price.

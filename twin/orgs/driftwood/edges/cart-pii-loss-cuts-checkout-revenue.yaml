@@ -1,0 +1,10 @@
+id: cart-pii-loss-cuts-checkout-revenue
+type: influences
+from: cart-pii
+to: checkout-revenue
+sign: negative
+lag_days: 30
+elasticity: { min: 0.06, mode: 0.12, max: 0.25 }
+evidence_grade: 2
+note: >-
+  An exfiltration of the cart record store suppresses checkout conversion for a quarter.

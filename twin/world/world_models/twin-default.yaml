@@ -1,0 +1,9 @@
+id: twin-default
+name: The twin's own map
+credence: 0.5
+note: >-
+  The default reference, holding no privileged status. It carries its own credence, sits
+  alongside rival forecasts, and is falsified by revealed truth like any other model.
+beliefs:
+  dvd-rental-revenue-falls-faster-than-streaming-adds: 0.62
+  euv-tool-deliveries-slip-past-2026: 0.55

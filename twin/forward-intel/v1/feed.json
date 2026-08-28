@@ -1,0 +1,79 @@
+{
+  "kind": "feed",
+  "name": "forward-intel",
+  "version": "1.0.0",
+  "published_by": "driftwood",
+  "published_at": "2026-08-28T00:00:00Z",
+  "payload_schema": "twin/forward-intel/payload.schema.json",
+  "payload": {
+    "perspective": "driftwood",
+    "shock": "An exfiltration of the cart record store suppresses checkout conversion for a quarter.",
+    "horizon": 1,
+    "lef": null,
+    "lm": [
+      192000.0,
+      384000.0,
+      800000.0
+    ],
+    "currency": "GBP",
+    "curve": [
+      {
+        "account": "baseline",
+        "net_cost_of_risk": 372800.0
+      },
+      {
+        "account": "restricted",
+        "net_cost_of_risk": 288800.0
+      },
+      {
+        "account": "quarantine",
+        "net_cost_of_risk": 176400.0
+      },
+      {
+        "account": "isolated",
+        "net_cost_of_risk": 133400.0
+      }
+    ],
+    "register": [],
+    "claim_scope": {
+      "included": [
+        "uk-gdpr"
+      ],
+      "excluded": [
+        "pci-dss"
+      ],
+      "note": "The shock is an exfiltration of customer records, priced under the one regime this party subscribes to a pricing feed for. Card-scheme penalties are carved out: no publisher in this party's inherits[] prices pci-dss, so a number here would have no instrument behind it."
+    },
+    "derived_from": [
+      {
+        "party": "platform",
+        "kind": "implementations",
+        "version": "1.1.1"
+      },
+      {
+        "party": "nist",
+        "kind": "controls",
+        "version": "1.1.0"
+      },
+      {
+        "party": "ico",
+        "kind": "feed",
+        "name": "penalty-schema",
+        "version": "3"
+      },
+      {
+        "party": "feeds",
+        "kind": "feed",
+        "name": "threat-register",
+        "version": "1"
+      },
+      {
+        "party": "driftwood",
+        "kind": "feed",
+        "name": "forward-intel",
+        "version": "1.0.0",
+        "ref": "b51cdee400f418b64eda51690d08deb5d36dfd09"
+      }
+    ]
+  }
+}

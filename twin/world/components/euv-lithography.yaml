@@ -1,0 +1,5 @@
+id: euv-lithography
+name: EUV lithography tooling
+kind: activity
+evolution: custom-built
+visibility: 0.2
