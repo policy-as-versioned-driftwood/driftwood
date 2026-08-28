@@ -1,30 +1,40 @@
 # The party artefact (policy-composition ticket 11; ADR-0012/ADR-0013). One
 # signed file declaring driftwood: its roles, its parents as party+kind+
-# version, its selected baseline, and its overlay. Signed under the same
-# gitsign tag as every other artefact this repo publishes -- no second
-# mechanism (ADR-0012).
+# (name+)version, its own size/appetite, its selected baseline, and its
+# overlay. Signed under the same gitsign tag as every other artefact this
+# repo publishes -- no second mechanism (ADR-0012).
 #
 # `implementations` and `controls` below are checked, on every pull request,
 # against this repo's own Flux pins by platform/party/party_artefact.py
 # (called through the pinned `platform` dependency, in shift-left.yml): they
 # must equal gitops/platform/platform-pin.yaml's and
 # gitops/flux-system/gotk-sync-nist.yaml's own spec.ref.tag, minus the "v".
-# `pricing` and `threat` have no Flux pin anywhere in this estate today --
-# ico ships no git tags, and the threat register is a subdirectory read out
-# of the already-pinned platform checkout -- so the check names both as
-# unchecked rather than silently skipping them.
+# The two `feed` entries (ico's penalty-schema, feeds' threat-register) have
+# no Flux pin anywhere in this estate today -- ico ships no git tags as a
+# repo pin, and threat-register is read out of the `feeds` repo checkout --
+# so the check names both as unchecked rather than silently skipping them.
+#
+# 2026-08-28 (ADR-0019): the `pricing` and `threat` parent kinds became one
+# `feed` kind carrying a `name` -- ico's schema is feed/penalty-schema, and
+# the threat register's publisher moved from platform to the new `feeds`
+# repo as feed/threat-register.
 party: driftwood
 roles: [risk-bearer, adopter]
+reporting_currency: GBP
+# Copied from platform/risk/appetite.json orgs.driftwood.tolerance (loosest
+# in the estate: Audit-heavy, short-life cart PII).
+appetite:
+  tolerance: { amount: 40000, currency: GBP }
 # MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
 # one of the two controls this estate implements (ADR-0013). May add
 # controls to this selection; may never remove one. Mirrored, advisory only,
 # in gitops/apps/nist-pin-configmap.yaml's data.baselineName.
 baseline: MODERATE
 inherits:
-  - { party: platform, kind: implementations, version: "1.1.1" }
-  - { party: nist,     kind: controls,        version: "1.1.0" }
-  - { party: ico,      kind: pricing,         version: "v1" }
-  - { party: platform, kind: threat,          version: "v1" }
+  - { party: platform, kind: implementations, version: "1.1.1", since: '2026-08-28' }
+  - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
+  - { party: ico,      kind: feed, name: penalty-schema,    version: "v1", since: '2026-08-28' }
+  - { party: feeds,    kind: feed, name: threat-register,   version: "v1", since: '2026-08-28' }
 overlay:
   add: []
   restate: []
