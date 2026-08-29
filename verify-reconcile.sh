@@ -99,6 +99,23 @@ fi
 
 echo "   reconcile assertions 1-5 all observed true: driftwood reconciles from a pinned GitRepository ($SELF_TAG), healthy, content live, nist dependency pinned ($NIST_TAG)."
 
+say "5b. the composed cage is actually enforced on $CTX (a governed Namespace that declares a tier)"
+# 2026-08-29 review: tuppence and ludlow asserted a healthy reconcile on clusters
+# with no Kyverno at all -- the governed Namespace declared a tier that nothing
+# read. The same silence was possible here, so the same assertion runs here.
+if ! timeout 10 kubectl --context "$CTX" get crd mutatingpolicies.policies.kyverno.io >/dev/null 2>&1; then
+  skip "Kyverno MutatingPolicy CRD not installed on $CTX, so the composed cage is not enforced there at all: the governed Namespace declares a tier that nothing reads, and no pod in it is caged. Run platform/engine/up.sh then platform/graded/up.sh against this cluster"
+fi
+for pol in $(python3 -c "
+import pathlib
+d = pathlib.Path('$HERE/composed/policies')
+print(' '.join(sorted(p.name[1:].replace('.', '-') for p in d.iterdir() if p.is_dir())) if d.is_dir() else '')
+"); do
+  timeout 10 kubectl --context "$CTX" get mutatingpolicy "cage-tier-$pol" >/dev/null 2>&1 \
+    || skip "composed/policies/v${pol//-/.} is rendered here but its cage-tier MutatingPolicy is not installed on $CTX; the tier this Namespace declares is enforced by nothing"
+done
+echo "   the cage this repo composes is installed on $CTX"
+
 # --- 6. the five-fact sample (ecosystem ticket 40) ----------------------------
 # Everything above proves the RECONCILE is healthy against whichever world the live url picks.
 # It does not prove the thing ticket 16 Q1 asks for: that driftwood's COMPOSED POLICY SET is in
