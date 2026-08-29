@@ -8,4 +8,4 @@ description: >-
   commit of the vendored world layer in the deterministic staging mirror emit-forward-intel.py
   builds -- content-addressed, so it is the same sha on every machine and does not move when this
   repository commits. See ../VENDORED.md.
-world_ref: ae4b5636798f770283adec533734d04ccccd5a9b
+world_ref: c2d07330a778ed547b60cfbb87217bcf9813181f

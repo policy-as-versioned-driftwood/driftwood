@@ -11,32 +11,62 @@ imported.
 | | |
 |---|---|
 | Source repository | `policy-as-versioned-flux` (the hub) |
-| Source commit | `ad6bc78d49c27b09ef66be385fa5c220d5bca153` |
-| Source path | `twin/fixtures.py`, the `WORLD_FILES` mapping |
-| Files | 9: `world/meta.yaml`, 4 components, 2 propositions, 2 world models |
+| Source release | `twin` **0.1.0** (`twin/VERSION`), pinned machine-readably in `PIN.yaml` |
+| Tag the owner must cut | `twin/v0.1.0` -- **not cut yet**, see below |
+| Source path | `twin/fixtures.py`, the `LIBRARY_WORLD_FILES` mapping |
+| Files | 30: `world/meta.yaml`, 15 components, 13 propositions, 1 world model |
 | Copied | byte-for-byte, verbatim, no edits |
+| Stages to | `world_ref: c2d07330a778ed547b60cfbb87217bcf9813181f` in `orgs/driftwood/meta.yaml` |
 
-The hub has no signed semver tag yet, so the commit above is the only pin available; when `twin`
-self-versions (ticket 11 answer item 1) this table names the tag instead and Renovate can bump it.
+Two pins, and they check each other. `PIN.yaml`'s `twin_version` must equal the hub's
+`twin/VERSION` or `emit-forward-intel.py` refuses -- the release these bytes came from cannot
+silently move underneath them. `world_ref` must equal the commit the vendored bytes stage to in
+the emitter's deterministic mirror, or it refuses again: a pin that does not describe the bytes
+beside it is not a pin.
+
+**The tag.** `twin/v0.1.0` is prefixed because the hub repository is not only the twin. It does
+not exist yet: a signed tag is cut by a release workflow with gitsign, never on a laptop, so until
+the owner merges and that workflow runs, `world_ref` is the only pin with bytes behind it and
+`PIN.yaml` carries `tag_cut: false`. When the tag lands, Renovate's `git-refs` datasource bumps
+`twin_version` and `twin_tag` together the way `gitops/platform/platform-pin.yaml` is bumped
+today. See `twin/RELEASE.md` in the hub.
 
 Re-vendoring is a two-line job:
 
 ```sh
-.venv/bin/python -c 'import pathlib; from twin.fixtures import WORLD_FILES; [ (pathlib.Path(".estate-clone/driftwood/twin")/r).write_text(b, encoding="utf-8", newline="\n") for r,b in WORLD_FILES.items() ]'
+.venv/bin/python -c 'import pathlib; from twin.fixtures import LIBRARY_WORLD_FILES as W; [ (pathlib.Path(".estate-clone/driftwood/twin")/r).write_text(b, encoding="utf-8", newline="\n") for r,b in W.items() ]'
 .venv/bin/python .estate-clone/driftwood/twin/emit-forward-intel.py   # refuses until world_ref is re-pinned
 ```
 
-The emitter refuses rather than adapts: `orgs/driftwood/meta.yaml`'s `world_ref` must equal the
-commit the vendored bytes stage to, and a pin that does not describe the bytes beside it is not a
-pin.
+**What changed at ticket 29.** This directory used to vendor the hub's *default* world layer
+(`WORLD_FILES`), whose components and propositions are Netflix/Intel-flavoured, and the gap was
+recorded here: no proposition in it fitted a UK retailer, so the overlay declared no scenarios. It
+now vendors the **standing-library** world layer instead -- the one that is generic by
+construction, names no tenant, and carries one proposition per committed scenario class. That is
+what lets `orgs/driftwood/scenarios/` hold the six standing scenarios (ticket 11 answer item 4)
+without inventing driftwood-shaped propositions inside a *shared* layer, which is the direction
+violation the loader refuses. `cloud-compute`, which `cart-checkout-service` needs, is in that
+layer as the same bytes as the default layer's copy rather than a second spelling of it.
 
-**Known gap, named rather than papered over.** The hub's only world layer is the twin's fixture
-one, whose components and propositions are Netflix/Intel-flavoured. `cloud-compute` is the only
-world component this overlay uses. Neither vendored proposition fits a UK retailer, so this
-overlay declares **no scenarios** -- ticket 11 answer item 4's standing library of six scenarios
-per adopter needs world propositions that do not exist yet, and inventing driftwood-shaped ones
-inside a *shared* layer would be the direction violation the loader refuses. That library belongs
-to the twin build ticket, with a driftwood-shaped world layer published first.
+### The priors in `world/world_models/reference-map.yaml` are AUTHORED, not measured
+
+Every causal edge in this estate carries an `evidence_grade` and a written basis. The prior
+beliefs in the reference map carry neither, because the `world_models` schema has no grade field:
+they are floats typed into `twin/fixtures.py` by whoever added the scenario class. Four of them
+arrived with ecosystem ticket 29 --
+`a-pinned-dependency-passes-its-published-end-of-life-date` 0.45,
+`a-regulator-publishes-a-penalty-under-a-regime-in-force` 0.5,
+`a-rival-reads-the-published-exposure-and-acts-on-it` 0.25,
+`a-publisher-withdraws-a-feed-the-organisation-pins` 0.1 -- and vendoring put them inside
+driftwood's own signed tree, where they read like measured facts.
+
+They reach no price today: `emit-forward-intel.py` prices off the graded cash-flow edge and loads
+neither scenarios nor world models, so no premium and no exposure figure depends on any of them.
+The exposure is the path, not the present state. **If a later ticket wires scenario execution into
+the pound, these are grade 5 -- asserted, not measured -- and the `path_admission_threshold` must
+refuse them until the `world_models` schema carries a grade and each belief carries a basis.**
+Until then, read every number in that file as an authored prior, and `verify-twin-scenarios.sh`
+check 6 as a presence check on the map, never a provenance check on its contents.
 
 ## `forward-intel/payload.schema.json`
 

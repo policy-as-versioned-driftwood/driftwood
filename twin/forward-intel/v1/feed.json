@@ -46,22 +46,6 @@
     },
     "derived_from": [
       {
-        "party": "platform",
-        "kind": "implementations",
-        "version": "1.1.1"
-      },
-      {
-        "party": "nist",
-        "kind": "controls",
-        "version": "1.1.0"
-      },
-      {
-        "party": "ico",
-        "kind": "feed",
-        "name": "penalty-schema",
-        "version": "3"
-      },
-      {
         "party": "feeds",
         "kind": "feed",
         "name": "threat-register",
@@ -72,7 +56,7 @@
         "kind": "feed",
         "name": "forward-intel",
         "version": "1.0.0",
-        "ref": "b51cdee400f418b64eda51690d08deb5d36dfd09"
+        "ref": "51769fc0737b2aaf7d4bc4a5a58dda6a394aa512"
       }
     ]
   }

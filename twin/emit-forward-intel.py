@@ -58,6 +58,12 @@ CLAIM_NOTE = (
     "party's inherits[] prices pci-dss, so a number here would have no instrument behind it."
 )
 
+# This scenario has no frequency of its own: `lef` below is null, and the estate annualises it
+# with a triple published by a subscribed feed. WHICH feed is a declaration, reviewed in the same
+# release PR as CLAIM_INCLUDED above, and never a fallthrough -- the version is read off
+# `party.yaml` so the pin and the borrow can never name different versions.
+FREQUENCY_FROM = "threat-register"
+
 FEED_DIR = HERE / "forward-intel"
 FEED_FILE = FEED_DIR / f"v{VERSION.split('.')[0]}" / "feed.json"
 PAYLOAD_SCHEMA = "twin/forward-intel/payload.schema.json"
@@ -72,9 +78,10 @@ RESPONSE_ID = "run-the-checkout-at-%s"
 def hub() -> Path:
     """The checkout that carries the `twin` package.
 
-    ponytail: located by walking up, because `twin` does not self-version yet -- the hub has no
-    signed semver tag, so there is nothing for this repo to pin (ticket 11 answer item 1). When it
-    cuts one, this becomes an ordinary pinned dependency and this function goes.
+    ponytail: located by walking up. `twin` self-versions now (twin/VERSION, twin/RELEASE.md) and
+    PIN.yaml beside this file records which release these bytes are vendored from, but the tag is
+    not cut yet, so there is still nothing on a remote for Flux or Renovate to resolve. When the
+    owner cuts `twin/v0.1.0` this becomes an ordinary pinned dependency and this walk goes.
     """
     for parent in [HERE, *HERE.parents]:
         if (parent / "twin" / "repo.py").is_file() and (parent / "clone-estate.sh").is_file():
@@ -85,12 +92,30 @@ def hub() -> Path:
     )
 
 
-sys.path.insert(0, str(hub()))
+HUB = hub()
+sys.path.insert(0, str(HUB))
 import yaml  # noqa: E402
 from twin import evidence, fixtures  # noqa: E402
 from twin.model import Overlay  # noqa: E402
 from twin.repo import ModelRepo  # noqa: E402
 from twin.schema import CAUSAL_EDGE  # noqa: E402
+
+
+def check_twin_pin() -> str:
+    """PIN.yaml names the `twin` release this directory is vendored from; refuse if it is not the
+    release actually rendering it. The world layer under `world/` is a verbatim copy of that
+    release's standing-library layer, so a version that has moved underneath the copy is the same
+    fault as a `world_ref` that no longer describes the bytes -- caught here, once, rather than
+    discovered as a schema surprise later."""
+    pin = yaml.safe_load((HERE / "PIN.yaml").read_text())
+    declared, actual = str(pin["twin_version"]), (HUB / "twin" / "VERSION").read_text().strip()
+    if declared != actual:
+        sys.exit(
+            "REFUSED: twin/PIN.yaml pins twin %s and the twin package rendering this overlay is "
+            "%s. Re-vendor the world layer at the pinned release, or bump the pin (see "
+            "VENDORED.md)." % (declared, actual)
+        )
+    return declared
 
 
 def policy():
@@ -199,19 +224,37 @@ def payload(overlay: Overlay, currency: str, party: dict) -> dict:
     # prior to fit one from; publish those first, then emit the spec here.
     lm = [money(base * float(elasticity[k])) for k in ("min", "mode", "max")]
 
-    # Every pinned input, in the same shape as inherits[] so provenance reads the same way on both
-    # sides of the seam, plus this overlay's own ref. The overlay commit's tree carries the
-    # vendored world layer too, so one ref pins both.
-    derived_from = [
-        {k: str(i[k]) for k in ("party", "kind", "name", "version") if k in i}
-        for i in party.get("inherits") or []
-    ]
-    for entry in derived_from:
-        entry["version"] = entry["version"].lstrip("v")
-    derived_from.append({
+    # What this render actually READ, and nothing else. It used to be a verbatim copy of the whole
+    # of `inherits[]`, which claimed derivation from four pins that contribute no number to this
+    # payload -- including the insurer's quote, which is priced off driftwood's composed exposure,
+    # whose largest line is derived from this very feed. A feed naming as its input a document
+    # containing its own output is a cycle, and it made the premium and the forecast mutually
+    # self-supporting. The subscription context is not lost by dropping it: `inherits[]` is on the
+    # signed party artefact, which is where a reader looks for what this org pins.
+    #
+    # Two entries, both with bytes behind them:
+    #   * the overlay's own ref -- `lm` is `base * elasticity` off perspectives/ and edges/, and
+    #     `curve` is `impact * (1 - reduction) + cost` off responses/. The overlay commit's tree
+    #     carries the vendored world layer too, so one ref pins both.
+    #   * the one subscribed feed whose FREQUENCY this scenario borrows. `lef` below is null
+    #     because this twin has none, and composition annualises with a triple from a subscribed
+    #     feed. Naming it here is what stops that borrow being "whatever single feed happens to
+    #     publish a triple" -- composition reads this list and refuses when it does not name
+    #     exactly one (compose/composition.py, price_twin).
+    frequency_pin = next(
+        (i for i in party.get("inherits") or []
+         if i.get("kind") == "feed" and i.get("name") == FREQUENCY_FROM), None)
+    if frequency_pin is None:
+        raise SystemExit(
+            f"party.yaml pins no feed called {FREQUENCY_FROM!r}, and this scenario has no "
+            f"frequency of its own: either publish an lef or subscribe to the feed that does")
+    derived_from = [{
+        "party": str(frequency_pin["party"]), "kind": "feed", "name": str(frequency_pin["name"]),
+        "version": str(frequency_pin["version"]).lstrip("v"),
+    }, {
         "party": ORG, "kind": "feed", "name": "forward-intel", "version": VERSION,
         "ref": overlay.ref.commit,
-    })
+    }]
 
     return {
         "perspective": ORG,
@@ -245,6 +288,7 @@ def envelope(body: dict) -> dict:
 
 
 def render() -> str:
+    check_twin_pin()
     party = yaml.safe_load((REPO / "party.yaml").read_text())
     reporting = str(party.get("reporting_currency", "USD"))  # ADR-0020: the default is USD
     declared = yaml.safe_load((HERE / "currency.yaml").read_text())["perspectives"]

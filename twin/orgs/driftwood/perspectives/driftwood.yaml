@@ -8,9 +8,20 @@ values:
   checkout-revenue:
     amount: 3200000
     evidence_grade: 2
+    # The derivation, spelled out. "One quarter of checkout revenue" was read by a reviewer as a
+    # quarter OF TURNOVER -- a quarter of 86,000,000 is 21,500,000, not 3,200,000 -- because the
+    # sentence named the signed fact without saying how it got from one to the other. It is a
+    # quarter's WORTH of checkout revenue, and checkout is a fraction of turnover. Both steps are
+    # fields now, so a turnover restatement moves this valuation instead of leaving it stranded,
+    # and `verify-twin-scenarios.sh` check 9 re-derives the amount from them.
+    derived_from_party_fact: size.turnover
+    share_of_turnover: 0.1488372093023256   # annual checkout revenue / turnover
+    periods_per_year: 4                     # the amount is one quarter of that annual figure
     basis: >-
-      One quarter of checkout revenue, from the signed management accounts behind party.yaml's
-      `size.turnover`. Grade 2: measured internally, not independently audited at this cut.
+      One quarter's worth of checkout revenue: 14.88% of the 86,000,000 GBP `size.turnover` signed
+      on party.yaml (`size.as_of` 2026-06-30), divided by four. The share is this company's own
+      management-accounts split of turnover by channel. Grade 2: measured internally, not
+      independently audited at this cut.
   brand-trust:
     evidence_grade: 5
     basis: >-

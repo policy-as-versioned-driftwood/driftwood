@@ -1,0 +1,23 @@
+id: niobium-supply-shock-2026
+question: >-
+  The niobium refining-capacity headline says a single-country bottleneck is tightening. Does a
+  tier-one supplier of the checkout's own hardware and fulfilment chain fail to deliver against a
+  material contract inside the horizon, and what does that cost the checkout?
+proposition: a-tier-one-supplier-fails-to-deliver-within-the-horizon
+at: '2026-08-28'
+horizon: '2027-08-28'
+components:
+  - tier-one-supplier-relationship
+  - cart-checkout-service
+world_models:
+  - reference-map
+class: supply-shock
+note: >-
+  The niobium headline is a scenario in this overlay and is never an entry in the news feed. A
+  headline is a dated signal somebody classified; this is the standing question the headline moves.
+  Keeping it here is what stops a published feed carrying the twin's own subject matter back to it
+  as if it were external evidence.
+affected_parties:
+  - id: the-suppliers-own-workforce
+    who: The workforce of the constrained supplier, whose livelihoods depend on the contract, not represented in this model.
+    consequence: A failure this scenario forecasts is priced from the buyer's side only; the twin carries no perspective for the workforce whose contract it is.
