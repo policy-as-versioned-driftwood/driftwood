@@ -97,4 +97,36 @@ else
   echo "   platform GitRepository not applied on $CTX (opt-in, see platform-pin.yaml); nothing to compare"
 fi
 
-echo "PASS: driftwood reconciles from a pinned GitRepository ($SELF_TAG), healthy, content live, nist dependency pinned ($NIST_TAG)."
+echo "   reconcile assertions 1-5 all observed true: driftwood reconciles from a pinned GitRepository ($SELF_TAG), healthy, content live, nist dependency pinned ($NIST_TAG)."
+
+# --- 6. the five-fact sample (ecosystem ticket 40) ----------------------------
+# Everything above proves the RECONCILE is healthy against whichever world the live url picks.
+# It does not prove the thing ticket 16 Q1 asks for: that driftwood's COMPOSED POLICY SET is in
+# force, from sources whose signed tags were verified at the source boundary, on a cluster that
+# reconciles from the publishers' REAL remotes. That is five facts per source, and one sample of
+# a cluster cannot be taken by this script and then graded by it -- a presenter-run number is a
+# rehearsal (ADR-0023, D4). The number comes from .github/workflows/drift-sample.yml, which
+# brings up an ephemeral KinD in Actions, reconciles from the real remotes and APPENDS one record
+# per source to drift/samples.jsonl. That append is an observation, which a clock may make (D1).
+#
+# So this section GRADES THE LATEST SAMPLE and nothing else:
+#   no fresh sample            -> exit 3, could not look. Never a pass.
+#   a fact observed false      -> exit 1.
+#   all five true, every source, no falsifier fired -> exit 0.
+# `five-facts.py grade` also refuses to grade anything PASS unless drift/window.yaml still
+# declares all three falsifiers -- ticket 40's own rule that a sample passing with a falsifier
+# undeclared is a fail.
+say "6. the five-fact sample: the composed set in force, from signed sources"
+python3 -c 'import yaml' 2>/dev/null \
+  || skip "python3 here has no pyyaml, so drift/five-facts.py cannot read the pins or the pre-registration"
+# `set -e` is on (scripts/lib.sh). Without this the non-zero grade would kill the script here and
+# the reason -- the whole point of an exit-3 contract -- would never be printed.
+set +e
+out="$(python3 "$HERE/drift/five-facts.py" grade --max-age-hours "${FIVE_FACT_MAX_AGE_HOURS:-48}" 2>&1)"; rc=$?
+set -e
+printf '%s\n' "$out" | sed 's/^/   /'
+case "$rc" in
+  0) echo "PASS: the reconcile is healthy AND the latest five-fact sample observes the composed set in force from signed sources.";;
+  3) skip "$(printf '%s\n' "$out" | sed -n 's/^SKIP: //p' | tail -1)";;
+  *) echo "FAIL: $(printf '%s\n' "$out" | tail -1)" >&2; exit 1;;
+esac
