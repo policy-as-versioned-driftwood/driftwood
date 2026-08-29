@@ -26,7 +26,7 @@ parents:
   kind: feed
   name: quote-driftwood
   version: v1
-  sha: e1c39816a12a13cfe21ff137073ce33492e89abc044423372c85284dc3760329
+  sha: db767055119292e400edd63ed260785ce605eb4e
 baseline: MODERATE
 governed-namespaces:
 - driftwood
