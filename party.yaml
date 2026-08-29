@@ -52,12 +52,31 @@ inherits:
   - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
   - { party: ico,      kind: feed, name: penalty-schema,    version: "v3", since: '2026-08-28' }
   - { party: feeds,    kind: feed, name: threat-register,   version: "v1", since: '2026-08-28' }
+  # The insurer's signed quote for THIS party, one feed name per adopter
+  # (ticket 36; ticket 14 answers 3 and 4). It is the only parent whose price
+  # is a COST rather than an exposure: composition books its premium into
+  # prices[] as the `premium` kind under this party's own perspective, beside
+  # costs.fix, and never sums it with the insurer's own layer arithmetic.
+  # Renovate bumps this line when the insurer tags a re-quote.
+  - { party: insurer,  kind: feed, name: quote-driftwood,    version: "v1", since: '2026-08-28' }
 # What this party publishes and where it lives in this repo. The twin renders
 # `twin/forward-intel/v1/feed.json` from `twin/orgs/driftwood/` with
 # `twin/emit-forward-intel.py`; rule.yaml and bump.yaml sit beside it. Signed
 # by the same gitsign tag as everything else here (ADR-0012), so an untagged
 # feed.json on a branch is never a signature.
 publishes:
+  # The exposure section this repository's own composition renders into
+  # composed/HEADER.yaml and signs under this repository's own tag. It is a
+  # SECTION of a signed artefact, not an ADR-0019 envelope of its own, so it
+  # declares no payload_schema and there is no <path>/v*/feed.json to read --
+  # the tag is what signs it. Declared here because ADR-0019 point 5 makes
+  # publishes[] the only discovery record there is, and the insurer pins this
+  # exposure as a parent; without this record its pin resolved to nothing.
+  - kind: feed
+    name: exposure
+    path: composed
+    payload_schema: null
+    revoked: []
   - kind: feed
     name: forward-intel
     path: twin/forward-intel
