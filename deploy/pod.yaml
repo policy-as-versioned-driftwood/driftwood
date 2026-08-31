@@ -1,10 +1,43 @@
-# A real driftwood workload manifest, pinned to policy-version 2.0.0 --
+# A real driftwood workload manifest, pinned to policy-version 4.0.0 --
 # platform/shift-left/ci-check.py's target resource (see
-# .github/workflows/shift-left.yml). Compliant with both 1.0.0 and 2.0.0, so
-# it passes the whole target ±1 supported window. Ticket mo-10.
+# .github/workflows/shift-left.yml).
+#
+# REPINNED 2026-08-29: the whole 2.x/3.x fan-out is retired from
+# distribution/versions.yaml (unable to admit a pod, and reading the tier from
+# the pod's own label -- see that file for both reasons in full), so 4.0.0 is
+# the only version the array declares and the only one the orphan guard allows.
+# The old "compliant with both 1.0.0 and 2.0.0, so it passes the whole target
+# +/-1 supported window" claim went with it: the declared array holds one major
+# line today, so there is no neighbour to be compliant with.
+#
+# It carries no posture.acme.io/tier label on purpose. Under 4.0.0 the tier is
+# declared on the governed Namespace and the cage writes the pod label as an
+# OUTPUT (ADR-0022); a tier declared here would be clobbered.
+#
+# WIRED LIVE 2026-08-31 (ticket 40 answer item 2): this manifest was declared
+# but never reconciled onto a cluster -- kubectl never applied it either. The
+# first real run on kind-driftwood surfaced a defect this file had carried
+# since before it existed live: `securityContext.runAsNonRoot: true` on the
+# plain `nginx` image, whose entrypoint runs as root, so the kubelet refuses
+# to start the container at all ("container has runAsNonRoot and image will
+# run as root") -- with no volume for a non-root user to write nginx's cache
+# and pid file into even if it could start. `runAsUser: 101` pins the image's
+# own built-in `nginx` account (verified against the image, not guessed); the
+# two emptyDirs are the only paths nginx needs to write, so the container
+# stays read-only-root-filesystem-compliant (a requirement this file already
+# declared) rather than that requirement becoming the reason it never runs.
 apiVersion: v1
 kind: Pod
-metadata: { name: checkout-svc, labels: { "policy-as-versioned.dev/policy-version": "2.0.0" } }
+metadata: { name: checkout-svc, labels: { "policy-as-versioned.dev/policy-version": "4.0.0" } }
 spec:
-  securityContext: { runAsNonRoot: true }
-  containers: [{ name: c, image: nginx, securityContext: { readOnlyRootFilesystem: true } }]
+  securityContext: { runAsNonRoot: true, runAsUser: 101 }
+  containers:
+    - name: c
+      image: nginx
+      securityContext: { readOnlyRootFilesystem: true }
+      volumeMounts:
+        - { name: cache, mountPath: /var/cache/nginx }
+        - { name: run, mountPath: /run }
+  volumes:
+    - { name: cache, emptyDir: {} }
+    - { name: run, emptyDir: {} }

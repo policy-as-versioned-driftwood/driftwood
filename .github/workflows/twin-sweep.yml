@@ -1,0 +1,216 @@
+name: twin-sweep
+
+# driftwood's own twin, on a clock (ticket 28; ADR-0024, decisions D1 and D2;
+# ADR-0021). 07:05 UTC, driftwood's own choice. No cross-org ordering is
+# promised: the hub's truth run at 05:47 grades whatever state it finds, and
+# every joint in the chain waits on a human merge anyway.
+#
+# The sweep re-renders driftwood's forward-intel feed from driftwood's own
+# overlay and then takes exactly one of two paths, never both:
+#
+#   the render still matches  ->  APPEND one JSON line to
+#                                 observations/twin-sweep.jsonl on main. That is
+#                                 an observation: a dated record that the twin
+#                                 looked and the scenario had not moved, so a
+#                                 flat series survives for scoring instead of
+#                                 being lost to "nothing happened".
+#   the render has moved      ->  OPEN a pull request carrying the re-rendered
+#                                 feed. A published feed is a DECLARATION, and a
+#                                 clock never commits one (D1). A human merges,
+#                                 and a human dispatches cut-release.yml, exactly
+#                                 as the feeds repo's own fetch clock works (D2).
+#
+# The observation commit is gitsign-signed by this workflow's own Actions
+# identity -- the same keyless OIDC -> Fulcio -> Rekor chain cut-release.yml
+# already uses for tags. That is what makes the lane a cage rather than a policy
+# statement: with .github/rulesets/observation-lane.json applied, an unsigned
+# commit, or a signed one touching a declaration path, is refused by the server
+# and not by good manners.
+#
+# ponytail: the sweep is the forward-intel re-render, the only twin output this
+# repository has today. Ticket 29 lands the scenario library and the scored
+# sweep; when it does, this job runs `twin sweep` and the observation line grows
+# the scores. The clock, the cage and the two paths do not change.
+
+on:
+  schedule:
+    - cron: "5 7 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+# The observation lane, declared once as data so the cage step and
+# verify/schedules/verify-schedules.sh read the SAME list (ADR-0024, D1). These
+# are the only paths any scheduled job in this repository may ever commit.
+env:
+  OBSERVATION_LANE: "talk/truth.log drift/samples.jsonl talk/captures observations"
+  GITSIGN_VERSION: 0.17.1
+  GITSIGN_SHA256: 69213a8a0813a151e5a47d0060862952ff833a845d57309dff76f7ba6600abae
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # Every step below runs inside driftwood's checkout. It sits under the
+        # hub checkout at the exact path clone-estate.sh assembles, because
+        # twin/emit-forward-intel.py finds the `twin` package by walking UPWARDS
+        # from the overlay (the package does not self-version yet, so there is
+        # no tag to pin -- ticket 11 answer item 1, ticket 29 closes it).
+        working-directory: hub/.estate-clone/driftwood
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: policy-as-versioned-flux/policy-as-versioned-flux
+          path: hub
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/checkout@v4
+        with:
+          path: hub/.estate-clone/driftwood
+          fetch-depth: 0
+
+      - name: install pinned gitsign (binary + checksum, no marketplace action)
+        run: |
+          set -euo pipefail
+          curl -sSL -o gitsign "https://github.com/sigstore/gitsign/releases/download/v${GITSIGN_VERSION}/gitsign_${GITSIGN_VERSION}_linux_amd64"
+          echo "${GITSIGN_SHA256}  gitsign" | sha256sum -c -
+          chmod +x gitsign && sudo mv gitsign /usr/local/bin/gitsign
+          rm -f gitsign
+
+      - name: sweep -- re-render the forward-intel feed from driftwood's own overlay
+        id: sweep
+        run: |
+          set -uo pipefail
+          pip install --quiet pyyaml
+          python3 twin/emit-forward-intel.py --check
+          rc=$?
+          if [ "${rc}" -eq 0 ]; then
+            echo "moved=false" >> "$GITHUB_OUTPUT"
+          elif [ "${rc}" -eq 1 ]; then
+            echo "moved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::the sweep could not render the overlay at all (exit ${rc})"
+            exit "${rc}"
+          fi
+          echo "swept_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: propose the moved scenario as a pull request (a feed is a declaration)
+        if: steps.sweep.outputs.moved == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SWEPT_AT: ${{ steps.sweep.outputs.swept_at }}
+        run: |
+          set -euo pipefail
+          branch="twin/forward-intel-${SWEPT_AT%%T*}"
+          if git ls-remote --exit-code --heads origin "${branch}" >/dev/null 2>&1; then
+            echo "${branch} already open -- nothing to propose"; exit 0
+          fi
+          python3 twin/emit-forward-intel.py
+          git checkout -b "${branch}"
+          git add -- twin/forward-intel/v1/feed.json
+          git -c gpg.format=x509 -c gpg.x509.program=gitsign \
+            -c user.name="driftwood twin agent" \
+            -c user.email="twin-agent@policy-as-versioned-driftwood.invalid" \
+            commit -S -m "twin: the forward-intel scenario moved on the daily sweep"
+          git push origin "${branch}"
+          gh pr create --base main --head "${branch}" \
+            --title "twin: forward-intel re-rendered by the daily sweep" \
+            --body "$(printf '%s\n' \
+              "The daily sweep re-rendered driftwood's forward-intel feed from driftwood's own overlay and the bytes moved." \
+              "" \
+              "A published feed is a **declaration**, so the clock proposes it and never commits it (ADR-0024, D1)." \
+              "Merging publishes nothing: dispatch \`cut-release.yml\` to sign the tag." \
+              "" \
+              "There is no recommended action in this payload and there never will be (ADR-0021): the twin emits a scenario, the estate selects the tier.")"
+
+      - name: observe -- append one dated line, and only ever append
+        if: steps.sweep.outputs.moved == 'false'
+        env:
+          SWEPT_AT: ${{ steps.sweep.outputs.swept_at }}
+        run: |
+          set -euo pipefail
+          mkdir -p observations
+          python3 - >> observations/twin-sweep.jsonl <<'PY'
+          import json, os
+          print(json.dumps({
+              "swept_at": os.environ["SWEPT_AT"],
+              "org": "driftwood",
+              "feed": "forward-intel",
+              "moved": False,
+              "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)",
+              "run": os.environ.get("GITHUB_RUN_ID", ""),
+          }, sort_keys=True))
+          PY
+
+      # --- the cage (ADR-0024, D1) -------------------------------------------
+      # Everything this sweep may commit to main is staged from OBSERVATION_LANE
+      # and nothing else. Anything left in the tree afterwards is a declaration
+      # escaping the lane, and this step fails the run rather than pushing it.
+      - name: the observation cage -- a clock appends observations, never a declaration
+        if: always()
+        run: |
+          set -euo pipefail
+          # HEAD must be the branch this step is about to push to. On the
+          # moved==true path the propose step does `git checkout -b twin/...`
+          # and this step is `if: always()`, so HEAD is the PROPOSAL branch,
+          # feed declaration and all, while the last line pushes
+          # HEAD:${GITHUB_REF_NAME} -- the default branch. Nothing but
+          # `git diff --cached --quiet` happening to be true kept that branch
+          # off main (review, 2026-08-28).
+          head="$(git rev-parse --abbrev-ref HEAD)"
+          if [ "${head}" != "${GITHUB_REF_NAME}" ]; then
+            echo "ok  HEAD is ${head}, not ${GITHUB_REF_NAME} -- this run proposed a declaration on its own branch, so the cage commits nothing"
+            exit 0
+          fi
+          # `git reset` FIRST: the cage builds the index and nothing else. The old
+          # guard filtered `git status --porcelain` with `grep -v '^[AMD] '`, which
+          # strips exactly the staged-and-clean entries -- so a declaration any
+          # earlier step had left in the index was committed and pushed while this
+          # step printed "this clock declared nothing" (review, 2026-08-28).
+          git reset -q
+          for path in ${OBSERVATION_LANE}; do
+            # -f: talk/captures/ is gitignored for local runs; the clock is the one
+            # caller allowed to commit it.
+            if [ -e "${path}" ]; then git add -Af -- "${path}"; fi
+          done
+          # The STAGED set, judged against the same OBSERVATION_LANE list, never a
+          # second regex that could drift from it.
+          bad=""
+          for f in $(git diff --cached --name-only); do
+            ok=0
+            for path in ${OBSERVATION_LANE}; do
+              case "${f}" in "${path}"|"${path}"/*) ok=1 ;; esac
+            done
+            [ "${ok}" = 1 ] || bad="${bad} ${f}"
+          done
+          if [ -n "${bad}" ]; then
+            echo "::error::this clock staged a declaration outside the observation lane"
+            echo "${bad}"
+            exit 1
+          fi
+          outside="$(git status --porcelain --untracked-files=all | grep -v '^[AMD] ' || true)"
+          if [ -n "${outside}" ]; then
+            echo "::error::the scheduled twin sweep left a change outside the observation lane"
+            echo "${outside}"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "ok  nothing to observe, and nothing declared"; exit 0
+          fi
+          # The signing config goes in the LOCAL CONFIG, not on the one commit
+          # command: `git pull --rebase` replays the commit, and with no
+          # commit.gpgsign in scope the replay came out UNSIGNED -- exactly in
+          # the contended case the pull exists for (review, 2026-08-28).
+          git config user.name "driftwood twin sweep"
+          git config user.email "twin-sweep@policy-as-versioned-driftwood.invalid"
+          git config gpg.format x509
+          git config gpg.x509.program gitsign
+          git config commit.gpgsign true
+          git commit -m "twin sweep: observe the forward-intel scenario [skip ci]"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

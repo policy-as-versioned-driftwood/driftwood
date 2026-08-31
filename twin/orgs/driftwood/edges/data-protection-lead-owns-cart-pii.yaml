@@ -1,0 +1,5 @@
+id: data-protection-lead-owns-cart-pii
+type: owns
+from: data-protection-lead
+to: cart-pii
+note: A role edge, for the same reason.

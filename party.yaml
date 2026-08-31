@@ -1,30 +1,87 @@
 # The party artefact (policy-composition ticket 11; ADR-0012/ADR-0013). One
 # signed file declaring driftwood: its roles, its parents as party+kind+
-# version, its selected baseline, and its overlay. Signed under the same
-# gitsign tag as every other artefact this repo publishes -- no second
-# mechanism (ADR-0012).
+# (name+)version, its own size/appetite, its selected baseline, and its
+# overlay. Signed under the same gitsign tag as every other artefact this
+# repo publishes -- no second mechanism (ADR-0012).
 #
 # `implementations` and `controls` below are checked, on every pull request,
 # against this repo's own Flux pins by platform/party/party_artefact.py
 # (called through the pinned `platform` dependency, in shift-left.yml): they
 # must equal gitops/platform/platform-pin.yaml's and
 # gitops/flux-system/gotk-sync-nist.yaml's own spec.ref.tag, minus the "v".
-# `pricing` and `threat` have no Flux pin anywhere in this estate today --
-# ico ships no git tags, and the threat register is a subdirectory read out
-# of the already-pinned platform checkout -- so the check names both as
-# unchecked rather than silently skipping them.
+# The two `feed` entries (ico's penalty-schema, feeds' threat-register) have
+# no Flux pin anywhere in this estate today -- ico ships no git tags as a
+# repo pin, and threat-register is read out of the `feeds` repo checkout --
+# so the check names both as unchecked rather than silently skipping them.
+#
+# 2026-08-28 (ADR-0019): the `pricing` and `threat` parent kinds became one
+# `feed` kind carrying a `name` -- ico's schema is feed/penalty-schema, and
+# the threat register's publisher moved from platform to the new `feeds`
+# repo as feed/threat-register.
+#
+# 2026-08-28 (ADR-0021, ticket 25): driftwood also publishes now. Its twin
+# emits a forward-intel feed from its own overlay in twin/, so `publisher`
+# joins the roles and the feed gets a publishes[] record -- the set of signed
+# publisher artefacts IS the catalogue (ADR-0019 point 5).
 party: driftwood
-roles: [risk-bearer, adopter]
+roles: [risk-bearer, adopter, publisher]
+reporting_currency: GBP
+# This party's own signed size. The percent-of-turnover and per-subject
+# formulas scale against these numbers, and the per-customer restatement of
+# every prices[] entry divides by `customers` (ticket 25, ADR-0020). A stale
+# `as_of` widens the loss triple to the statutory cap; it never refuses.
+size:
+  turnover: { amount: 86000000, currency: GBP }
+  customers: 240000
+  data_subjects: 240000
+  headcount: 410
+  as_of: '2026-06-30'
+# The signed fact the tier selection reads (ADR-0021 point 5). It was
+# platform/risk/appetite.json orgs.driftwood.tolerance; the platform's fixture
+# is retired, because whose money is at risk is this party's own declaration
+# and nobody else's. Loosest in the estate: Audit-heavy, short-life cart PII.
+appetite:
+  tolerance: { amount: 40000, currency: GBP }
 # MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
 # one of the two controls this estate implements (ADR-0013). May add
 # controls to this selection; may never remove one. Mirrored, advisory only,
 # in gitops/apps/nist-pin-configmap.yaml's data.baselineName.
 baseline: MODERATE
 inherits:
-  - { party: platform, kind: implementations, version: "1.1.1" }
-  - { party: nist,     kind: controls,        version: "1.1.0" }
-  - { party: ico,      kind: pricing,         version: "v1" }
-  - { party: platform, kind: threat,          version: "v1" }
+  - { party: platform, kind: implementations, version: "2.0.1", since: '2026-08-28' }
+  - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
+  - { party: ico,      kind: feed, name: penalty-schema,    version: "v3", since: '2026-08-28' }
+  - { party: feeds,    kind: feed, name: threat-register,   version: "v1", since: '2026-08-28' }
+  # The insurer's signed quote for THIS party, one feed name per adopter
+  # (ticket 36; ticket 14 answers 3 and 4). It is the only parent whose price
+  # is a COST rather than an exposure: composition books its premium into
+  # prices[] as the `premium` kind under this party's own perspective, beside
+  # costs.fix, and never sums it with the insurer's own layer arithmetic.
+  # Renovate bumps this line when the insurer tags a re-quote.
+  - { party: insurer,  kind: feed, name: quote-driftwood,    version: "v1", since: '2026-08-28' }
+# What this party publishes and where it lives in this repo. The twin renders
+# `twin/forward-intel/v1/feed.json` from `twin/orgs/driftwood/` with
+# `twin/emit-forward-intel.py`; rule.yaml and bump.yaml sit beside it. Signed
+# by the same gitsign tag as everything else here (ADR-0012), so an untagged
+# feed.json on a branch is never a signature.
+publishes:
+  # The exposure section this repository's own composition renders into
+  # composed/HEADER.yaml and signs under this repository's own tag. It is a
+  # SECTION of a signed artefact, not an ADR-0019 envelope of its own, so it
+  # declares no payload_schema and there is no <path>/v*/feed.json to read --
+  # the tag is what signs it. Declared here because ADR-0019 point 5 makes
+  # publishes[] the only discovery record there is, and the insurer pins this
+  # exposure as a parent; without this record its pin resolved to nothing.
+  - kind: feed
+    name: exposure
+    path: composed
+    payload_schema: null
+    revoked: []
+  - kind: feed
+    name: forward-intel
+    path: twin/forward-intel
+    payload_schema: twin/forward-intel/payload.schema.json
+    revoked: []
 overlay:
   add: []
   restate: []

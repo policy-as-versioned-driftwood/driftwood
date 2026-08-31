@@ -5,8 +5,8 @@
     {
       "party": "platform",
       "kind": "implementations",
-      "version": "1.1.1",
-      "sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60"
+      "version": "2.0.1",
+      "sha": "533dccb0a823001b396fd60ab08014bf75065a37"
     },
     {
       "party": "nist",
@@ -16,15 +16,24 @@
     },
     {
       "party": "ico",
-      "kind": "pricing",
-      "version": "v1",
-      "sha": "5d1e76fa6cffe9bc42ffcae6ee2e06c29e841809"
+      "kind": "feed",
+      "name": "penalty-schema",
+      "version": "v3",
+      "sha": "e1fb8eb5663e50088b13d872a4e44112476f516e"
     },
     {
-      "party": "platform",
-      "kind": "threat",
+      "party": "feeds",
+      "kind": "feed",
+      "name": "threat-register",
       "version": "v1",
-      "sha": "7a36bf73c89fca4b168629b1a54635265158fa2a"
+      "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268"
+    },
+    {
+      "party": "insurer",
+      "kind": "feed",
+      "name": "quote-driftwood",
+      "version": "v1",
+      "sha": "db767055119292e400edd63ed260785ce605eb4e"
     }
   ],
   "members": [
@@ -32,135 +41,45 @@
       "family": "graded-enforcement",
       "name": "cage-netpol",
       "kind": "GeneratingPolicy",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": null
     },
     {
       "family": "graded-enforcement",
       "name": "cage-tier",
       "kind": "MutatingPolicy",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": null
     },
     {
       "family": "posture",
       "name": "posture-trust-boundary",
       "kind": "ValidatingPolicy",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": "Deny"
     },
     {
       "family": "posture",
       "name": "stamp-posture",
       "kind": "MutatingPolicy",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": null
     },
     {
       "family": "require-nonroot",
       "name": "require-nonroot",
       "kind": "ValidatingPolicy",
-      "version": "2.0.0",
+      "version": "4.0.0",
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": "Audit"
-    },
-    {
-      "family": "graded-enforcement",
-      "name": "cage-netpol",
-      "kind": "GeneratingPolicy",
-      "version": "2.0.1",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "graded-enforcement",
-      "name": "cage-tier",
-      "kind": "MutatingPolicy",
-      "version": "2.0.1",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "posture",
-      "name": "posture-trust-boundary",
-      "kind": "ValidatingPolicy",
-      "version": "2.0.1",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": "Deny"
-    },
-    {
-      "family": "posture",
-      "name": "stamp-posture",
-      "kind": "MutatingPolicy",
-      "version": "2.0.1",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "require-nonroot",
-      "name": "require-nonroot",
-      "kind": "ValidatingPolicy",
-      "version": "2.0.1",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": "Audit"
-    },
-    {
-      "family": "graded-enforcement",
-      "name": "cage-netpol",
-      "kind": "GeneratingPolicy",
-      "version": "3.0.0",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "graded-enforcement",
-      "name": "cage-tier",
-      "kind": "MutatingPolicy",
-      "version": "3.0.0",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "posture",
-      "name": "posture-trust-boundary",
-      "kind": "ValidatingPolicy",
-      "version": "3.0.0",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": "Deny"
-    },
-    {
-      "family": "posture",
-      "name": "stamp-posture",
-      "kind": "MutatingPolicy",
-      "version": "3.0.0",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
-      "action": null
-    },
-    {
-      "family": "require-nonroot",
-      "name": "require-nonroot",
-      "kind": "ValidatingPolicy",
-      "version": "3.0.0",
-      "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": "Audit"
     },
     {
@@ -169,7 +88,7 @@
       "kind": "ValidatingPolicy",
       "version": null,
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": null
     },
     {
@@ -178,7 +97,7 @@
       "kind": "ValidatingPolicy",
       "version": null,
       "source_party": "platform",
-      "source_sha": "58ef9c57e53543997e5ddbe829a7b7c9a2282c60",
+      "source_sha": "533dccb0a823001b396fd60ab08014bf75065a37",
       "action": null
     }
   ],
@@ -1331,25 +1250,186 @@
   "prices": [
     {
       "source": "ico",
-      "kind": "pricing",
-      "old_version": "v1",
-      "new_version": "v1",
-      "old_price": 16901471.55226278,
-      "new_price": 16901471.55226278,
-      "old_tier": "deny",
-      "proposed_tier": "deny",
+      "kind": "feed",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 1787177.0751717847,
+      "per_customer": {
+        "amount": 7.446571146549103,
+        "currency": "GBP"
+      },
+      "name": "penalty-schema",
+      "old_version": "v3",
+      "new_version": "v3",
+      "old_price": 1787177.0751717845,
+      "new_price": 1787177.0751717847,
+      "old_tier": "isolated",
+      "proposed_tier": "isolated",
       "changed": false,
-      "proposed_as": "issue"
+      "lef": [
+        1,
+        2,
+        4
+      ],
+      "lef_basis": "lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). warn/deny lef are editorial (schema doesn't carry frequency). Scaled to a subscriber turnover of 86,000,000.00 GBP.",
+      "proposed_as": "label",
+      "holes": [
+        {
+          "source": "nist",
+          "id": "pl-2",
+          "weight": 0.3,
+          "amount": 536153.1225515354
+        },
+        {
+          "source": "nist",
+          "id": "ra-3",
+          "weight": 0.3,
+          "amount": 536153.1225515354
+        },
+        {
+          "source": "nist",
+          "id": "ca-2",
+          "weight": 0.2,
+          "amount": 357435.41503435693
+        },
+        {
+          "source": "nist",
+          "id": "ir-8",
+          "weight": 0.2,
+          "amount": 357435.41503435693
+        }
+      ],
+      "total": 1787177.0751717847
     },
     {
-      "source": "platform",
-      "kind": "threat",
+      "source": "feeds",
+      "kind": "feed",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 19558.549772440045,
+      "per_customer": {
+        "amount": 0.08149395738516685,
+        "currency": "GBP"
+      },
+      "name": "threat-register",
       "old_version": "v1",
       "new_version": "v1",
       "old_price": 19558.549772440045,
       "new_price": 19558.549772440045,
       "old_tier": "baseline",
       "proposed_tier": "baseline",
+      "changed": false,
+      "lef": [
+        2,
+        4,
+        9
+      ],
+      "lef_basis": "cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint.",
+      "proposed_as": "label",
+      "holes": [],
+      "total": null
+    },
+    {
+      "source": "insurer",
+      "kind": "premium",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 113403.3,
+      "per_customer": {
+        "amount": 0.47251375,
+        "currency": "GBP"
+      },
+      "name": "quote-driftwood",
+      "old_version": "v1",
+      "new_version": "v1",
+      "quote_version": "1.0.0",
+      "attachment": {
+        "amount": 40000.0,
+        "currency": "GBP"
+      },
+      "limit": {
+        "amount": 3000000,
+        "currency": "GBP"
+      },
+      "exclusions": [
+        {
+          "regime": "uk-gdpr",
+          "control_ids": [
+            "pl-2",
+            "ra-3"
+          ],
+          "why": "Governance-of-record failures. The share of the uk-gdpr lower-tier exposure that ico's published control weights put on the system security plan (pl-2) and the risk assessment (ra-3) is retained by the insured: this cover attaches to breach consequence, not to the insured's own documentation of its programme."
+        }
+      ],
+      "conditions": [
+        {
+          "source": "nist",
+          "id": "ac-6",
+          "consequence": "void",
+          "why": "Least privilege enforced on the governed namespace. This estate implements ac-6; cover is written on the assumption it stays implemented."
+        },
+        {
+          "source": "nist",
+          "id": "cm-6",
+          "consequence": "uplift",
+          "uplift": {
+            "amount": 25000,
+            "currency": "GBP"
+          },
+          "why": "Configuration settings enforced. A lapse is survivable but re-rates the account by the stated amount at the next re-quote."
+        }
+      ],
+      "valid_from": "2026-08-28",
+      "valid_until": "2027-08-28",
+      "priced_against": [
+        {
+          "party": "platform",
+          "kind": "implementations",
+          "version": "1.1.1"
+        },
+        {
+          "party": "driftwood",
+          "kind": "feed",
+          "name": "exposure",
+          "version": "v1.1.0",
+          "exposure_sha256": "sha256:397abe81d6cbdbd7b27a5d2516dd9c35417e9922f995b8b6af7d1fca34829820"
+        }
+      ]
+    },
+    {
+      "source": "twin",
+      "kind": "twin",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 1897646.1130078766,
+      "per_customer": {
+        "amount": 7.906858804199485,
+        "currency": "GBP"
+      },
+      "name": "forward-intel",
+      "feed_version": "1.0.0",
+      "tail": "bounded-pert",
+      "policy_version": "1.0.0",
+      "policy_basis": "loosest tier whose caged residual (37952.92 GBP) is within the tolerance (40000.00 GBP)",
+      "residual_basis": "platform-cage-tiers@1.0.0",
+      "residuals": {
+        "baseline": 1328352.2791055136,
+        "restricted": 569293.8339023631,
+        "quarantine": 151811.68904063004,
+        "isolated": 37952.92226015757
+      },
+      "curve_hash": "sha256:70e5e9f6dee9d0d08e3d7f4ff4eb96ebb2c5320e659eced417cfd96901d2858e",
+      "shock": "An exfiltration of the cart record store suppresses checkout conversion for a quarter.",
+      "horizon": 1,
+      "lef": [
+        2,
+        4,
+        9
+      ],
+      "lef_basis": "cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint.",
+      "lef_from": "threat-register",
+      "old_tier": "isolated",
+      "proposed_tier": "isolated",
       "changed": false,
       "proposed_as": "label"
     }
@@ -1360,6 +1440,13 @@
       "detail": "the cross-party rule-conflict path above is only exercised in the real estate once a second implementations publisher is pinned",
       "count": 1,
       "status": "open"
+    },
+    {
+      "name": "pinned-parent-lacks-rendered-versions",
+      "detail": "the composed set renders policy versions the pinned parent commit does not contain; the header names a parent release that holds none of these trees. every rendered version is present at the pinned commit",
+      "count": 0,
+      "checked": 1,
+      "status": "closed"
     }
   ]
 }

@@ -1,0 +1,8 @@
+id: checkout-revenue
+name: Checkout revenue
+kind: capability
+evolution: commodity
+visibility: 0.88
+description: >-
+  The declared cash flow. Money crosses here and nowhere else in this overlay, so this is the only
+  component an impact can price through (evidence-ladder path_admission_threshold).

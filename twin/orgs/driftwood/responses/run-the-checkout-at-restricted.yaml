@@ -1,0 +1,13 @@
+id: run-the-checkout-at-restricted
+name: Run the checkout workload at cage tier 'restricted'
+addresses: cart-checkout-service
+cost: { min: 14000, mode: 20000, max: 28000 }
+mitigates:
+  component: cart-pii
+  reduction: { min: 0.20, mode: 0.30, max: 0.42 }
+  evidence_grade: 2
+  basis: >-
+    Egress narrowed to the payment provider and the object store. Measured against the two post-mortems' exfiltration paths, both of which this rung closes.
+note: >-
+  One rung of the cage ladder as an option this overlay can price. It is an option, never a
+  recommendation: the ladder is ordered and nothing here ranks one rung above another.

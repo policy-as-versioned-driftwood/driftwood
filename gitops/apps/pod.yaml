@@ -1,0 +1,58 @@
+# Flux's mirror of ../../deploy/pod.yaml -- the adopter's own declared workload
+# (ticket 40 answer item 2, NORTH-STAR §4 step 4: "the workload keeps running,
+# caged tighter").
+#
+# Why a mirror and not a reference: kustomize's LoadRestrictionsRootOnly treats
+# the directory holding kustomization.yaml as the accumulation root and refuses
+# any resource path -- even a symlink -- that resolves outside it ("security;
+# file ... is not in or below ...", verified empirically 2026-08-31 against both
+# `../../deploy/pod.yaml` and a symlink to it). `gotk-sync.yaml`'s Kustomization
+# reconciles `path: ./apps`, so `./apps` is that root; `deploy/` is a sibling
+# directory Flux's kustomize build can never see from here. Moving pod.yaml
+# itself under gitops/ is not an option either: platform/shift-left/ci-check.py
+# is invoked by .github/workflows/shift-left.yml with the literal, hard-coded
+# path `driftwood/deploy/pod.yaml`.
+#
+# So this file is a maintained copy, on the same pattern as
+# gitops/apps/nist-pin-configmap.yaml's "human/audit-readable mirror" of
+# gotk-sync-nist.yaml. Nothing generates it. ponytail: if the two ever drift,
+# the upgrade path is a `diff` check in shift-left.yml (it already reads
+# deploy/pod.yaml for the same commit) rather than a build-time generator --
+# small, and it runs exactly where the canonical file is already read.
+#
+# Carries no posture.acme.io/tier label, same as deploy/pod.yaml: the tier is
+# declared on the governed Namespace (namespace.yaml) and cage-tier writes the
+# pod label as an OUTPUT (ADR-0022). A tier declared here would be clobbered.
+#
+# `namespace: driftwood` is the one field this copy adds over deploy/pod.yaml:
+# every other manifest under gitops/apps/ sets its own namespace explicitly
+# (no kustomize `namespace:` transformer here -- see nist-pin-configmap.yaml),
+# and deploy/pod.yaml has no cluster to land in of its own, so it never needed
+# the field. Without it Flux applies this Pod into the `default` Namespace,
+# outside the cage entirely -- the one way this mirror could silently stop
+# meaning what deploy/pod.yaml means.
+# `runAsUser: 101` + the two emptyDirs (2026-08-31): the plain `nginx` image's
+# entrypoint runs as root, so `runAsNonRoot: true` alone made the kubelet
+# refuse to start the container at all -- the first real defect this pod
+# turned up once it actually ran. `101` is the image's own built-in `nginx`
+# account; the emptyDirs are the only paths it needs to write, so
+# `readOnlyRootFilesystem: true` still holds. Mirrors ../../deploy/pod.yaml
+# exactly -- keep both edits together.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: checkout-svc
+  namespace: driftwood
+  labels: { "policy-as-versioned.dev/policy-version": "4.0.0" }
+spec:
+  securityContext: { runAsNonRoot: true, runAsUser: 101 }
+  containers:
+    - name: c
+      image: nginx
+      securityContext: { readOnlyRootFilesystem: true }
+      volumeMounts:
+        - { name: cache, mountPath: /var/cache/nginx }
+        - { name: run, mountPath: /run }
+  volumes:
+    - { name: cache, emptyDir: {} }
+    - { name: run, emptyDir: {} }

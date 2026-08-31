@@ -79,3 +79,33 @@ API would give the moment rather than the bound; it also needs a process that st
 different reliability claim from a cron job that writes a gap when it fails. The bound is enough
 to answer the question the window asks — *does it drift between deploys at all* — and the artefact
 says so rather than presenting the figure as the moment.
+
+## A third instrument, added 2026-08-28: the five-fact sample
+
+Ecosystem ticket 40, from ticket 16 answer items Q1, Q2, Q3 and Q5, under ADR-0023 (D1, D3). It
+answers a different question from either of the two above. Build ticket 64 asks *does a control
+drift between deploys*; build ticket 78 asks *when a change happens, is it caught*. This one asks:
+**is driftwood's composed policy set in force at all, and did every byte of it arrive through a
+source whose signed tag was verified at the boundary?**
+
+| file | what it is |
+|---|---|
+| [`window.yaml`](window.yaml), section `five_fact_sample` | The **pre-registration**: the five facts, the three falsifiers, the coverage floor, the cadence and the runner. Committed before the first sample, and `verify-reconcile.sh` refuses to grade any sample PASS unless all three falsifier ids are still declared there — ticket 40's own rule that a sample passing with a falsifier undeclared is a fail. |
+| [`five-facts.py`](five-facts.py) | `sample` takes one record **per source**; `grade` reads the latest and returns the verify contract (0 / 3 / 1). |
+| [`../scripts/render_composed.py`](../scripts/render_composed.py) | The **offline render** of `composed/`, read-only over that tree, so fact 4 compares the cluster to git rather than to itself. |
+| [`../.github/workflows/drift-sample.yml`](../.github/workflows/drift-sample.yml) | The clock: a scheduled ephemeral KinD in Actions, reconciling from the **real remotes**, appending the sample. |
+| [`../verify-reconcile.sh`](../verify-reconcile.sh) | Section 6 grades the latest sample under the hub's `talk/verify-all.sh`. |
+
+**It shares `samples.jsonl` and it does not share its data.** ADR-0023's observation lane names
+that one path and no other, so a clock may write nothing else. Every five-fact record carries
+`"kind": "flux.five-facts/v1"`, which no probe sample carries, and a record taken on any cluster
+other than `kind-driftwood` carries `"reachable": false` with a reason saying so — because build
+ticket 64's three subjects were not sampled by that run at all. A CI run on an ephemeral cluster
+therefore leaves a coverage hole in build ticket 64's window rather than inflating it, which is the
+same rule the probe follows when it cannot reach the cluster.
+
+**Why it does not run against `kind-driftwood`.** `scripts/up.sh` seeds a throwaway repo into an
+in-cluster git server and repoints Flux at it, so on that cluster fact 1 — Ready at the pinned
+`{tag, commit}` from the publisher's **real remote** — is observed false by construction. A sample
+there proves nothing about an org boundary, and a hand-run sample is a rehearsal that is never
+appended or cited (ADR-0023, D4).

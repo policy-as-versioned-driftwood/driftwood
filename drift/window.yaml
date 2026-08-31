@@ -142,3 +142,146 @@ intervention_policy:
     refuses to paper over the gap with a manufactured event.
   decided_by: Chris Nesbitt-Smith
   recorded_on: '2026-08-13'
+
+# =============================================================================
+# ADDENDUM, added 2026-08-28. A SECOND, SEPARATE instrument in the same file.
+#
+# Nothing above is changed. Build ticket 64's window, its three subjects, its drift definition,
+# its cadence and its two falsifying outcomes are exactly as pre-registered, and the guard that
+# reads this file's FIRST commit against `samples.jsonl` still holds -- this addendum is a later
+# commit and moves that first commit not at all.
+#
+# What is declared below is the pre-registration for ecosystem ticket 40 (ticket 16 answer items
+# Q1, Q2, Q3, Q5; ADR-0023 decisions D1 and D3): the FIVE-FACT SAMPLE that proves driftwood's
+# composed policy set is in force on a cluster, from sources whose signed tags were verified at
+# the Flux source boundary.
+#
+# It is written here, and committed, BEFORE the first five-fact sample is taken. The ticket's own
+# words: "a sample that passes with a falsifier undeclared is a fail". `verify-reconcile.sh`
+# enforces exactly that -- it re-reads this file and refuses to grade any sample PASS unless all
+# three falsifier ids below are declared here.
+#
+# The two instruments share `samples.jsonl` because ADR-0023's observation lane names that one
+# path and no other, and a clock may write nothing else. They do not share their data: every
+# five-fact record carries `"kind": "flux.five-facts/v1"`, and a record taken against any cluster
+# other than `kind-driftwood` carries `"reachable": false` with a reason saying so -- because the
+# three subjects above were not sampled by that run at all, and an unsampled subject is a coverage
+# hole, never a quiet stretch of no drift. `twin/drift.py` therefore reduces exactly what it
+# reduced before.
+five_fact_sample:
+  schema: drift.five-facts/v1
+  declared_on: '2026-08-28'
+  ticket: ecosystem 40, from ticket 16 answer items Q1, Q2, Q3, Q5
+  question: >-
+    Is driftwood's composed policy set in force on the cluster, and did every byte of it arrive
+    through a source whose signed tag was verified at the Flux source boundary? "In force" is not
+    "a policy object with the right name exists": five kubectl-applied ValidatingPolicies with
+    fan-out names already sit on kind-driftwood and would satisfy that weaker claim.
+
+  # State continuity only. The scope_limit above applies unchanged and is not restated as though
+  # it were new: these five facts observe the STATE of a control against its declaration. They do
+  # not observe whether an action crossed a control.
+  measures: STATE continuity only, exactly as `scope_limit` above.
+
+  # One record per source, five facts per record. `null` is could-not-look and is never a pass.
+  facts:
+    - id: fact_1_ready_at_the_pin_on_the_real_remote
+      per: source
+      claim: >-
+        The GitRepository is Ready=True, its spec.ref.tag and spec.ref.commit equal the pin
+        checked in under gitops/, and its spec.url is the publisher's real remote
+        (https://github.com/policy-as-versioned-<party>/<party>) and not an in-cluster seed.
+    - id: fact_2_tag_signature_verified_at_the_source_boundary
+      per: source
+      claim: >-
+        The source carries spec.verify and the source-controller reports the tag's signature
+        verified. One signature, the gitsign tag (ADR-0023, D3). Verification by an
+        identity-pinned controller counts; a hand-applied annotation does not.
+    - id: fact_3_last_applied_revision_equals_the_pinned_commit
+      per: source
+      claim: >-
+        For a source a Kustomization consumes, that Kustomization's status.lastAppliedRevision
+        names the pinned commit. For platform and nist, which stay VERIFIED SOURCES ONLY (ticket
+        16 Q5) and have no Kustomization, the pinned commit equals the matching parent sha in
+        composed/HEADER.yaml -- the revision the composed set in force was actually built from.
+    - id: fact_4_rendered_objects_byte_equal_to_an_offline_render
+      per: the composed set
+      claim: >-
+        Every object in the offline render of composed/ at the pinned ref is live on the cluster
+        and equal to that render.
+      ceiling: >-
+        The API server fills in defaults, so a live object is never byte-identical to its source.
+        The comparison is therefore: every field the offline render DECLARES is present and equal
+        live. A field the render omits is not compared. Both verdicts are recorded per object --
+        `declared_equal` (what the fact is graded on) and `strict_equal` (byte identity, recorded
+        for the reader) -- so the weaker one is visible rather than implied.
+    - id: fact_5_every_rendered_object_is_in_the_flux_inventory
+      per: the composed set
+      claim: >-
+        Every such object appears in the inventory of the Flux Kustomization or ResourceSet that
+        claims it. This is the fact that separates "Flux put it there" from "somebody ran kubectl
+        apply", and it is the reason facts 4 and 5 are two facts and not one.
+
+  # Q2. Declared before sample one. Each is a way this measurement can come out AGAINST the claim.
+  falsifiers:
+    - id: verified_source_ready_but_the_object_is_absent_or_unequal_and_unhealed
+      fires_when: >-
+        A source is Ready and verified while a rendered object is absent from the cluster, or live
+        but unequal to the offline render, in N consecutive samples spanning more than N times the
+        consuming Kustomization's own interval -- so Flux was given N full chances to heal it and
+        did not.
+      n: 3
+      interval_source: >-
+        spec.interval of the Kustomization that reconciles the object, read LIVE from the cluster
+        at sample time, never a number typed here. Today that is 5m
+        (gitops/flux-system/gotk-sync.yaml and the composed ResourceSet), so the heal deadline is
+        15 minutes; a change to the interval moves the deadline with it and this file needs no
+        edit.
+      means_if_it_fires: >-
+        Continuous reconciliation is not delivering the composed set. "Verified and Ready" is then
+        a statement about a git object, not about the cluster, and the claim that the cage in git
+        is the cage on the cluster is false.
+    - id: cluster_side_verification_passes_a_tag_that_identity_pinned_ci_rejects
+      fires_when: >-
+        The source-controller (or the gitsign-verifying controller of ticket 41) reports a tag's
+        signature verified while the same tag, checked in CI against the pinned identity --
+        issuer, subject and the workflow that may sign -- is rejected.
+      means_if_it_fires: >-
+        Cluster-side verification is checking that SOMETHING signed the tag, not that the pinned
+        identity did. That is a weaker property than the one D3 claims, and the source boundary is
+        then not a trust boundary.
+      how_it_is_looked_for: >-
+        The sample records the identity the cluster verified against beside the identity CI pins.
+        Until ticket 41's controller lands, the cluster verifies nothing and this falsifier reads
+        could-not-look -- which is not a pass, and is recorded as such in every sample.
+    - id: coverage_below_the_floor_at_close_recorded_unmeasured
+      fires_when: >-
+        At the close of the measurement the fraction of expected samples actually taken is below
+        the floor.
+      floor: 0.9
+      cadence:
+        every_minutes: 1440
+        tolerance_minutes: 240
+      means_if_it_fires: >-
+        The result is UNMEASURED and is recorded as unmeasured. It is not a null result, it is not
+        a pass, and it may not be quoted as either. An instrument whose silence reads as "the
+        composed set was in force" is worse than no instrument -- the same reason the probe above
+        writes a sample when it cannot reach the cluster.
+
+  # Q3, under D1. The sample is an OBSERVATION, which a clock may append.
+  operation:
+    owner: Chris Nesbitt-Smith
+    runner: >-
+      .github/workflows/drift-sample.yml in this repository -- a scheduled GitHub Actions job that
+      brings up an EPHEMERAL KinD cluster, installs Flux, reconciles from the REAL remotes with
+      verification on, appends one record per source, and deletes the cluster. Not the local
+      kind-driftwood cluster: that one reconciles from an in-cluster seeded git server, so fact 1
+      is observed FALSE there by construction and the run would prove nothing about an org
+      boundary.
+    cage: >-
+      The workflow's OBSERVATION_LANE is `drift/samples.jsonl` and nothing else, and its
+      `observation cage` step fails the run on anything else in the index or the tree (ADR-0023,
+      D1). verify/schedules/verify-schedules.sh in the hub parses that lane.
+    presenter_runs: >-
+      A sample taken by hand on a developer's machine is a REHEARSAL (ADR-0023, D4). It is not
+      appended to this log and it is never cited. The number comes from the scheduled run.

@@ -1,0 +1,13 @@
+id: run-the-checkout-at-isolated
+name: Run the checkout workload at cage tier 'isolated'
+addresses: cart-checkout-service
+cost: { min: 70000, mode: 95000, max: 130000 }
+mitigates:
+  component: cart-pii
+  reduction: { min: 0.82, mode: 0.90, max: 0.95 }
+  evidence_grade: 2
+  basis: >-
+    Quarantine dials plus no ingress, no egress and first eviction. The residual is the operator path, which this rung does not close.
+note: >-
+  One rung of the cage ladder as an option this overlay can price. It is an option, never a
+  recommendation: the ladder is ordered and nothing here ranks one rung above another.

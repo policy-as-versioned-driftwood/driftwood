@@ -1,0 +1,5 @@
+id: platform-engineer-maintains-checkout
+type: maintains
+from: platform-engineer
+to: cart-checkout-service
+note: A role edge. People reach the graph as roles only; no causal edge starts at a person.
