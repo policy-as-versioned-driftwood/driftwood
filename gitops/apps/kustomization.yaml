@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - version-configmap.yaml
   - nist-pin-configmap.yaml
+  - pod.yaml

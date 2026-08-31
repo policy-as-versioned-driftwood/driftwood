@@ -13,9 +13,31 @@
 # It carries no posture.acme.io/tier label on purpose. Under 4.0.0 the tier is
 # declared on the governed Namespace and the cage writes the pod label as an
 # OUTPUT (ADR-0022); a tier declared here would be clobbered.
+#
+# WIRED LIVE 2026-08-31 (ticket 40 answer item 2): this manifest was declared
+# but never reconciled onto a cluster -- kubectl never applied it either. The
+# first real run on kind-driftwood surfaced a defect this file had carried
+# since before it existed live: `securityContext.runAsNonRoot: true` on the
+# plain `nginx` image, whose entrypoint runs as root, so the kubelet refuses
+# to start the container at all ("container has runAsNonRoot and image will
+# run as root") -- with no volume for a non-root user to write nginx's cache
+# and pid file into even if it could start. `runAsUser: 101` pins the image's
+# own built-in `nginx` account (verified against the image, not guessed); the
+# two emptyDirs are the only paths nginx needs to write, so the container
+# stays read-only-root-filesystem-compliant (a requirement this file already
+# declared) rather than that requirement becoming the reason it never runs.
 apiVersion: v1
 kind: Pod
 metadata: { name: checkout-svc, labels: { "policy-as-versioned.dev/policy-version": "4.0.0" } }
 spec:
-  securityContext: { runAsNonRoot: true }
-  containers: [{ name: c, image: nginx, securityContext: { readOnlyRootFilesystem: true } }]
+  securityContext: { runAsNonRoot: true, runAsUser: 101 }
+  containers:
+    - name: c
+      image: nginx
+      securityContext: { readOnlyRootFilesystem: true }
+      volumeMounts:
+        - { name: cache, mountPath: /var/cache/nginx }
+        - { name: run, mountPath: /run }
+  volumes:
+    - { name: cache, emptyDir: {} }
+    - { name: run, emptyDir: {} }
