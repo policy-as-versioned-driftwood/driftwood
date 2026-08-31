@@ -25,20 +25,23 @@
 # `signal.at` becomes the merge date.
 
 schema: twin.signal-lookup/v1
-version: 1
+version: 2
 org: driftwood
 pins_read_from: party.yaml
 
 signals:
-  - pin: { party: platform, kind: implementations, version: '1.1.1' }
+  - pin: { party: platform, kind: implementations, version: '2.0.1' }
     signal:
-      id: platform-implementations-1.1.1-is-the-pinned-release
-      at: '2026-08-28'
+      id: platform-implementations-2.0.1-is-the-pinned-release
+      at: '2026-08-31'
       scenario: eol-date-passes-2026
       what: >-
-        driftwood's cage policy line comes from platform 1.1.1. The end-of-life date for that
+        driftwood's cage policy line comes from platform 2.0.1. The end-of-life date for that
         release is the publisher's to publish; this row is what binds it to the standing question
-        about a pinned dependency passing one.
+        about a pinned dependency passing one. The pin moved off 1.1.1 on 2026-08-31, a major:
+        the party parent-kind enum closed to controls, implementations and feed, so every
+        consumer had to move. `at` is that merge date, per this file's own upgrade path, not the
+        subscription's `since`, which still records when driftwood first pinned platform at all.
 
   - pin: { party: nist, kind: controls, version: '1.1.0' }
     signal:
