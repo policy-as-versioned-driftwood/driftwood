@@ -53,6 +53,11 @@ jobs:
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_PLATFORM: github
+          # Ticket 61: admit exactly the one post-upgrade command renovate.json
+          # names. postUpgradeTasks run inside Renovate's own branch workdir,
+          # never this job's checkout, so the observation-cage step below is
+          # untouched by them.
+          RENOVATE_ALLOWED_COMMANDS: '["^bash .github/scripts/complete-feed-bump.sh$"]'
           RENOVATE_REPOSITORIES: policy-as-versioned-driftwood/driftwood
           LOG_LEVEL: debug
         run: npx --yes renovate@44.37.1

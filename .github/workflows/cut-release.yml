@@ -94,14 +94,14 @@ jobs:
           repository: policy-as-versioned-feeds/feeds
           path: feeds
           fetch-depth: 0
-          ref: ecosystem/thin-slice
+          ref: main  # ticket 57 renamed the default branch; ticket 62 owns the real pin
 
       - uses: actions/checkout@v4
         with:
           repository: policy-as-versioned-insurer/insurer
           path: insurer
           fetch-depth: 0
-          ref: ecosystem/thin-slice
+          ref: main  # ticket 57 renamed the default branch; ticket 62 owns the real pin
 
       - name: ticket 18 -- re-render the composed artefact from the recorded parent SHAs, byte-for-byte, before any tag is cut
         # Ticket 12's verify(): a release gate after the tag can only burn
