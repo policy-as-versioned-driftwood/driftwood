@@ -53,6 +53,11 @@ jobs:
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RENOVATE_PLATFORM: github
+          # renovate.json says enabled:false to silence the hosted Mend app
+          # (see its description field). force is global-config-only, so the
+          # hosted app cannot follow us through it: this run is the one
+          # Renovate allowed to act here.
+          RENOVATE_FORCE: '{"enabled": true}'
           # Ticket 61: admit exactly the one post-upgrade command renovate.json
           # names. postUpgradeTasks run inside Renovate's own branch workdir,
           # never this job's checkout, so the observation-cage step below is
