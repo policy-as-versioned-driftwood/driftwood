@@ -51,7 +51,7 @@ inherits:
   - { party: platform, kind: implementations, version: "2.0.1", since: '2026-08-28' }
   - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
   - { party: ico,      kind: feed, name: penalty-schema,    version: "v3", since: '2026-08-28' }
-  - { party: feeds,    kind: feed, name: threat-register,   version: "v1", since: '2026-08-28' }
+  - { party: feeds,    kind: feed, name: threat-register,   version: "v2", since: '2026-08-28' }
   # The insurer's signed quote for THIS party, one feed name per adopter
   # (ticket 36; ticket 14 answers 3 and 4). It is the only parent whose price
   # is a COST rather than an exposure: composition books its premium into
