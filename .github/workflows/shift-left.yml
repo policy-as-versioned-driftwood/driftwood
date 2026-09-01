@@ -352,19 +352,22 @@ jobs:
       # honest outcome; the repair is to fetch it, not to stop declaring it.
       # `main` matches the ico line above: neither repo cuts a tag this adopter
       # pins yet, and when one does, this ref moves to that pin with the others.
+      # Ticket 57 renamed both repos' default branch from ecosystem/thin-slice
+      # to main (2026-09-01); ticket 61 moved these refs with it, and ticket 62
+      # owns replacing them with real pins.
       - uses: actions/checkout@v4
         with:
           repository: policy-as-versioned-feeds/feeds
           fetch-depth: 0
           path: feeds
-          ref: ecosystem/thin-slice
+          ref: main
 
       - uses: actions/checkout@v4
         with:
           repository: policy-as-versioned-insurer/insurer
           fetch-depth: 0
           path: insurer
-          ref: ecosystem/thin-slice
+          ref: main
 
       - name: recompose driftwood's party artefact; fail on refusal or drift; print the document as the job summary
         run: |

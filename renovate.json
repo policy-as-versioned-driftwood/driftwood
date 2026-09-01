@@ -34,13 +34,53 @@
       "datasourceTemplate": "git-refs",
       "depNameTemplate": "https://github.com/policy-as-versioned-platform/platform",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Cross-org bump surface #3 (eco-system ticket 61, ADR-0019): the feed pins in party.yaml's inherits[]. A feed pin names a payload directory version (v1, v2); the feeds repo signs releases as per-feed tags (<name>/vX.Y.Z), so extractVersionTemplate maps the tag back to the directory version. Deferred by ticket 22 to ticket 21 and never written until ticket 61.",
+      "managerFilePatterns": [
+        "/^party\\.yaml$/"
+      ],
+      "matchStrings": [
+        "party: feeds,\\s+kind: feed, name: (?<feedName>[a-z0-9-]+),\\s+version: \"(?<currentValue>v\\d+)\""
+      ],
+      "depNameTemplate": "feeds/{{feedName}}",
+      "packageNameTemplate": "https://github.com/policy-as-versioned-feeds/feeds",
+      "datasourceTemplate": "git-tags",
+      "extractVersionTemplate": "^{{feedName}}/(?<version>v\\d+)\\.",
+      "versioningTemplate": "loose"
+    },
+    {
+      "customType": "regex",
+      "description": "Cross-org bump surface #4 (eco-system ticket 61): the insurer's per-adopter quote feed pin in party.yaml. The insurer is a single-feed repo, so its tags are plain vX.Y.Z (like ico's release shape, unlike the feeds repo). ico's own penalty-schema line stays un-renovated on purpose: ico ships no git tags as a repo pin -- party.yaml documents that already.",
+      "managerFilePatterns": [
+        "/^party\\.yaml$/"
+      ],
+      "matchStrings": [
+        "party: insurer,\\s+kind: feed, name: (?<feedName>[a-z0-9-]+),\\s+version: \"(?<currentValue>v\\d+)\""
+      ],
+      "depNameTemplate": "insurer/{{feedName}}",
+      "packageNameTemplate": "https://github.com/policy-as-versioned-insurer/insurer",
+      "datasourceTemplate": "git-tags",
+      "extractVersionTemplate": "^(?<version>v\\d+)\\.",
+      "versioningTemplate": "loose"
     }
   ],
+  "postUpgradeTasks": {
+    "commands": [
+      "bash .github/scripts/complete-feed-bump.sh"
+    ],
+    "fileFilters": [
+      "composed/**"
+    ],
+    "executionMode": "branch"
+  },
   "packageRules": [
     {
       "description": "No live semver ranges anywhere (ADR-0002): every match above is pinned exact. Guardrail, not a behaviour change.",
       "matchDatasources": [
-        "git-refs"
+        "git-refs",
+        "git-tags"
       ],
       "rangeStrategy": "pin"
     }

@@ -141,14 +141,14 @@ jobs:
         with:
           repository: policy-as-versioned-feeds/feeds
           path: feeds
-          ref: ecosystem/thin-slice
+          ref: main  # ticket 57 renamed the default branch; ticket 62 owns the real pin
           fetch-depth: 0
 
       - uses: actions/checkout@v4
         with:
           repository: policy-as-versioned-insurer/insurer
           path: insurer
-          ref: ecosystem/thin-slice
+          ref: main  # ticket 57 renamed the default branch; ticket 62 owns the real pin
           fetch-depth: 0
 
       - name: re-compose at today's date -- into RUNNER_TEMP, never into the repo
