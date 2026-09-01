@@ -20,7 +20,7 @@ parents:
 - party: feeds
   kind: feed
   name: threat-register
-  version: v1
+  version: v2
   sha: 50a0b330a730f4f9ee9520561b0c05c8be4c9268
 - party: insurer
   kind: feed
@@ -635,7 +635,7 @@ exposure:
   - name: threat-register
     source: feeds
     feed: threat-register
-    version: v1
+    version: v2
     amount: 19558.549772440045
     controls: []
   - name: forward-intel
