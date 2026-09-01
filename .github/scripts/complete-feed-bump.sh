@@ -29,7 +29,12 @@ eval "$(python3 .github/scripts/read-two-pins.py \
   gitops/platform/platform-pin.yaml platform \
   gitops/flux-system/gotk-sync-nist.yaml nist)"
 
-clone() { git clone --quiet --depth 1 --branch "$2" "https://github.com/policy-as-versioned-$1/$1" "$work/$1"; }
+# Full history, deliberately: composition resolves an UNPINNED parent's sha
+# with `git log` on the version-scoped subdirectory -- the last commit that
+# touched it. A --depth 1 clone only holds the tip, so every such lookup
+# flattens to the tip commit and compose-check refuses the render as drift
+# (this exact defect, caught by compose-check on the prep PR, 2026-09-01).
+clone() { git clone --quiet --branch "$2" "https://github.com/policy-as-versioned-$1/$1" "$work/$1"; }
 clone platform "$platform_tag"
 clone nist     "$nist_tag"
 clone ico      main
