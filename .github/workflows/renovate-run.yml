@@ -57,7 +57,11 @@ jobs:
           # names. postUpgradeTasks run inside Renovate's own branch workdir,
           # never this job's checkout, so the observation-cage step below is
           # untouched by them.
-          RENOVATE_ALLOWED_COMMANDS: '["^bash .github/scripts/complete-feed-bump.sh$"]'
+          # Two forms, one command: renovate 44 matches allowedCommands with its
+          # regex-OR-glob matcher, where a plain string is a glob/exact match and
+          # a regex must be wrapped in slashes. The first ^...$ attempt was read
+          # as a glob and matched nothing (PR 17's artifact failure, 2026-09-01).
+          RENOVATE_ALLOWED_COMMANDS: '["bash .github/scripts/complete-feed-bump.sh", "/^bash \\.github\\/scripts\\/complete-feed-bump\\.sh$/"]'
           RENOVATE_REPOSITORIES: policy-as-versioned-driftwood/driftwood
           LOG_LEVEL: debug
         run: npx --yes renovate@44.37.1
