@@ -1,5 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "enabled:false silences the HOSTED Mend Renovate app (installed org-wide, ticket 01): two Renovates fought over one branch on 2026-09-01 -- the hosted app rebased renovate/feeds-threat-register-2.x, consumed the retry checkbox, and cannot run postUpgradeTasks, so its commits can never carry the composed/ re-render and the self-hosted run then refuses the branch as externally modified. The self-hosted runner (renovate-run.yml) overrides this with RENOVATE_FORCE={\"enabled\":true}, which only a global config may set -- exactly one Renovate acts on this repo, and it is the one that can complete the bump.",
+  "enabled": false,
   "extends": [
     "config:recommended"
   ],
