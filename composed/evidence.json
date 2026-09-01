@@ -19,21 +19,21 @@
       "kind": "feed",
       "name": "penalty-schema",
       "version": "v3",
-      "sha": "e1fb8eb5663e50088b13d872a4e44112476f516e"
+      "sha": "9d09222117dde1257e5b43401caa43342f47bae3"
     },
     {
       "party": "feeds",
       "kind": "feed",
       "name": "threat-register",
       "version": "v1",
-      "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268"
+      "sha": "69c89b0732a0c9e4e6013d2656d755c5d916a815"
     },
     {
       "party": "insurer",
       "kind": "feed",
       "name": "quote-driftwood",
       "version": "v1",
-      "sha": "db767055119292e400edd63ed260785ce605eb4e"
+      "sha": "632db22c92003b048795cea1f5d5bf6e08dcf386"
     }
   ],
   "members": [
