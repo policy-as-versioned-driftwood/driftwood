@@ -15,10 +15,18 @@ name: twin-sweep
 #                                 flat series survives for scoring instead of
 #                                 being lost to "nothing happened".
 #   the render has moved      ->  OPEN a pull request carrying the re-rendered
-#                                 feed. A published feed is a DECLARATION, and a
-#                                 clock never commits one (D1). A human merges,
-#                                 and a human dispatches cut-release.yml, exactly
-#                                 as the feeds repo's own fetch clock works (D2).
+#                                 feed and the re-derived signal lookup. A
+#                                 published feed is a DECLARATION, and a clock
+#                                 never commits one (D1). A human merges, and a
+#                                 human dispatches cut-release.yml, exactly as
+#                                 the feeds repo's own fetch clock works (D2).
+#                                 Then, back on the default branch, APPEND the
+#                                 same observation line with moved=true and the
+#                                 proposal branch: the series carries a line for
+#                                 every sweep, and twin/verify-twin-sweep-moved.sh
+#                                 reads that line as the proof this path has run
+#                                 (ticket 72: it had never run -- see the sweep
+#                                 step).
 #
 # The observation commit is gitsign-signed by this workflow's own Actions
 # identity -- the same keyless OIDC -> Fulcio -> Rekor chain cut-release.yml
@@ -85,21 +93,32 @@ jobs:
       - name: sweep -- re-render the forward-intel feed from driftwood's own overlay
         id: sweep
         run: |
-          set -uo pipefail
+          set -euo pipefail
           pip install --quiet pyyaml
-          python3 twin/emit-forward-intel.py --check
-          rc=$?
-          if [ "${rc}" -eq 0 ]; then
+          # `set +e` around the two checks, and nothing else lifts it. GitHub runs
+          # this step as `bash -e {0}`, and the old body's `set -uo pipefail` did
+          # not turn -e off -- so the exit 1 that MEANS "moved" aborted the step
+          # before rc=$? could read it, and the moved branch below never ran
+          # once (run 33627910027, 2026-09-02; ticket 72). Exit 1 is a reading,
+          # not a failure; anything above 1 is a render or lookup that could not
+          # be made at all, and that fails the run.
+          set +e
+          python3 twin/emit-forward-intel.py --check; feed_rc=$?
+          python3 .github/scripts/rederive-signals.py --check; lookup_rc=$?
+          set -e
+          if [ "${feed_rc}" -gt 1 ] || [ "${lookup_rc}" -gt 1 ]; then
+            echo "::error::the sweep could not render the overlay or derive the lookup (feed exit ${feed_rc}, lookup exit ${lookup_rc})"
+            exit 1
+          fi
+          if [ "${feed_rc}" -eq 0 ] && [ "${lookup_rc}" -eq 0 ]; then
             echo "moved=false" >> "$GITHUB_OUTPUT"
-          elif [ "${rc}" -eq 1 ]; then
-            echo "moved=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::error::the sweep could not render the overlay at all (exit ${rc})"
-            exit "${rc}"
+            echo "moved=true" >> "$GITHUB_OUTPUT"
           fi
           echo "swept_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
       - name: propose the moved scenario as a pull request (a feed is a declaration)
+        id: propose
         if: steps.sweep.outputs.moved == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -107,12 +126,14 @@ jobs:
         run: |
           set -euo pipefail
           branch="twin/forward-intel-${SWEPT_AT%%T*}"
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
           if git ls-remote --exit-code --heads origin "${branch}" >/dev/null 2>&1; then
             echo "${branch} already open -- nothing to propose"; exit 0
           fi
           python3 twin/emit-forward-intel.py
+          python3 .github/scripts/rederive-signals.py
           git checkout -b "${branch}"
-          git add -- twin/forward-intel/v1/feed.json
+          git add -- twin/forward-intel/v1/feed.json twin/signals.yaml
           git -c gpg.format=x509 -c gpg.x509.program=gitsign \
             -c user.name="driftwood twin agent" \
             -c user.email="twin-agent@policy-as-versioned-driftwood.invalid" \
@@ -121,17 +142,26 @@ jobs:
           gh pr create --base main --head "${branch}" \
             --title "twin: forward-intel re-rendered by the daily sweep" \
             --body "$(printf '%s\n' \
-              "The daily sweep re-rendered driftwood's forward-intel feed from driftwood's own overlay and the bytes moved." \
+              "The daily sweep re-rendered driftwood's forward-intel feed from driftwood's own overlay and the bytes moved (and, if a pin had moved under it, re-derived twin/signals.yaml)." \
               "" \
               "A published feed is a **declaration**, so the clock proposes it and never commits it (ADR-0024, D1)." \
               "Merging publishes nothing: dispatch \`cut-release.yml\` to sign the tag." \
               "" \
               "There is no recommended action in this payload and there never will be (ADR-0021): the twin emits a scenario, the estate selects the tier.")"
+          # Back to the default branch, clean: the proposal is committed on its
+          # own branch, so what is left here is main as checked out. The observe
+          # step below appends this sweep's line there, and the cage pushes it.
+          git checkout -q "${GITHUB_REF_NAME}"
 
+      # Unconditional on the reading: the series carries a line for every sweep,
+      # moved or not. A moved=true line is the only offline evidence the moved
+      # path has ever run (ticket 72), and a flat series is what makes a later
+      # move scoreable at all.
       - name: observe -- append one dated line, and only ever append
-        if: steps.sweep.outputs.moved == 'false'
         env:
           SWEPT_AT: ${{ steps.sweep.outputs.swept_at }}
+          MOVED: ${{ steps.sweep.outputs.moved }}
+          PROPOSAL: ${{ steps.propose.outputs.branch }}
         run: |
           set -euo pipefail
           mkdir -p observations
@@ -141,7 +171,8 @@ jobs:
               "swept_at": os.environ["SWEPT_AT"],
               "org": "driftwood",
               "feed": "forward-intel",
-              "moved": False,
+              "moved": os.environ["MOVED"] == "true",
+              "proposal": os.environ.get("PROPOSAL", ""),
               "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)",
               "run": os.environ.get("GITHUB_RUN_ID", ""),
           }, sort_keys=True))
@@ -157,11 +188,13 @@ jobs:
           set -euo pipefail
           # HEAD must be the branch this step is about to push to. On the
           # moved==true path the propose step does `git checkout -b twin/...`
-          # and this step is `if: always()`, so HEAD is the PROPOSAL branch,
-          # feed declaration and all, while the last line pushes
-          # HEAD:${GITHUB_REF_NAME} -- the default branch. Nothing but
-          # `git diff --cached --quiet` happening to be true kept that branch
-          # off main (review, 2026-08-28).
+          # and this step is `if: always()`, so if that step died before its
+          # last line HEAD is still the PROPOSAL branch, feed declaration and
+          # all, while the last line pushes HEAD:${GITHUB_REF_NAME} -- the
+          # default branch. Nothing but `git diff --cached --quiet` happening
+          # to be true kept that branch off main (review, 2026-08-28). The
+          # propose step now returns to the default branch itself when it
+          # finishes, so the observation line lands on main either way.
           head="$(git rev-parse --abbrev-ref HEAD)"
           if [ "${head}" != "${GITHUB_REF_NAME}" ]; then
             echo "ok  HEAD is ${head}, not ${GITHUB_REF_NAME} -- this run proposed a declaration on its own branch, so the cage commits nothing"
