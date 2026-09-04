@@ -38,10 +38,30 @@ import json
 
 VERSION = "1.1.0"
 
-# Loosest first (ADR-0022). `infra` is deliberately absent: only a platform-role party declares
-# infra, and it declares it on a Namespace manifest, never through a price.
+# Loosest first (ADR-0022). `infra` is absent from LADDER because nothing SELECTS it: no price
+# proposes it and no floor declares it.
 LADDER = ("baseline", "restricted", "quarantine", "isolated")
 FAIL_CLOSED = LADDER[-1]
+
+# ADR-0022's fifth rung, which a Namespace may nonetheless DECLARE: only a platform-role party
+# may, and a declaration from any other party renders `isolated`. Either reading answers the one
+# question this fold asks -- would writing the selected tier TIGHTEN the declaration? -- the same
+# way, because `infra` is tighter than every rung a price can select and `isolated` is LADDER's
+# own tightest rung. So the fold is always held against an `infra` declaration, and no role
+# lookup is needed. Grading it as a missing instrument (which is what 1.1.0 did before
+# 2026-09-04) refused a legitimate declaration.
+INFRA = "infra"
+DECLARABLE = LADDER + (INFRA,)
+
+
+def rank(tier):
+    """How TIGHT `tier` is, as an index: higher is tighter, over every tier a Namespace may
+    declare -- one rung longer than what a price may select."""
+    if tier not in DECLARABLE:
+        raise MissingInstrument(
+            "%r is not a tier a Namespace may declare %s; tighter or looser cannot be told"
+            % (tier, list(DECLARABLE)))
+    return DECLARABLE.index(tier)
 
 
 class MissingInstrument(ValueError):
@@ -133,9 +153,16 @@ def select_party(line_tiers, current=None, floor=None):
     not tighten the declaration -- the proposer then writes nothing. The one write that neither
     tightens nor loosens an undeclared Namespace is the explicit `isolated` line, which is allowed.
 
+    A Namespace declared `infra` (ADR-0022's platform-role rung) is tighter than anything a price
+    can select, so the fold is always held against it -- but no price and no floor may name it.
+
     Mirrors platform/wargamer/wargamer.py:select_party_tier; the hub's verify/tier-binding/ check
     folds every shape on the ladder through both and refuses a disagreement (the
     two-implementations guard, ADR-0021, the same guard verify/pound-seam/ applies to select()).
+    Honestly: this fold is a TRANSLITERATION of platform's, written from it rather than derived
+    independently, so the agreement that guard observes is copy fidelity -- that this package has
+    not drifted from the rule it pins -- not two minds reaching the same answer. `select()` above
+    is the independent one.
     """
     tiers = list(line_tiers)
     for tier in tiers:
@@ -145,10 +172,10 @@ def select_party(line_tiers, current=None, floor=None):
                 "into the party's declaration" % (tier, list(LADDER)))
     if floor is not None and floor not in LADDER:
         raise MissingInstrument("declared floor %r is not on the ladder %s" % (floor, list(LADDER)))
-    if current is not None and current not in LADDER:
+    if current is not None and current not in DECLARABLE:
         raise MissingInstrument(
-            "the Namespace declares %r, which is not on the ladder %s; tighter or looser "
-            "cannot be told" % (current, list(LADDER)))
+            "the Namespace declares %r, which is not a tier a Namespace may declare %s; tighter "
+            "or looser cannot be told" % (current, list(DECLARABLE)))
 
     strictest = max(tiers, key=LADDER.index) if tiers else None
     chosen, clamped = strictest, False
@@ -158,7 +185,7 @@ def select_party(line_tiers, current=None, floor=None):
     if chosen is None:
         held, basis = True, "no line prices a tier, so there is nothing to declare"
     else:
-        tightens = LADDER.index(chosen) > LADDER.index(effective)
+        tightens = rank(chosen) > rank(effective)
         explicit_default = current is None and chosen == FAIL_CLOSED
         held = not (tightens or explicit_default)
         basis = "strictest priced line is %r" % strictest
@@ -237,9 +264,17 @@ def _selfcheck():
     assert select_party(["isolated"], current=None)["held"] is False
     # nothing priced: nothing to declare
     assert select_party([], current="baseline")["held"] is True
-    # off the ladder, in any position, is a missing instrument
+    # ADR-0022's `infra` rung is a DECLARATION, not a selection: tighter than anything a price
+    # can pick, so the fold is held against it -- never refused as an unreadable tier
+    infra = select_party(["isolated"], current="infra")
+    assert infra["held"] is True and infra["tier"] == "isolated", infra
+    assert rank("infra") > rank("isolated") > rank("baseline")
+    # off the ladder, in any position, is a missing instrument -- and `infra` is off the ladder
+    # everywhere except the declaration: no price proposes it and no floor declares it
     for bad in (lambda: select_party(["paranoid"], current="baseline"),
-                lambda: select_party(["isolated"], current="infra"),
+                lambda: select_party(["infra"], current="baseline"),
+                lambda: select_party(["isolated"], floor="infra"),
+                lambda: select_party(["isolated"], current="deny"),
                 lambda: select_party(["isolated"], floor="deny")):
         try:
             bad()
