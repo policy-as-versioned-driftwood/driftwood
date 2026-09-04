@@ -605,7 +605,7 @@ selected-controls:
 - sr-6
 - sr-8
 ungoverned-namespaces: []
-selection-policy: 1.0.0
+selection-policy: 1.1.0
 exposure:
   perspective: driftwood
   currency: GBP
