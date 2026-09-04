@@ -52,3 +52,33 @@ python3 "$work/platform/compose/composition.py" compose "$PWD" \
   --estate-clone "$work" --out "$PWD" > /dev/null
 python3 "$work/platform/compose/composition.py" compose "$PWD" \
   --estate-clone "$work" --out "$PWD"
+
+# --- the twin's derived artefacts follow the pin, in the SAME commit (ticket 72) ---
+# The first real bump (PR #20, threat-register v1 -> v2) moved party.yaml and
+# composed/ together and left twin/forward-intel/v1/feed.json carrying
+# derived_from version 1 and twin/signals.yaml carrying the v1 row: two gate
+# checks red on every TRUTH run after it. Both are DERIVED from party.yaml's
+# inherits[], so the completer derives them here and renovate.json's
+# fileFilters (twin/forward-intel/**, twin/signals.yaml) fold them into the
+# bump commit. This is a Renovate pull request a human merges, not a clock
+# committing a declaration, so ADR-0024 D1 is untouched; twin-sweep.yml stays
+# as the day-after safety net for an overlay that moves on its own.
+#
+# The signal lookup: rewrite each moved pin's row (version, id token, date);
+# a pin with no row, or a row with no pin, is refused -- a human writes those.
+python3 .github/scripts/rederive-signals.py
+
+# The forward-intel feed: emit-forward-intel.py finds the hub's `twin` package
+# by walking UP from the overlay (it does not self-version yet, ticket 29), and
+# Renovate's branch workdir has no hub above it. So the hub is cloned into
+# $work and the overlay's inputs are copied to the path clone-estate.sh would
+# assemble -- the same plant verify-twin-overlay.sh uses -- rendered there, and
+# the one output copied back. A copy, not a symlink: the emitter resolves
+# symlinks before it walks, so a link would land it back here, hub-less.
+git clone --quiet --depth 1 --branch main \
+  "https://github.com/policy-as-versioned-flux/policy-as-versioned-flux" "$work/hub"
+mirror="$work/hub/.estate-clone/driftwood"
+mkdir -p "$mirror"
+cp -R twin selection-policy party.yaml "$mirror/"
+python3 "$mirror/twin/emit-forward-intel.py"
+cp "$mirror/twin/forward-intel/v1/feed.json" twin/forward-intel/v1/feed.json
