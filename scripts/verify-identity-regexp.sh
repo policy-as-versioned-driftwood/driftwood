@@ -77,5 +77,50 @@ should_not_match "https://github.com/policy-as-versioned-driftwood/driftwood/.gi
 should_not_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/cut-release.yml@refs/heads/maint/1.0.x"
 should_not_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/cut-release.yml@refs/heads/release/x.y.x"
 
+# (c) the PROPOSER's identity is not a publisher's identity (ticket 78).
+#     propose-tier.yml signs cage-tier proposal COMMITS with this repo's own
+#     Actions identity; a release TAG must never verify under it, or a workflow
+#     that may only propose could publish.
+should_not_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/main"
+
 echo
 echo "PASS: EXPECTED_IDENTITY_REGEXP matches main + release/<major>.<minor>.x only, anchored to this repo."
+
+echo
+echo "== 3. EXPECTED_PROPOSAL_IDENTITY_REGEXP (propose-tier.yml -- the cage-tier proposal commit, ticket 78) =="
+# A SECOND constant, deliberately not an alternation widened into the one above:
+# the proposal commit and the release tag are different powers, and the identity
+# that may propose a tighter cage must not be the identity that may publish.
+PROPOSAL_REGEXP=$(grep -E '^ *EXPECTED_PROPOSAL_IDENTITY_REGEXP:' .github/workflows/propose-tier.yml \
+  | sed -E 's/^ *EXPECTED_PROPOSAL_IDENTITY_REGEXP: *//')
+[ -n "$PROPOSAL_REGEXP" ] || fail "no EXPECTED_PROPOSAL_IDENTITY_REGEXP in propose-tier.yml -- the proposal commit's signature would be verified against nothing"
+echo "regexp under test: $PROPOSAL_REGEXP"
+
+proposal_match() {
+  echo "$1" | grep -qE "$PROPOSAL_REGEXP" || fail "expected to MATCH the proposal regexp, didn't: $1"
+  echo "OK match:     $1"
+}
+proposal_no_match() {
+  echo "$1" | grep -qE "$PROPOSAL_REGEXP" && fail "expected to NOT match the proposal regexp, did: $1"
+  echo "OK no-match:  $1"
+}
+
+# (a) what propose-tier.yml's own run actually presents. `refs/heads/main` is the
+#     ref the WORKFLOW runs on (schedule, dispatch, merged pin bump), never the
+#     `wargamer/retune-*` branch it writes.
+proposal_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/main"
+
+# (b) the publisher's identity must NOT verify a proposal, and neither may a
+#     maintenance branch, a foreign org/repo/path, or a smuggled prefix/suffix
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/cut-release.yml@refs/heads/main"
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/twin-sweep.yml@refs/heads/main"
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/release/1.0.x"
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/wargamer/retune-tier-driftwood-cage-tier-feeds-feed"
+proposal_no_match "https://github.com/policy-as-versioned-tuppence/tuppence/.github/workflows/propose-tier.yml@refs/heads/main"
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/other-repo/.github/workflows/propose-tier.yml@refs/heads/main"
+proposal_no_match "https://evil.com/https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/main"
+proposal_no_match "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/main.evil.com"
+proposal_no_match "https://githubXcom/policy-as-versioned-driftwood/driftwood/.github/workflows/propose-tier.yml@refs/heads/main"
+
+echo
+echo "PASS: EXPECTED_PROPOSAL_IDENTITY_REGEXP matches only this repo's propose-tier.yml on main, and the release and proposal identities do not overlap."
