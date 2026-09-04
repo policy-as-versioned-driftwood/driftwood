@@ -73,7 +73,9 @@
       "bash .github/scripts/complete-feed-bump.sh"
     ],
     "fileFilters": [
-      "composed/**"
+      "composed/**",
+      "twin/forward-intel/**",
+      "twin/signals.yaml"
     ],
     "executionMode": "branch"
   },

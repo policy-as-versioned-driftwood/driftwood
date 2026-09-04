@@ -9,4 +9,4 @@
 #
 # Bumping it: raise VERSION and this line in the same PR as the rule change, and let
 # cut-release.yml sign the tag.
-policy_version: 1.0.0
+policy_version: 1.1.0

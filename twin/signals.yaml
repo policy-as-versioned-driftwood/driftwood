@@ -21,8 +21,11 @@
 # ponytail: hand-maintained, and `verify-twin-scenarios.sh` check 8 is what stops it drifting --
 # every pin resolves to exactly one row, every row names a scenario that exists, and every
 # scenario is either bound here or declared unbound below with its reason. Upgrade path: when
-# `renovate-run.yml` moves a pin it edits this file's `version` in the same PR, and the row's
-# `signal.at` becomes the merge date.
+# Renovate moves a pin, its completer (`.github/scripts/complete-feed-bump.sh`, ticket 72) runs
+# `.github/scripts/rederive-signals.py` in the same bump commit: the moved pin's row gets the new
+# `version`, the version token in its `id`, and a `signal.at` of the day it was re-derived. The
+# scenario binding and `what` are never rewritten by it, and a pin with no row -- or a row whose
+# pin is gone -- is refused, because those are a human's lines to write.
 
 schema: twin.signal-lookup/v1
 version: 2
@@ -63,10 +66,10 @@ signals:
         that regime is the dated signal; what it does to the value chain is the scenario, and the
         amount of the fine is the estate's, never the twin's.
 
-  - pin: { party: feeds, kind: feed, name: threat-register, version: v1 }
+  - pin: { party: feeds, kind: feed, name: threat-register, version: v2 }
     signal:
-      id: feeds-threat-register-v1-names-driftwood
-      at: '2026-08-28'
+      id: feeds-threat-register-v2-names-driftwood
+      at: '2026-09-01'
       scenario: rival-reads-my-holes-2026
       what: >-
         The threat register is a PUBLISHED document naming this organisation's exposure, and the
