@@ -10,10 +10,18 @@
 # (called through the pinned `platform` dependency, in shift-left.yml): they
 # must equal gitops/platform/platform-pin.yaml's and
 # gitops/flux-system/gotk-sync-nist.yaml's own spec.ref.tag, minus the "v".
-# The two `feed` entries (ico's penalty-schema, feeds' threat-register) have
-# no Flux pin anywhere in this estate today -- ico ships no git tags as a
-# repo pin, and threat-register is read out of the `feeds` repo checkout --
-# so the check names both as unchecked rather than silently skipping them.
+# The two `feed` entries (ico's penalty-schema, feeds' threat-register) had
+# no Flux pin anywhere in this estate until 2026-09-04, so the check named
+# both as unchecked rather than silently skipping them. They have pins now:
+# gitops/flux-system/gotk-sync-ico.yaml and gotk-sync-feeds.yaml, plus
+# gotk-sync-insurer.yaml for the quote (eco-system tickets 62 and 77), and
+# the composing workflows read `ref:` out of them. party_artefact.py still
+# does not grade a feed pin, on purpose: it compares a declared version to a
+# pin's tag as equal strings, and a feed pin is declared by MAJOR here (`v3`,
+# `v2`) against a publisher tag of the form `v3.0.0` or
+# `threat-register/v2.0.0`. Resolving a major to the publisher's newest
+# matching signed tag is the feed contract's rule and lives there, in the
+# hub's verify/feed-contract and verify/branch-refs.
 #
 # 2026-08-28 (ADR-0019): the `pricing` and `threat` parent kinds became one
 # `feed` kind carrying a `name` -- ico's schema is feed/penalty-schema, and
