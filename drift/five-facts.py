@@ -475,7 +475,12 @@ def _fact_three(src, kustomizations, live=None) -> dict:
         return fact(parent == src["commit"],
                     (f"{src['party']} is a verified source only (ticket 16 Q5): no Kustomization "
                      f"reconciles it, so the revision in force is the parent sha the composed set "
-                     f"was built from. HEADER {parent[:12]} vs pin {src['commit'][:12]}"),
+                     f"was built from. HEADER {parent[:12]} vs pin {src['commit'][:12]}. "
+                     f"ONE LINK, NOT A SECOND PROOF: this reads composed/HEADER.yaml, the same "
+                     f"composed set whose own fact 3 is the applied revision above -- the three "
+                     f"fact-3 lines in this sample are one chain of custody, not three "
+                     f"independent observations of a revision in force (ecosystem ticket 76)"),
+                    chain_link=True,
                     header_parent_sha=parent, pinned_commit=src["commit"])
     consumers = [k for k in kustomizations.get("items", [])
                  if ((k.get("spec") or {}).get("sourceRef") or {}).get("name") == src["source"]]
@@ -524,8 +529,11 @@ def _falsifier_state(src, live, identity, unhealed, kustomizations) -> dict:
         ok, why = gitsign_verifies(src["tag"], identity) if src["party"] == "driftwood" else (
             None, f"{src['party']}'s own release.yml is not in this checkout, so the identity it "
                   f"pins cannot be read here")
-        f2 = {"id": FALSIFIER_IDS[1], "fired": (ok is False), "ci_accepts": ok, "why": why,
-              "ci_pinned_identity": identity}
+        # `None if ok is None`, not `ok is False`: where gitsign_verifies was never called there
+        # is no verdict, and collapsing that to false says the falsifier ran and cleared. The
+        # grader's could-not-look branch is keyed on null (ecosystem ticket 76).
+        f2 = {"id": FALSIFIER_IDS[1], "fired": None if ok is None else (ok is False),
+              "ci_accepts": ok, "why": why, "ci_pinned_identity": identity}
     return {FALSIFIER_IDS[0]: f1, FALSIFIER_IDS[1]: f2}
 
 
@@ -666,6 +674,23 @@ def grade(path: str, max_age_hours: float) -> tuple[int, list[str]]:
             elif got["observed"] is None and verdict == 0:
                 verdict = 3
 
+    # What the fact-3 column is, said once where a reader of the capture meets it (ecosystem
+    # ticket 76). A verified-source-only party has nothing reconciling it, so its fact 3 compares
+    # composed/HEADER.yaml's parent sha against the pin -- a link in the chain the composed
+    # source's own fact 3 already observed, not a separate revision in force. Printed as a count
+    # rather than a sentence about a fixed number of parties, so it stays true as sources change.
+    # `header_parent_sha` as well as `chain_link`: the field is what every already-recorded
+    # sample carries, so this line reads true over the existing log rather than only over samples
+    # taken after this change.
+    links = [r["source"] for r in sorted(group, key=lambda r: r["source"])
+             if (r["facts"][FACT_IDS[2]] or {}).get("chain_link")
+             or "header_parent_sha" in (r["facts"][FACT_IDS[2]] or {})]
+    if links:
+        lines.append(f"  fact 3 is ONE CHAIN, not {len(group)} independent proofs: "
+                     f"{len(group) - len(links)} applied revision(s) observed on the cluster, and "
+                     f"{', '.join(links)} ({len(links)} verified-source-only publisher(s)) read "
+                     f"back through composed/HEADER.yaml to that same composed set")
+
     # Falsifier 1: unhealed across N samples spanning more than N intervals.
     fired = _falsifier_one(samples, group)
     if fired:
@@ -771,11 +796,42 @@ def selfcheck() -> int:
                                r"platform/\.github/workflows/cut-release\.yml@refs/heads/main$",
                                ci) == "", "a parent's own anchored pin must be acceptable"
 
+    # Fact 3 for a verified-source-only publisher is a LINK, and says so (ecosystem ticket 76).
+    link = _fact_three({"consumer": "verified-source-only", "party": "nist", "commit": "a" * 40,
+                        "header_parent_sha": "a" * 40}, {"items": []})
+    assert link["observed"] is True and link["chain_link"] is True
+    assert "one chain of custody" in link["why"] and "not a second proof" in link["why"].lower(), \
+        "fact 3 for a publisher nothing reconciles must not read as an independent proof"
+    applied = _fact_three({"consumer": "kustomization", "source": "s", "party": "driftwood",
+                           "commit": "b" * 40},
+                          {"items": [{"metadata": {"name": "k"},
+                                      "spec": {"sourceRef": {"name": "s"}},
+                                      "status": {"lastAppliedRevision": "main@sha1:" + "b" * 40}}]})
+    assert applied["observed"] is True and "chain_link" not in applied, \
+        "a revision actually applied on the cluster IS an independent observation"
+
+    # A falsifier NOBODY RAN records null, never false (ecosystem ticket 76). When the source is
+    # another party, its release.yml is not in this checkout, so gitsign_verifies is never called
+    # and `ok` is None -- and `ok is False` collapsed that to "fired: false", which reads as "the
+    # falsifier ran and did not fire" and rode along inside a PASS. The grader's could-not-look
+    # branch is keyed on null, so the collapse silently disabled it.
+    verified_live = live_with(**{ANN + "gitsign-verified": "true"})
+    not_run = _falsifier_state({"party": "platform", "tag": "v1.0.0"}, verified_live, ci, [],
+                               {"items": []})[FALSIFIER_IDS[1]]
+    assert not_run["fired"] is None, \
+        "a falsifier that was never run is null, not false: 'false' claims it ran and did not fire"
+    assert not_run["ci_accepts"] is None
+    ran_and_passed = _falsifier_state(src, verified_live, ci, [], {"items": []})[FALSIFIER_IDS[1]]
+    assert ran_and_passed["fired"] in (True, False), \
+        "where gitsign_verifies IS called, the falsifier has a real verdict"
+
     # a hand-typed sample is a rehearsal (ADR-0023, D4) whatever it says about itself.
     assert sample_provenance(SAMPLES, [{"run": "typed-by-hand"}]), \
         "a sample whose run is not an Actions run id must never be graded"
     print(f"ok  three falsifiers declared; verdict is tri-state; {len(sources())} sources read "
-          f"from gitops/; fact 2 grades the identity; a hand-typed sample is refused")
+          f"from gitops/; fact 2 grades the identity; fact 3 for a verified-source-only publisher "
+          f"says it is one link in a chain, not a second proof; a falsifier nobody ran is null, "
+          f"not false; a hand-typed sample is refused")
     return 0
 
 
