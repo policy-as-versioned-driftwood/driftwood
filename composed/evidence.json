@@ -1409,7 +1409,7 @@
       "name": "forward-intel",
       "feed_version": "1.0.0",
       "tail": "bounded-pert",
-      "policy_version": "1.0.0",
+      "policy_version": "1.1.0",
       "policy_basis": "loosest tier whose caged residual (37952.92 GBP) is within the tolerance (40000.00 GBP)",
       "residual_basis": "platform-cage-tiers@1.0.0",
       "residuals": {
