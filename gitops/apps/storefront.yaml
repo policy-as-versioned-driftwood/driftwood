@@ -1,0 +1,69 @@
+# driftwood's `storefront` workload — the SERVED artefact of eco-system ticket 33's lift.
+#
+# This is the file Flux reconciles. `gitops/flux-system/gotk-sync.yaml`'s Kustomization has
+# `path: ./apps`, and kustomize renders `gitops/apps/kustomization.yaml`'s `resources[]` and
+# nothing else, so this manifest is served only because that list names it. A workload file
+# sitting in this directory unlisted is served to nobody; the hub's verify/lifted-apps/ check
+# grades the list, not the directory, for exactly that reason.
+#
+# It supersedes `policy-as-versioned-flux/storefront`'s own `k8s/deployment.yaml`, and differs
+# from it in four ways, each of which is what a lift means:
+#
+#   1. RE-LABELLED. `mycompany.com/policy-version: "2.2.0"` becomes
+#      `policy-as-versioned.dev/policy-version: "4.0.0"`. The incumbent org's `department:
+#      engineering` label goes with it: it was read by that org's `require-department-label`
+#      policy, which no version in driftwood's composed set carries.
+#   2. RE-PINNED to driftwood's own composed artefact. 4.0.0 is not a number chosen here -- it is
+#      the only version `composed/orphan-guard.yaml`'s allowed array admits, and
+#      `composed/policies/v4.0.0/` is the set that grades this pod. A claim outside that array is
+#      an orphan that reaches no cage at all (ticket 89).
+#   3. RE-NAMESPACED into driftwood's governed Namespace, where the cage tier is declared
+#      (`gitops/apps/namespace.yaml`, `posture.acme.io/tier: isolated`). This manifest carries no
+#      tier label of its own: under 4.0.0 the tier is declared on the Namespace and `cage-tier`
+#      writes the pod label as an OUTPUT (ADR-0022). One declared here would be clobbered.
+#   4. A POD, not a Deployment. Every policy in the composed set matches `pods`; the cage ladder's
+#      held round is pod-only (ticket 09). A Deployment would be graded by nothing this repository
+#      composes, which is the shape of lift this ticket exists to avoid.
+#
+# It does NOT replace `checkout-svc` (deploy/pod.yaml and its gitops/apps/pod.yaml mirror). That
+# pod is a bare `nginx` with no dependency tree; this one is the real front end with the Angular 9
+# tree the scanner and Renovate can see. Both stay.
+#
+# securityContext: `require-nonroot-4-0-0` validates `runAsNonRoot` on the pod and
+# `readOnlyRootFilesystem` on every container. `runAsUser: 101` and the two emptyDirs are the
+# same three lines `gitops/apps/pod.yaml` already carries, and for the same measured reason: the
+# `nginx` image's entrypoint runs as root, so `runAsNonRoot: true` alone made the kubelet refuse
+# to start the container (2026-08-31); 101 is the image's own built-in `nginx` account, and
+# /var/cache/nginx and /run are the only paths it writes.
+#
+# NOT OBSERVED: whether this pod actually starts. This image is a different build from
+# checkout-svc's (it is the storefront's own nginx layer), so the 101/emptyDir reasoning is
+# carried over, not re-observed, and no citable run of this estate has had a persistent cluster.
+# The hub's verify/lifted-apps/ check prints that as a blind spot on every run rather than
+# implying otherwise; the live half is this repository's own drift-sample lane.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storefront
+  namespace: driftwood
+  labels:
+    app: storefront
+    app.kubernetes.io/part-of: driftwood
+    policy-as-versioned.dev/policy-version: "4.0.0"
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+  containers:
+    - name: storefront
+      image: ghcr.io/policy-as-versioned-flux/storefront@sha256:ef53f41d380af4f56aa3e1f1e4ad922fa64e8f47361a41e83822fa8ace0f96bc
+      ports:
+        - containerPort: 80
+      securityContext:
+        readOnlyRootFilesystem: true
+      volumeMounts:
+        - { name: cache, mountPath: /var/cache/nginx }
+        - { name: run, mountPath: /run }
+  volumes:
+    - { name: cache, emptyDir: {} }
+    - { name: run, emptyDir: {} }
