@@ -30,7 +30,7 @@ Four things, in order:
      fetching a TUF root, and a GitHub Actions runner is cold on every run
      -- so every real shift-left run of this gate has a live network
      dependency in its signature check. ludlow pins its trust material and
-     does not; extending that pin here is eco-system ticket 103.
+     does not; extending that pin here is eco-system ticket 105.
      scripts/verify-adopter-gate.sh scenario G prints that exit code on
      every run, so this paragraph cannot quietly go stale the way the
      "offline" it replaces did.

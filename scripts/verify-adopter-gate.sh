@@ -256,17 +256,25 @@ say "G: how offline this gate actually is -- measured on this run, not claimed"
 # every real shift-left run of this gate has a live network dependency in its
 # signature check. ludlow's gate does not (eco-system ticket 101 pins the
 # trust material there); extending that pin to this repository is charted as
-# eco-system ticket 103.
+# eco-system ticket 105.
 #
 # This scenario RECORDS the number rather than asserting a sentence about it,
 # because a sentence is exactly what went stale last time: it prints the exit
 # code either way and only fails if the gate stops being able to verify at
-# all. When ticket 103 lands, the number moves from 1 to 0 here and the
+# all. When ticket 105 lands, the number moves from 1 to 0 here and the
 # paragraph above is contradicted by the run itself.
 mkdir -p "$scratch/cold-home" "$scratch/cold-tuf"
 set +e
+# NO_PROXY is CLEARED, not just left alone (eco-system ticket 101 review, F2, 2026-09-06).
+# Measured: with an ambient `NO_PROXY=*` exported, Go bypasses the closed port entirely, cosign
+# reaches Sigstore's CDN, and this scenario prints exit 0 -- "no network needed" for a run that
+# had just used the network. A measurement that fails in the REASSURING direction is worse than
+# no measurement, because nobody looks behind a green one. The lowercase spellings are set too,
+# because Go reads those as well.
 cold_out=$(HOME="$scratch/cold-home" TUF_ROOT="$scratch/cold-tuf" \
   HTTPS_PROXY="http://127.0.0.1:1" HTTP_PROXY="http://127.0.0.1:1" ALL_PROXY="socks5://127.0.0.1:1" \
+  https_proxy="http://127.0.0.1:1" http_proxy="http://127.0.0.1:1" all_proxy="socks5://127.0.0.1:1" \
+  NO_PROXY="" no_proxy="" \
   timeout 60 cosign verify-blob --bundle="$bundle" \
   --certificate-identity-regexp="$(python3 -c 'import re,sys
 src = open(sys.argv[1]).read()
@@ -278,11 +286,11 @@ set -e
 echo "cold TUF cache + every proxy pointed at a closed port: exit ${cold_code}"
 echo "$cold_out" | tail -2
 if [ "$cold_code" -eq 0 ]; then
-  echo "ok  G: this gate's verification of platform's real published bundle needs NO network (exit 0 on a cold cache with egress blocked) -- ticket 103 has landed, or was never needed"
+  echo "ok  G: this gate's verification of platform's real published bundle needs NO network (exit 0 on a cold cache with egress blocked) -- ticket 105 has landed, or was never needed"
 else
   echo "$cold_out" | grep -qiE "tuf|dial tcp|connection refused" \
     || fail "G: the cold-cache run failed for a reason that is not the network, so this measurement no longer measures what it says: $(echo "$cold_out" | tail -1)"
-  echo "ok  G: measured, not claimed -- with a cold TUF cache and egress blocked this gate's own cosign invocation cannot verify platform's real bundle (exit ${cold_code}, a TUF fetch). Scenario C above therefore ran with the network available, exactly as a real shift-left run does. Eco-system ticket 103 is the pin that closes it"
+  echo "ok  G: measured, not claimed -- with a cold TUF cache and egress blocked this gate's own cosign invocation cannot verify platform's real bundle (exit ${cold_code}, a TUF fetch). Scenario C above therefore ran with the network available, exactly as a real shift-left run does. Eco-system ticket 105 is the pin that closes it"
 fi
 
 # ---------------------------------------------------------------------------
