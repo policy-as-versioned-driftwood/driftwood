@@ -37,6 +37,14 @@ spec:
   sourceRef:
     kind: GitRepository
     name: driftwood
-  path: ./apps
+  # ./gitops/apps, NOT ./apps (eco-system ticket 33 review, 2026-09-08 -- the fix tuppence and
+  # ludlow took under ticket 42 and driftwood never did). This object's source is the github.com
+  # remote above, whose tree root holds gitops/, so ./apps resolves to nothing there and the
+  # Kustomization never becomes Ready: driftwood's own drift-sample lane, run 34122734820,
+  # reported exactly that (`kustomization path not found: stat .../apps`). ./apps was right only
+  # in the OFFLINE SEED world: scripts/up.sh seeds a throwaway repo from the gitops/ directory
+  # itself, so gitops/ IS that repo's root -- and up.sh applies its own inline Kustomization with
+  # ./apps for exactly that reason, so this line does not touch the touring demo.
+  path: ./gitops/apps
   prune: true   # prune-on-retire: remove what git no longer declares
   wait: true    # health-gate the reconcile
