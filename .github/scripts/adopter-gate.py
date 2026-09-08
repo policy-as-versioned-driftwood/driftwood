@@ -23,6 +23,17 @@ Four things, in order:
      identity-pinned to EXPECTED_PLATFORM_IDENTITY_REGEXP -- a literal
      constant driftwood holds itself, never read from platform. "The party
      being checked does not supply the identity it is trusted by."
+     HOW OFFLINE THAT IS, measured 2026-09-06 rather than claimed (eco-
+     system ticket 101): this call passes cosign no trust root, so it
+     verifies without the network only on a machine whose Sigstore TUF
+     cache is already warm. On a cold cache with egress blocked it exits 1
+     fetching a TUF root, and a GitHub Actions runner is cold on every run
+     -- so every real shift-left run of this gate has a live network
+     dependency in its signature check. ludlow pins its trust material and
+     does not; extending that pin here is eco-system ticket 105.
+     scripts/verify-adopter-gate.sh scenario G prints that exit code on
+     every run, so this paragraph cannot quietly go stale the way the
+     "offline" it replaces did.
   4. `compose` -- folds retirements (always major, spec.md: "a retirement
      classify as major with no special case") and each added version's own
      recorded `computed_bump` into driftwood's own composed bump. Never
@@ -237,7 +248,8 @@ def verify_evidence(
 ) -> dict:
     """Locates computed-semver/evidence/<version>.json + .bundle in
     platform's checked-out tree, verifies the bundle's cosign signature
-    offline against this institution's own identity constant, then checks
+    against this institution's own identity constant (see the module
+    docstring for how offline that is, and how it is measured), then checks
     the evidence document's own content (outcome passed, declared ==
     version -- the same two fields release.yml's own cheaper check reads).
     Refuses -- never passes silently -- on any missing file, bad signature,
