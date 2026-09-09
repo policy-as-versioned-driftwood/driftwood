@@ -17,6 +17,20 @@ note: >-
   headline is a dated signal somebody classified; this is the standing question the headline moves.
   Keeping it here is what stops a published feed carrying the twin's own subject matter back to it
   as if it were external evidence.
+
+  Its resolution question, and what registers when (ecosystem ticket 51, 2026-09-09). The question
+  this entry resolves on is its own `proposition`
+  (`a-tier-one-supplier-fails-to-deliver-within-the-horizon`) at its own `horizon` (2027-08-28),
+  answered by an `outcome` record in this overlay's `outcomes/` that reaches driftwood's
+  `origin/main` on or after that date and is immutable once it is there (ecosystem ticket 93,
+  review F2). This ENTRY pre-registers nothing by existing: a question carries no probability, so
+  there is nothing to score. What registers is a forecast that names it, on the day that forecast's
+  CONTENT last reaches `origin/main` -- not the date written in the file, which can be rewritten
+  (ticket 93 review F1). The entry itself is measured the same way, for the reason that measurement
+  exists: edit the proposition, the horizon or these words after a forecast is registered against
+  them and every score taken moves, with nothing on the record saying so. So the entry re-registers
+  on the day of any rewrite too, and `twin/registration.py` refuses a registration that is not
+  strictly before this entry's own horizon.
 affected_parties:
   - id: the-suppliers-own-workforce
     who: The workforce of the constrained supplier, whose livelihoods depend on the contract, not represented in this model.
