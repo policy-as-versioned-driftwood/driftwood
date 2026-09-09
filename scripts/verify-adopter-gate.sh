@@ -368,18 +368,25 @@ echo "ok  I[genuine]: the copied gate with the real committed root ACCEPTS, cold
 for case in absent-root wrong-rekor-key corrupt-rekor-key wrong-ct-key wrong-fulcio-root ct-window-closed; do
   for home in cold warm; do
     code=$(attack "$case" "$home")
-    tail_line=$(tail -1 "$scratch/i-$case-$home.out")
+    out="$scratch/i-$case-$home.out"
+    tail_line=$(tail -1 "$out")
     [ "$code" -ne 0 ] || fail "I[$case,$home]: the gate ACCEPTED platform's bundle with a doctored trust root -- the pin is not load-bearing"
+    # The line PRINTED below is the line GRADED here (eco-system ticket 105 review, F4). It used to
+    # print `tail -1` while grading a grep for a different needle: print one thing, grade another,
+    # and the printed text was genuine only because the refusal happened to be the last line. The
+    # same shape, in tuppence's copy of this loop, printed another program's stdout as every case's
+    # refusal reason for twelve cases and no exit code noticed.
     if [ "$case" = absent-root ]; then
-      grep -q "no committed Sigstore trust root" "$scratch/i-$case-$home.out" \
-        || fail "I[$case,$home]: the refusal does not name the absent root: $tail_line"
+      needle="no committed Sigstore trust root"
     else
-      grep -q "cosign verify-blob refused evidence for ${version}" "$scratch/i-$case-$home.out" \
-        || fail "I[$case,$home]: the refusal is not cosign's own: $tail_line"
+      needle="cosign verify-blob refused evidence for ${version}"
     fi
-    grep -qiE "tuf: |dial tcp|connection refused" "$scratch/i-$case-$home.out" \
+    refusal=$(grep -m1 -F "$needle" "$out" || true)
+    [ -n "$refusal" ] || fail "I[$case,$home]: the refusal is not the one this case exists to prove ($needle): $tail_line"
+    grep -qiE "tuf: |dial tcp|connection refused" "$out" \
       && fail "I[$case,$home]: the refusal mentions the network -- the gate went looking for a root it was not given: $tail_line"
-    echo "ok  I[$case,$home]: REFUSED, exit ${code}, on the trust material and not the network -- $(echo "$tail_line" | cut -c1-150)"
+    reason=$(grep -m1 -F 'error during command execution' "$out" || true)
+    echo "ok  I[$case,$home]: REFUSED, exit ${code}, on the trust material and not the network -- ${refusal:0:80}${reason:+ :: ${reason:0:150}}"
   done
 done
 echo "    (warm = this machine's own HOME, whose ~/.sigstore is warm on a laptop that has ever run cosign online and cold on a CI runner; either way the doctored root, not a cached one, is what refused)"
