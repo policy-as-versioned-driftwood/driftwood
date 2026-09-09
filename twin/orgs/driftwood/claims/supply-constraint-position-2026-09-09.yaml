@@ -1,0 +1,30 @@
+id: supply-constraint-position-2026-09-09
+kind: override
+component: tier-one-supplier-relationship
+# The world layer records this relationship as `evolution: product` and authors no finer position,
+# so the position the map derives for it is the band midpoint, 0.625 (twin/wardley.py midpoint()).
+# The correction moves it DOWN the axis, not up: a supplier relationship whose inputs come through
+# a single-country refining bottleneck is LESS substitutable than a product-band purchase, and the
+# axis is about ubiquity and certainty of supply, not about how modern the thing is.
+evolution_position: 0.55
+claimed_by: model-steward
+evidence_grade: 4
+evidence: >-
+  Calibrated expert judgement, recorded as judgement (twin evidence ladder rung 4), by the role
+  accountable for how this model positions things. The niobium refining-capacity headline says a
+  single-country bottleneck in qubit/SRF-grade refining is tightening; this overlay carries that
+  headline as its own standing scenario `niobium-supply-shock-2026` rather than as a feed entry
+  (ecosystem ticket 23 item 1), so what moves here is the position, not a signal binding. What this
+  claim asserts: that the derived midpoint 0.625 overstates how substitutable a tier-one supplier
+  relationship is for this company. What it does NOT assert: any magnitude, any date, and any
+  causal path from the headline to the coordinate -- there is no edge between the two intel rows
+  the headline names (`nb-refining-capacity` and `pq-cryptanalysis` both name the same
+  `links_risk`, a FAIR risk id, and neither is a component of any twin model), and no edge of any
+  type moves a coordinate anyway (ecosystem ticket 51). At rung 4 this prices nothing on its own:
+  only rungs 1-2 carry an interventional delta into a scored forecast (twin decision ticket 08 Q2).
+  It is scoreable only through the proposition of a scenario that names this component --
+  `a-tier-one-supplier-fails-to-deliver-within-the-horizon`, resolving 2027-08-28 -- and never on
+  the coordinate itself, which has no published answer key and lives on an ordinal axis. Its
+  pre-registration date is the day this file's CONTENT last reaches driftwood's `origin/main`
+  (`twin/registration.py`), not the date written above: rewrite the number after it lands and it
+  re-registers on the day of the rewrite.
