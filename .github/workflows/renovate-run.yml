@@ -56,6 +56,9 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Install verifier for Renovate post-upgrade composition
+        uses: ./.github/actions/install-gitsign
+
       - name: run self-hosted renovate against this repo
         env:
           RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
