@@ -44,7 +44,7 @@ Source: `composed/HEADER.yaml` → `governed-namespaces`, `ungoverned-namespaces
 
 ## 4. What this costs, and to whom
 
-Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → `exposure`. Amounts are rounded to two decimals from the field named in each row; every one carries the perspective it is booked under and the currency it is booked in. An entry the composition could not price carries its reason instead of a number, and is named in section 6. In the *proposed tier* column, `—` means the entry's kind (`premium`, `switching`) proposes no tier by construction; a feed entry with no `proposed_tier` is named absent.
+Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → `exposure`. Amounts are rounded to two decimals from the field named in each row; every one carries the perspective it is booked under and the currency it is booked in. An entry the composition could not price carries its reason instead of a number, and is named in section 6. In the *proposed tier* column, `—` means the entry's kind (`premium`, `switching`, `supersede`) proposes no tier by construction; a feed entry with no `proposed_tier` is named absent.
 
 | priced by | kind | name | perspective | currency | amount | moved | proposed tier |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -52,16 +52,30 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 | feeds | feed | threat-register | driftwood | GBP | GBP 19,558.55 | no | baseline |
 | insurer | premium | quote-driftwood | driftwood | GBP | GBP 113,403.30 | no | — |
 | twin | twin | forward-intel | driftwood | GBP | GBP 1,897,646.11 | no | isolated |
+| ico | switching | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | — |
+| feeds | switching | threat-register | driftwood | GBP | could not look (section 6) | no | — |
+| insurer | switching | quote-driftwood | driftwood | GBP | GBP 0.00 | no | — |
 
+- **ico/penalty-schema** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
 - **ico/penalty-schema** — basis: lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). warn/deny lef are editorial (schema doesn't carry frequency). Scaled to a subscriber turnover of 86,000,000.00 GBP.
-- **feeds/threat-register** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint.
-- **twin/forward-intel** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint.
+- **feeds/threat-register** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
+- **feeds/threat-register** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint. MAGNITUDE UNSOURCED: the impact per event (1000.0, 4000.0, 9000.0) GBP is not in payload version v2, which predates the publisher's `lm_gbp` field; it is this converter's frozen copy of the adopter-keyed table that used to live in the SUBSCRIBER's own code (platform/feeds/to_fair_scenario.py THREAT_LM_GBP). From major 3 the number and its basis are in the payload. A named could-not-look (eco-system ticket 79 item 4), never a bare number.
+- **twin/forward-intel** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint. MAGNITUDE UNSOURCED: the impact per event (1000.0, 4000.0, 9000.0) GBP is not in payload version v2, which predates the publisher's `lm_gbp` field; it is this converter's frozen copy of the adopter-keyed table that used to live in the SUBSCRIBER's own code (platform/feeds/to_fair_scenario.py THREAT_LM_GBP). From major 3 the number and its basis are in the payload. A named could-not-look (eco-system ticket 79 item 4), never a bare number.
+- **ico/penalty-schema** (switching) — basis: re-composed with this publisher's feed edges dropped
+- **feeds/threat-register** (switching) — basis: re-composed with this publisher's feed edges dropped
+- **insurer/quote-driftwood** (switching) — basis: re-composed with this publisher's feed edges dropped
 
 - **ico/penalty-schema** carries 4 priced hole(s) inside that amount: `nist/pl-2` GBP 536,153.12, `nist/ra-3` GBP 536,153.12, `nist/ca-2` GBP 357,435.42, `nist/ir-8` GBP 357,435.42
 
 **Exposure** — booked under perspective `driftwood` in `GBP`.
 
 - Total: GBP 3,704,381.74
+  - What this number is: an ordinal, auditable comparison under one perspective; not an expected annual loss.
+  - Every figure under this section is derived from published feeds through published converters, and is reproducible from the signed inputs named beside it -- that is what AUDITABLE means here. What it is NOT: the loss-event frequencies and several loss magnitudes it rests on are editorial bands carrying a named could-not-look rather than counted rates (ico penalty-schema major 4, feeds threat-register major 3), so the total is usable for COMPARING one version, one pin or one control set against another under this one perspective, and not as a number to reserve against. Totals under two different perspectives are two balance sheets and are never added (ADR-0021). Ticket 75 Q4 (a), eco-system ticket 79 item 10.
+- Aggregate of the selected-tier residuals: GBP 87,387.45 against a tolerance of GBP 40,000.00 -- BREACHES the declared aggregate.
+  - `penalty-schema` at tier `isolated`: GBP 35,743.54
+  - `threat-register` at tier `baseline`: GBP 13,690.98
+  - `forward-intel` at tier `isolated`: GBP 37,952.92
 - Attachment: GBP 40,000.00
 - Regimes (3):
   - `uk-gdpr` from ico feed `penalty-schema` v3: GBP 1,787,177.08, 4 control(s) named
@@ -78,6 +92,7 @@ Source: `composed/HEADER.yaml` → `baseline`, `selected-controls`, `holes`; `co
 - So 2 of 287 selected controls have an implementation in this artefact. A hole is priced, never refused (ADR-0020).
 - `refusals[]`: 0
 - `restatements[]`: 0
+- `deltas[]`: 0
 - `ungoverned[]`: 0
 
 ## 6. What this handbook cannot say
@@ -95,11 +110,11 @@ One recorded limit is deliberately not stated above: `publisher-clone-absent` re
 
 **2 field(s) this render looked for in the artefact and did not find.** Where a field is absent this page states nothing in its place — no default prose, no zero (ADR-0020: a missing instrument refuses; it is never invented).
 
+- `prices[5].amount` (in `composed/evidence.json`) — feeds/threat-register could not be priced: missing instrument: twin/forward-intel/v1/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
 - `prices[2].lef_basis` (in `composed/evidence.json`) — the loss frequencies behind insurer/quote-driftwood's amount are not sourced in this artefact
-- `deltas` (in `composed/evidence.json`) — this artefact records no `deltas` list, so this page counts none
 
 Two things this page can never tell you, by construction, and neither is a field of the artefact: whether the rules above are the **right** rules, and whether a human read and accepted the change that produced them. The first is the editorial review ([ADR-0007](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux/blob/main/docs/adr/0007-agent-assisted-editorial-governance.md)); the second is the pull request this artefact arrived in.
 
 ---
 
-Counted from the artefact: 5 publisher(s), 7 installed object(s), 7 recorded member(s), 4 price(s), 287 selected control(s), 285 hole(s), 2 recorded limit(s), 2 named absence(s).
+Counted from the artefact: 5 publisher(s), 7 installed object(s), 7 recorded member(s), 7 price(s), 287 selected control(s), 285 hole(s), 2 recorded limit(s), 2 named absence(s).

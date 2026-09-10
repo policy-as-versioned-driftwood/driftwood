@@ -8,11 +8,8 @@
 # completion: it re-renders composed/ in the working tree, and Renovate's
 # fileFilters (composed/**) fold the render into the bump commit.
 #
-# The parent checkout refs mirror shift-left.yml's compose-check job exactly,
-# on purpose: platform and nist at this tree's OWN pins (so a platform bump
-# branch composes against the version it proposes), ico at main and the two
-# feed parents at main -- their ticket-57 default branch (no Flux pin exists
-# yet -- ticket 62 owns pinning them; when it lands, both jobs move together).
+# Parent checkouts use the same exact pins as CI. Compiler software has its
+# own pin; updating it never changes the implementation policy window.
 #
 # A refusal from composition.py exits non-zero here, which surfaces on the
 # Renovate PR as a failed post-upgrade task instead of a silently stale
@@ -24,22 +21,29 @@ python3 -c 'import yaml' 2>/dev/null || pip install --quiet pyyaml
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
-# read-two-pins.py prints platform_tag=... / nist_tag=... lines (ticket 18).
-eval "$(python3 .github/scripts/read-two-pins.py \
+# Read the same six tag/SHA pairs as CI; no moving publisher branches.
+eval "$(python3 .github/scripts/read-pins.py \
+  .github/platform-tools-pin.yaml tools \
   gitops/platform/platform-pin.yaml platform \
-  gitops/flux-system/gotk-sync-nist.yaml nist)"
-
-# Full history, deliberately: composition resolves an UNPINNED parent's sha
-# with `git log` on the version-scoped subdirectory -- the last commit that
-# touched it. A --depth 1 clone only holds the tip, so every such lookup
-# flattens to the tip commit and compose-check refuses the render as drift
-# (this exact defect, caught by compose-check on the prep PR, 2026-09-01).
-clone() { git clone --quiet --branch "$2" "https://github.com/policy-as-versioned-$1/$1" "$work/$1"; }
+  gitops/flux-system/gotk-sync-nist.yaml nist \
+  gitops/flux-system/gotk-sync-ico.yaml ico \
+  gitops/flux-system/gotk-sync-feeds.yaml feeds \
+  gitops/flux-system/gotk-sync-insurer.yaml insurer)"
+clone() { git clone --quiet --branch "$2" "https://github.com/policy-as-versioned-$1/$1" "$work/${3:-$1}"; }
+clone platform "$tools_tag" platform-tools
 clone platform "$platform_tag"
-clone nist     "$nist_tag"
-clone ico      main
-clone feeds    main
-clone insurer  main
+clone nist "$nist_tag"
+clone ico "$ico_tag"
+clone feeds "$feeds_tag"
+clone insurer "$insurer_tag"
+python3 .github/scripts/verify-pinned-checkouts.py \
+  gitops/platform/platform-pin.yaml "$work/platform" \
+  gitops/flux-system/gotk-sync-nist.yaml "$work/nist" \
+  gitops/flux-system/gotk-sync-ico.yaml "$work/ico" \
+  gitops/flux-system/gotk-sync-feeds.yaml "$work/feeds" \
+  gitops/flux-system/gotk-sync-insurer.yaml "$work/insurer"
+# gitsign must be installed on the Renovate runner; the tool runner refuses
+# missing verifiers and rejects an incorrect release identity before execution.
 
 # Compose TWICE, deliberately. Composition reads the previous composed
 # HEADER from disk to fill each price entry's old_version, so a single run
@@ -48,9 +52,9 @@ clone insurer  main
 # after the merge -- can never reproduce, failing the drift check forever.
 # The committed artefact must be the settled fixpoint (old == new); the
 # pull request diff itself is the record of the transition.
-python3 "$work/platform/compose/composition.py" compose "$PWD" \
+python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
   --estate-clone "$work" --out "$PWD" > /dev/null
-python3 "$work/platform/compose/composition.py" compose "$PWD" \
+python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
   --estate-clone "$work" --out "$PWD"
 
 # --- the twin's derived artefacts follow the pin, in the SAME commit (ticket 72) ---

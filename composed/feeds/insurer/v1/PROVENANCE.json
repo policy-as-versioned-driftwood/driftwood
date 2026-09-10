@@ -1,0 +1,36 @@
+{
+  "converter": null,
+  "converter_from": null,
+  "feed_path": "quote/driftwood/v1/feed.json",
+  "files": {
+    "party.yaml": "c35a3abee4bd822a5356ba6c3a8f67603561f99caabc9f7fe5a7dc3e4160a7e5",
+    "quote/driftwood/v1/feed.json": "e1c39816a12a13cfe21ff137073ce33492e89abc044423372c85284dc3760329"
+  },
+  "invocation": null,
+  "kind": "feed",
+  "name": "quote-driftwood",
+  "party": "insurer",
+  "party_artefact": "party.yaml",
+  "payload_version_key": null,
+  "published_at": "2026-08-28",
+  "publisher_observation": {
+    "name": "quote-driftwood",
+    "newer": null,
+    "party": "insurer",
+    "pin_signature": {
+      "detail": "tag v1.0.0 on the insurer checkout carries a signature block",
+      "state": "signed",
+      "tag": "v1.0.0"
+    },
+    "schema": 1,
+    "sha": "db767055119292e400edd63ed260785ce605eb4e",
+    "superseded": {
+      "detail": "no signed tag of the form quote-driftwood/vN.x.y with N > 1 on the insurer checkout, so the pinned v1 is the newest published major",
+      "state": "current"
+    },
+    "version": "v1"
+  },
+  "scenario_sha256": null,
+  "sha": "db767055119292e400edd63ed260785ce605eb4e",
+  "version": "v1"
+}

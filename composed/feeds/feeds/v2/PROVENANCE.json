@@ -1,0 +1,40 @@
+{
+  "converter": "threat-register/to_fair_scenario.py",
+  "converter_from": "platform",
+  "feed_path": "threat-register/v2/feed.json",
+  "files": {
+    "party.yaml": "204f41b1138803ed5a43f7a7f910627d428d9f3ead7232c48b926da62f427e48",
+    "threat-register/to_fair_scenario.py": "10e2f5b412b09a16ff8bff2e1fe108938c79b25ac20b95b4047b4e17631bcbe7",
+    "threat-register/v2/feed.json": "c94ae8335d13edcbdc63b2d8f7c7cda3fbefd4d80e78022be51aba30d70b9a6c"
+  },
+  "invocation": [
+    "threat",
+    "driftwood"
+  ],
+  "kind": "feed",
+  "name": "threat-register",
+  "party": "feeds",
+  "party_artefact": "party.yaml",
+  "payload_version_key": "feed_version",
+  "published_at": "2026-07-31",
+  "publisher_observation": {
+    "name": "threat-register",
+    "newer": null,
+    "party": "feeds",
+    "pin_signature": {
+      "detail": "tag threat-register/v2.0.0 on the feeds checkout carries a signature block",
+      "state": "signed",
+      "tag": "threat-register/v2.0.0"
+    },
+    "schema": 1,
+    "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268",
+    "superseded": {
+      "detail": "threat-register/v3.0.0 sign(s) threat-register majors ahead of the pinned v2, but this checkout carries no directory for any of them to price against",
+      "state": "unobserved"
+    },
+    "version": "v2"
+  },
+  "scenario_sha256": "6046699614c5d4ebc35e0bb00b3c521d1c4e5ab07930527cdc595c745d2a008c",
+  "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268",
+  "version": "v2"
+}
