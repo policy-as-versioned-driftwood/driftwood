@@ -27,6 +27,44 @@ COMMANDS = {'compose': ('compose/composition.py', 'compose'),
             'tier-propose': ('wargamer/tier_pr.py', 'run')}
 
 
+def canonical_arguments(command: str, values: list[str], adopter: Path) -> list[str]:
+    """Resolve caller-relative paths before running from the adopter root.
+
+    Composition embeds its adopter argument in diagnostics. Always pass `.`
+    for that argument, while preserving the targets of output, estate and
+    evidence paths, including --option=value forms. No generated text is edited.
+    """
+    def path(value: str, is_adopter: bool = False) -> str:
+        resolved = Path(value).resolve()
+        if is_adopter:
+            if resolved != adopter:
+                raise ValueError('command adopter differs from the adopter owning the tools pin')
+            return '.'
+        return str(resolved)
+
+    result = list(values)
+    start = 0
+    if command in ('compose', 'verify'):
+        if not result or result[0].startswith('-'):
+            raise ValueError('compose/verify requires the adopter path first')
+        result[0] = path(result[0], True)
+        start = 1
+    path_options = {'--estate-clone', '--out', '--evidence', '--rejections', '--adopter-dir'}
+    index = start
+    while index < len(result):
+        option, equal, value = result[index].partition('=')
+        if option in path_options:
+            if equal:
+                result[index] = option + '=' + path(value, option == '--adopter-dir')
+            else:
+                index += 1
+                if index == len(result):
+                    raise ValueError(f'{option} requires a path')
+                result[index] = path(result[index], option == '--adopter-dir')
+        index += 1
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--adopter-dir', type=Path, default=Path('.'))
@@ -34,6 +72,8 @@ def main() -> int:
     parser.add_argument('command', choices=[*COMMANDS, 'check'])
     parser.add_argument('args', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    args.adopter_dir = args.adopter_dir.resolve()
+    args.tools_dir = args.tools_dir.resolve()
     try:
         tag, commit = read_pin(str(args.adopter_dir / '.github/platform-tools-pin.yaml'))
         if not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+', tag) or not re.fullmatch(r'[a-f0-9]{40}', commit):
@@ -55,7 +95,9 @@ def main() -> int:
             print(f'OK: platform tools {tag} at {commit}, release identity verified')
             return 0
         path, command = COMMANDS[args.command]
-        return subprocess.run([sys.executable, str(args.tools_dir / path), command, *args.args]).returncode
+        forwarded = canonical_arguments(args.command, args.args, args.adopter_dir)
+        return subprocess.run([sys.executable, str(args.tools_dir / path), command, *forwarded],
+                              cwd=args.adopter_dir).returncode
     except (OSError, ValueError, KeyError, StopIteration, subprocess.CalledProcessError) as exc:
         detail = (exc.stderr or exc.stdout or str(exc)) if isinstance(exc, subprocess.CalledProcessError) else str(exc)
         print(f'REFUSED: platform tools: {detail}', file=sys.stderr)

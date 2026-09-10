@@ -333,8 +333,6 @@ jobs:
         with:
           adopter-dir: driftwood
 
-      - name: Compiler boundary regression
-        run: python3 -m unittest discover -s driftwood/tests -p test_platform_tools.py
 
       - name: read driftwood's own pinned platform and nist tags
         # Self-contained -- each adopter's own adopter-gate.py CLI has
@@ -415,6 +413,11 @@ jobs:
             driftwood/gitops/flux-system/gotk-sync-ico.yaml ico \
             driftwood/gitops/flux-system/gotk-sync-feeds.yaml feeds \
             driftwood/gitops/flux-system/gotk-sync-insurer.yaml insurer
+
+      - name: Compiler boundary and real checkout-layout regression
+        env:
+          PAVF_REAL_ESTATE: ${{ github.workspace }}
+        run: python3 -m unittest discover -s driftwood/tests -p test_platform_tools.py
 
       - name: recompose driftwood's party artefact; fail on refusal or drift; print the document as the job summary
         run: |
