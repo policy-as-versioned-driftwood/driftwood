@@ -3,8 +3,8 @@
   "converter_from": "ico",
   "feed_path": "penalty-schema/v3/feed.json",
   "files": {
-    "party.yaml": "6f7e82a9616ee49ba2bbe1f2824b43458f8f72fd859216e2d5ba32577364ac72",
-    "penalty-schema/to_fair_scenario.py": "560a38c04397e8e98d56a279ca5b88cb2b2707a8a22a5c8d71a9be74946bb982",
+    "party.yaml": "5c07030a7a02883fdaf217e43fb5aefb423153f8e10817097c7a74094e3fff56",
+    "penalty-schema/to_fair_scenario.py": "4d313e86d2d139788b5e46d43d534f3ce64b6ec49b9da8f10dcc9ad8d7ca4d6f",
     "penalty-schema/v3/feed.json": "e23318cb9b580b5e9bde3621720197af08aaceb7510e27b3c20d10b6fe783cda"
   },
   "invocation": [
@@ -22,7 +22,14 @@
   "published_at": "2026-08-28",
   "publisher_observation": {
     "name": "penalty-schema",
-    "newer": null,
+    "newer": {
+      "published_at": "2026-09-09",
+      "since": "2026-09-10",
+      "since_tag": "v4.0.0",
+      "tag": "v4.0.0",
+      "tagged": "2026-09-10",
+      "version": "v4"
+    },
     "party": "ico",
     "pin_signature": {
       "detail": "tag v3.0.0 on the ico checkout carries a signature block",
@@ -32,12 +39,12 @@
     "schema": 1,
     "sha": "e1fb8eb5663e50088b13d872a4e44112476f516e",
     "superseded": {
-      "detail": "v4.0.0 sign(s) penalty-schema majors ahead of the pinned v3, but this checkout carries no directory for any of them to price against",
-      "state": "unobserved"
+      "detail": "tag v4.0.0, signed 2026-09-10, publishes penalty-schema v4 ahead of the pinned v3; behind since 2026-09-10, the day v4.0.0 was cut",
+      "state": "behind"
     },
     "version": "v3"
   },
-  "scenario_sha256": "1a7219f32bce9410cd6bd7776360348e88d0a1c5058e6ee299743f4b086ab534",
+  "scenario_sha256": "beab3ee23fa7145858466434ef26d63f5312d0354e03f33e0284d5419edd8bea",
   "sha": "e1fb8eb5663e50088b13d872a4e44112476f516e",
   "version": "v3"
 }

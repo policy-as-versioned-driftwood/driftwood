@@ -612,8 +612,8 @@ vendored-feeds:
   path: composed/feeds/ico/v3
   sha: e1fb8eb5663e50088b13d872a4e44112476f516e
   files:
-    party.yaml: 6f7e82a9616ee49ba2bbe1f2824b43458f8f72fd859216e2d5ba32577364ac72
-    penalty-schema/to_fair_scenario.py: 560a38c04397e8e98d56a279ca5b88cb2b2707a8a22a5c8d71a9be74946bb982
+    party.yaml: 5c07030a7a02883fdaf217e43fb5aefb423153f8e10817097c7a74094e3fff56
+    penalty-schema/to_fair_scenario.py: 4d313e86d2d139788b5e46d43d534f3ce64b6ec49b9da8f10dcc9ad8d7ca4d6f
     penalty-schema/v3/feed.json: e23318cb9b580b5e9bde3621720197af08aaceb7510e27b3c20d10b6fe783cda
 - party: feeds
   name: threat-register

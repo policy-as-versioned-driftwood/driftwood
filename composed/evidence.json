@@ -2696,7 +2696,7 @@
         2,
         4
       ],
-      "lef_basis": "lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). warn/deny lef are editorial (schema doesn't carry frequency). Scaled to a subscriber turnover of 86,000,000.00 GBP.",
+      "lef_basis": "lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). Scaled to a subscriber turnover of 86,000,000.00 GBP, clamped at the statutory maximum max(cap, rate x turnover). FINALITY UNCHECKED: no example in payload version v3 carries a `status`, so whether any of the 2 figure(s) below is the FINAL collected penalty or a notice figure since reduced, set aside or never collected could not be looked at. From major 4 every example carries `status`, `final_as_of` and `litigation` (eco-system ticket 79 item 1). A named could-not-look. FREQUENCY UNSOURCED: this line annualises at (1, 2, 4) events/yr, which is this converter's editorial default and not a counted rate. Payload version v3 predates the publisher's `frequency` field, so no basis and no denominator could be read for it; from major 4 the basis belongs on regimes.uk-gdpr.violation_types.lower-tier.frequency.basis. A named could-not-look (eco-system ticket 79 item 3), never a bare number.",
       "proposed_as": "label",
       "holes": [
         {
@@ -2737,9 +2737,41 @@
       "hole": null,
       "publisher_observation_scope": "Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.",
       "superseded": {
-        "state": "unobserved",
-        "detail": "v4.0.0 sign(s) penalty-schema majors ahead of the pinned v3, but this checkout carries no directory for any of them to price against"
+        "state": "behind",
+        "detail": "tag v4.0.0, signed 2026-09-10, publishes penalty-schema v4 ahead of the pinned v3; behind since 2026-09-10, the day v4.0.0 was cut"
       }
+    },
+    {
+      "source": "ico",
+      "kind": "supersede",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "amount": 0.0,
+      "per_customer": {
+        "amount": 0.0,
+        "currency": "GBP"
+      },
+      "name": "penalty-schema",
+      "version": "v3",
+      "newer": {
+        "version": "v4",
+        "tag": "v4.0.0",
+        "tagged": "2026-09-10",
+        "published_at": "2026-09-09",
+        "since_tag": "v4.0.0",
+        "since": "2026-09-10"
+      },
+      "since": "2026-09-10",
+      "as_of": "2026-08-28",
+      "ramp": 1.0,
+      "base": 1787177.0751717847,
+      "proposed_tier": null,
+      "changed": false,
+      "basis": "the pinned line's own amount x (eol_ramp(since, as_of) - 1): the surcharge the feeds module's EOL ramp puts on a version its publisher has superseded, +1x per year behind and capped at +4x, where `since` is the day the newer major's signing tag was cut; zero on that day, printed with both dates, and never summed into the exposure the line itself is already in",
+      "limits": [
+        "zero (as_of 2026-08-28 precedes the tag day 2026-09-10): the signed artefact's as-of is its newest signed input; only a re-composition --as-of a later day (the scheduled proposer's) grows this line"
+      ],
+      "detail": "tag v4.0.0, signed 2026-09-10, publishes penalty-schema v4 ahead of the pinned v3; behind since 2026-09-10, the day v4.0.0 was cut"
     },
     {
       "source": "feeds",
@@ -2916,6 +2948,14 @@
           "perspective": "driftwood",
           "currency": "GBP",
           "amount": 1787177.0751717847
+        },
+        {
+          "kind": "supersede",
+          "source": "ico",
+          "name": "penalty-schema",
+          "perspective": "driftwood",
+          "currency": "GBP",
+          "amount": 0.0
         }
       ],
       "sized": true,
@@ -2947,6 +2987,14 @@
           "perspective": "driftwood",
           "currency": "GBP",
           "amount": 1787177.0751717847
+        },
+        {
+          "kind": "supersede",
+          "source": "ico",
+          "name": "penalty-schema",
+          "perspective": "driftwood",
+          "currency": "GBP",
+          "amount": 0.0
         },
         {
           "kind": "feed",
@@ -3055,12 +3103,12 @@
         "--turnover",
         "86000000.00"
       ],
-      "scenario_sha256": "1a7219f32bce9410cd6bd7776360348e88d0a1c5058e6ee299743f4b086ab534",
+      "scenario_sha256": "beab3ee23fa7145858466434ef26d63f5312d0354e03f33e0284d5419edd8bea",
       "payload_version_key": "schema_version",
       "published_at": "2026-08-28",
       "files": {
-        "party.yaml": "6f7e82a9616ee49ba2bbe1f2824b43458f8f72fd859216e2d5ba32577364ac72",
-        "penalty-schema/to_fair_scenario.py": "560a38c04397e8e98d56a279ca5b88cb2b2707a8a22a5c8d71a9be74946bb982",
+        "party.yaml": "5c07030a7a02883fdaf217e43fb5aefb423153f8e10817097c7a74094e3fff56",
+        "penalty-schema/to_fair_scenario.py": "4d313e86d2d139788b5e46d43d534f3ce64b6ec49b9da8f10dcc9ad8d7ca4d6f",
         "penalty-schema/v3/feed.json": "e23318cb9b580b5e9bde3621720197af08aaceb7510e27b3c20d10b6fe783cda"
       },
       "publisher_observation": {
@@ -3074,10 +3122,17 @@
           "tag": "v3.0.0",
           "detail": "tag v3.0.0 on the ico checkout carries a signature block"
         },
-        "newer": null,
+        "newer": {
+          "version": "v4",
+          "tag": "v4.0.0",
+          "tagged": "2026-09-10",
+          "published_at": "2026-09-09",
+          "since_tag": "v4.0.0",
+          "since": "2026-09-10"
+        },
         "superseded": {
-          "state": "unobserved",
-          "detail": "v4.0.0 sign(s) penalty-schema majors ahead of the pinned v3, but this checkout carries no directory for any of them to price against"
+          "state": "behind",
+          "detail": "tag v4.0.0, signed 2026-09-10, publishes penalty-schema v4 ahead of the pinned v3; behind since 2026-09-10, the day v4.0.0 was cut"
         }
       },
       "path": "composed/feeds/ico/v3"
