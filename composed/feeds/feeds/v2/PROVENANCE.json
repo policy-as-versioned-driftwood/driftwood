@@ -1,10 +1,10 @@
 {
   "converter": "threat-register/to_fair_scenario.py",
-  "converter_from": "platform",
+  "converter_from": "feeds",
   "feed_path": "threat-register/v2/feed.json",
   "files": {
-    "party.yaml": "204f41b1138803ed5a43f7a7f910627d428d9f3ead7232c48b926da62f427e48",
-    "threat-register/to_fair_scenario.py": "10e2f5b412b09a16ff8bff2e1fe108938c79b25ac20b95b4047b4e17631bcbe7",
+    "party.yaml": "6d5211a16fe5bfbe6bd28fc0f4c876f9de8fca8a2a43d2750a4f855610ee0823",
+    "threat-register/to_fair_scenario.py": "6afad65dd84451206ed276d08e34473cba652f97ef782bc7e2385ec4dc0e445d",
     "threat-register/v2/feed.json": "c94ae8335d13edcbdc63b2d8f7c7cda3fbefd4d80e78022be51aba30d70b9a6c"
   },
   "invocation": [
@@ -19,7 +19,14 @@
   "published_at": "2026-07-31",
   "publisher_observation": {
     "name": "threat-register",
-    "newer": null,
+    "newer": {
+      "published_at": "2026-09-09",
+      "since": "2026-09-10",
+      "since_tag": "threat-register/v3.0.0",
+      "tag": "threat-register/v3.0.0",
+      "tagged": "2026-09-10",
+      "version": "v3"
+    },
     "party": "feeds",
     "pin_signature": {
       "detail": "tag threat-register/v2.0.0 on the feeds checkout carries a signature block",
@@ -29,8 +36,8 @@
     "schema": 1,
     "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268",
     "superseded": {
-      "detail": "threat-register/v3.0.0 sign(s) threat-register majors ahead of the pinned v2, but this checkout carries no directory for any of them to price against",
-      "state": "unobserved"
+      "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut",
+      "state": "behind"
     },
     "version": "v2"
   },

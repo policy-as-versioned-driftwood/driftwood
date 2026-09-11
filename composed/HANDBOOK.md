@@ -50,6 +50,7 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ico | feed | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | isolated |
 | feeds | feed | threat-register | driftwood | GBP | GBP 19,558.55 | no | baseline |
+| feeds | supersede | threat-register | driftwood | GBP | GBP 0.00 | no | — |
 | insurer | premium | quote-driftwood | driftwood | GBP | GBP 113,403.30 | no | — |
 | twin | twin | forward-intel | driftwood | GBP | GBP 1,897,646.11 | no | isolated |
 | ico | switching | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | — |
@@ -60,6 +61,8 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 - **ico/penalty-schema** — basis: lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). warn/deny lef are editorial (schema doesn't carry frequency). Scaled to a subscriber turnover of 86,000,000.00 GBP.
 - **feeds/threat-register** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
 - **feeds/threat-register** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint. MAGNITUDE UNSOURCED: the impact per event (1000.0, 4000.0, 9000.0) GBP is not in payload version v2, which predates the publisher's `lm_gbp` field; it is this converter's frozen copy of the adopter-keyed table that used to live in the SUBSCRIBER's own code (platform/feeds/to_fair_scenario.py THREAT_LM_GBP). From major 3 the number and its basis are in the payload. A named could-not-look (eco-system ticket 79 item 4), never a bare number.
+- **feeds/threat-register supersede** — clock starts 2026-09-10; priced as of 2026-08-28. zero (as_of 2026-08-28 precedes the tag day 2026-09-10): the signed artefact's as-of is its newest signed input; only a re-composition --as-of a later day (the scheduled proposer's) grows this line
+- **feeds/threat-register** (supersede) — basis: the pinned line's own amount x (eol_ramp(since, as_of) - 1): the surcharge the feeds module's EOL ramp puts on a version its publisher has superseded, +1x per year behind and capped at +4x, where `since` is the day the newer major's signing tag was cut; zero on that day, printed with both dates, and never summed into the exposure the line itself is already in
 - **twin/forward-intel** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). lef sourced from DBIR retail-sector web-app-attack base rate, editorial midpoint. MAGNITUDE UNSOURCED: the impact per event (1000.0, 4000.0, 9000.0) GBP is not in payload version v2, which predates the publisher's `lm_gbp` field; it is this converter's frozen copy of the adopter-keyed table that used to live in the SUBSCRIBER's own code (platform/feeds/to_fair_scenario.py THREAT_LM_GBP). From major 3 the number and its basis are in the payload. A named could-not-look (eco-system ticket 79 item 4), never a bare number.
 - **ico/penalty-schema** (switching) — basis: re-composed with this publisher's feed edges dropped
 - **feeds/threat-register** (switching) — basis: re-composed with this publisher's feed edges dropped
@@ -110,11 +113,11 @@ One recorded limit is deliberately not stated above: `publisher-clone-absent` re
 
 **2 field(s) this render looked for in the artefact and did not find.** Where a field is absent this page states nothing in its place — no default prose, no zero (ADR-0020: a missing instrument refuses; it is never invented).
 
-- `prices[5].amount` (in `composed/evidence.json`) — feeds/threat-register could not be priced: missing instrument: twin/forward-intel/v1/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
-- `prices[2].lef_basis` (in `composed/evidence.json`) — the loss frequencies behind insurer/quote-driftwood's amount are not sourced in this artefact
+- `prices[6].amount` (in `composed/evidence.json`) — feeds/threat-register could not be priced: missing instrument: twin/forward-intel/v1/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
+- `prices[3].lef_basis` (in `composed/evidence.json`) — the loss frequencies behind insurer/quote-driftwood's amount are not sourced in this artefact
 
 Two things this page can never tell you, by construction, and neither is a field of the artefact: whether the rules above are the **right** rules, and whether a human read and accepted the change that produced them. The first is the editorial review ([ADR-0007](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux/blob/main/docs/adr/0007-agent-assisted-editorial-governance.md)); the second is the pull request this artefact arrived in.
 
 ---
 
-Counted from the artefact: 5 publisher(s), 7 installed object(s), 7 recorded member(s), 7 price(s), 287 selected control(s), 285 hole(s), 2 recorded limit(s), 2 named absence(s).
+Counted from the artefact: 5 publisher(s), 7 installed object(s), 7 recorded member(s), 8 price(s), 287 selected control(s), 285 hole(s), 2 recorded limit(s), 2 named absence(s).
