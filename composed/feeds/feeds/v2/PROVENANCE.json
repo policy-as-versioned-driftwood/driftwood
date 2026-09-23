@@ -19,7 +19,15 @@
   "published_at": "2026-07-31",
   "publisher_observation": {
     "name": "threat-register",
-    "newer": null,
+    "newer": {
+      "published_at": null,
+      "readable": false,
+      "since": "2026-09-10",
+      "since_tag": "threat-register/v3.0.0",
+      "tag": "threat-register/v3.0.0",
+      "tagged": "2026-09-10",
+      "version": "v3"
+    },
     "party": "feeds",
     "pin_signature": {
       "detail": "tag threat-register/v2.0.0 on the feeds checkout carries a signature block",
@@ -29,8 +37,8 @@
     "schema": 1,
     "sha": "50a0b330a730f4f9ee9520561b0c05c8be4c9268",
     "superseded": {
-      "detail": "threat-register/v3.0.0 sign(s) threat-register majors ahead of the pinned v2, but this checkout carries no directory for any of them to price against",
-      "state": "unobserved"
+      "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut; this checkout carries no directory for threat-register/v3.0.0, so the line is priced from the signed tags alone",
+      "state": "behind"
     },
     "version": "v2"
   },
