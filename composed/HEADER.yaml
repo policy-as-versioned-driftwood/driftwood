@@ -616,7 +616,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: 1324a54865d6690eefd9a4988fb3482c49c85a86805eca6322cdad0847ee56a5
+  after: 21e04b4e377bc9aa500cbc7eb0fa3809f9e8e039eb3c1b63cb44ca4e45c4f6c1
   before:
     header:
       parents:
@@ -1272,7 +1272,7 @@ vendored-feeds:
 - party: ico
   name: penalty-schema
   version: v3
-  path: composed/feeds/ico/v3
+  path: composed/feeds/ico/penalty-schema/v3
   sha: e1fb8eb5663e50088b13d872a4e44112476f516e
   files:
     party.yaml: 6f7e82a9616ee49ba2bbe1f2824b43458f8f72fd859216e2d5ba32577364ac72
@@ -1281,7 +1281,7 @@ vendored-feeds:
 - party: feeds
   name: threat-register
   version: v2
-  path: composed/feeds/feeds/v2
+  path: composed/feeds/feeds/threat-register/v2
   sha: 50a0b330a730f4f9ee9520561b0c05c8be4c9268
   files:
     party.yaml: 204f41b1138803ed5a43f7a7f910627d428d9f3ead7232c48b926da62f427e48
@@ -1290,7 +1290,7 @@ vendored-feeds:
 - party: insurer
   name: quote-driftwood
   version: v1
-  path: composed/feeds/insurer/v1
+  path: composed/feeds/insurer/quote-driftwood/v1
   sha: db767055119292e400edd63ed260785ce605eb4e
   files:
     party.yaml: c35a3abee4bd822a5356ba6c3a8f67603561f99caabc9f7fe5a7dc3e4160a7e5
