@@ -3407,7 +3407,7 @@
           "detail": "tag v4.0.0, signed 2026-09-10, publishes penalty-schema v4 ahead of the pinned v3; behind since 2026-09-10, the day v4.0.0 was cut; this checkout carries no directory for v4.0.0, so the line is priced from the signed tags alone"
         }
       },
-      "path": "composed/feeds/ico/v3"
+      "path": "composed/feeds/ico/penalty-schema/v3"
     },
     {
       "party": "feeds",
@@ -3456,7 +3456,7 @@
           "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut; this checkout carries no directory for threat-register/v3.0.0, so the line is priced from the signed tags alone"
         }
       },
-      "path": "composed/feeds/feeds/v2"
+      "path": "composed/feeds/feeds/threat-register/v2"
     },
     {
       "party": "insurer",
@@ -3493,7 +3493,7 @@
           "detail": "no signed tag of the form quote-driftwood/vN.x.y with N > 1 on the insurer checkout, so the pinned v1 is the newest published major"
         }
       },
-      "path": "composed/feeds/insurer/v1"
+      "path": "composed/feeds/insurer/quote-driftwood/v1"
     }
   ]
 }
