@@ -616,14 +616,14 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: b22132e169cd46996b287b44b867e4c8580d40daa130ee34ec960069409f18b2
+  after: 1324a54865d6690eefd9a4988fb3482c49c85a86805eca6322cdad0847ee56a5
   before:
     header:
       parents:
       - party: platform
         kind: implementations
-        version: 2.0.1
-        sha: 533dccb0a823001b396fd60ab08014bf75065a37
+        version: 3.3.0
+        sha: 38089a68769453db9ea3faf0ee637ae93f309980
       - party: nist
         kind: controls
         version: 1.1.0
@@ -1219,16 +1219,28 @@ comparison-inputs:
       - sr-6
       - sr-8
       ungoverned-namespaces: []
+      overlay-controls: []
+      withdrawn-selectable: false
     prices:
     - kind: feed
       source: ico
       name: penalty-schema
       proposed_tier: isolated
       hole: null
+    - kind: supersede
+      source: ico
+      name: penalty-schema
+      proposed_tier: null
+      hole: null
     - kind: feed
       source: feeds
       name: threat-register
       proposed_tier: baseline
+      hole: null
+    - kind: supersede
+      source: feeds
+      name: threat-register
+      proposed_tier: null
       hole: null
     - kind: premium
       source: insurer
