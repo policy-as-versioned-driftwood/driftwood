@@ -80,10 +80,13 @@ version array), the `ico` pin, and the risk skin.
 
 `.github/platform-tools-pin.yaml` pins the compiler software independently of
 `gitops/platform/platform-pin.yaml` and `party.yaml`'s implementation inheritance.
-The compiler is currently `v3.3.0`, and so is the accepted implementation
-(policy members `{4.0.0, 5.0.0}`). Updating tools does not accept a new policy window.
+The compiler is currently `v4.0.0`, and so is the accepted implementation
+(policy members `{5.0.0}`). Updating tools does not accept a new policy window.
 The existing adopter gate still refuses additions classified as major. driftwood
 accepted the 5.0.0 major on 2026-09-23; `accepted-majors/platform-5.0.0.yaml` records it.
+Platform v4.0.0 retired policy 4.0.0 (owner-instructed 2026-09-24). The gate reads
+any retirement as a major that no acceptance record can admit, so the gate on the
+pull request that moved to v4.0.0 refuses by design.
 
 PR composition, release replay, tier proposals and Renovate completion use the
 same verified tools runner. It checks the tool tag's commit and the exact platform
