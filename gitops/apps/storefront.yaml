@@ -17,16 +17,18 @@
 # from it in four ways, each of which is what a lift means:
 #
 #   1. RE-LABELLED. `mycompany.com/policy-version: "2.2.0"` becomes
-#      `policy-as-versioned.dev/policy-version: "4.0.0"`. The incumbent org's `department:
+#      `policy-as-versioned.dev/policy-version: "5.0.0"`. The incumbent org's `department:
 #      engineering` label goes with it: it was read by that org's `require-department-label`
 #      policy, which no version in driftwood's composed set carries.
-#   2. RE-PINNED to driftwood's own composed artefact. 4.0.0 is not a number chosen here -- it is
-#      the only version `composed/orphan-guard.yaml`'s allowed array admits, and
-#      `composed/policies/v4.0.0/` is the set that grades this pod. A claim outside that array is
-#      an orphan that reaches no cage at all (ticket 89).
+#   2. RE-PINNED to driftwood's own composed artefact. 5.0.0 is not a number chosen here. It is
+#      in `composed/orphan-guard.yaml`'s allowed array, and `composed/policies/v5.0.0/` is the
+#      set that grades this pod. A claim outside that array is an orphan that reaches no cage at
+#      all (ticket 89). The pod claimed 4.0.0 until 2026-09-24, when it moved to 5.0.0 (Phase B,
+#      owner-instructed: every institution accepts 5.0.0 and 4.0.0 retires from platform). The
+#      array still carries both, so the move left nothing uncaged.
 #   3. RE-NAMESPACED into driftwood's governed Namespace, where the cage tier is declared
 #      (`gitops/apps/namespace.yaml`, `posture.acme.io/tier: isolated`). This manifest carries no
-#      tier label of its own: under 4.0.0 the tier is declared on the Namespace and `cage-tier`
+#      tier label of its own: under 5.0.0 the tier is declared on the Namespace and `cage-tier`
 #      writes the pod label as an OUTPUT (ADR-0022). One declared here would be clobbered.
 #   4. A POD, not a Deployment. Every policy in the composed set matches `pods`; the cage ladder's
 #      held round is pod-only (ticket 09). A Deployment would be graded by nothing this repository
@@ -36,8 +38,8 @@
 # pod is a bare `nginx` with no dependency tree; this one is the real front end with the Angular 9
 # tree the scanner and Renovate can see. Both stay.
 #
-# securityContext: `require-nonroot-4-0-0` validates `runAsNonRoot` on the pod and
-# `readOnlyRootFilesystem` on every container. `runAsUser: 101` and the two emptyDirs are the
+# securityContext: `require-nonroot-5-0-0` admits a pod with `runAsNonRoot` and
+# `readOnlyRootFilesystem` on every container, with no root attestation needed. `runAsUser: 101` and the two emptyDirs are the
 # same three lines `gitops/apps/pod.yaml` already carries, and for the same measured reason: the
 # `nginx` image's entrypoint runs as root, so `runAsNonRoot: true` alone made the kubelet refuse
 # to start the container (2026-08-31); 101 is the image's own built-in `nginx` account, and
@@ -56,7 +58,7 @@ metadata:
   labels:
     app: storefront
     app.kubernetes.io/part-of: driftwood
-    policy-as-versioned.dev/policy-version: "4.0.0"
+    policy-as-versioned.dev/policy-version: "5.0.0"
 spec:
   securityContext:
     runAsNonRoot: true

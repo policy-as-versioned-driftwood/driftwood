@@ -94,9 +94,9 @@ spec:
         - { version: "4.0.0" }
         - { version: "5.0.0" }
         # v2.0.0 carries composed/policies/v4.0.0 and v5.0.0, and every machinery allow-list at
-        # that tag admits both. Every workload driftwood declares claims 4.0.0, so 5.0.0 alone would
-        # leave them caged by nothing (eco-system ticket 130). Drop 4.0.0 only after the workloads
-        # move to 5.0.0 and platform retires 4.0.0.
+        # that tag admits both. Every workload driftwood declares claimed 4.0.0 until 2026-09-24,
+        # so 5.0.0 alone would have left them caged by nothing (eco-system ticket 130). They now
+        # claim 5.0.0 (Phase B). Drop 4.0.0 in a later pull request, once platform retires it.
   resourcesTemplate: |
     << range $v := (index (inputs) "versions") >>
     ---
