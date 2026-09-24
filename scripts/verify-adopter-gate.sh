@@ -392,6 +392,95 @@ done
 echo "    (warm = this machine's own HOME, whose ~/.sigstore is warm on a laptop that has ever run cosign online and cold on a CI runner; either way the doctored root, not a cached one, is what refused)"
 
 # ---------------------------------------------------------------------------
+say "J: the real v3.3.0 rollout (pull request 40) -- an accepted major is admitted, and only an accepted one"
+# ---------------------------------------------------------------------------
+# Eco-system ticket 132. The subject is this repository's own history, not a planting: the commit
+# before pull request 40 merged (base) and its merge commit (head). Between them the composed
+# window moves from [4.0.0] to [4.0.0, 5.0.0], platform's signed evidence at v3.3.0 records 5.0.0
+# as major, and the head carries accepted-majors/platform-5.0.0.yaml, the owner's acceptance of
+# 2026-09-23. The merge commit is named, not HEAD, so a later change to main cannot move what this
+# scenario grades. Three variants then commit on top of that head in a throwaway clone: the record
+# removed, the record naming another version, and the record naming another party.
+ROLLOUT_MERGE=2fff19d609a10135b81afee6a0e93e489c5e5d71
+git -C "$HERE" cat-file -e "${ROLLOUT_MERGE}^{commit}" 2>/dev/null \
+  || skip "J: this checkout does not carry the v3.3.0 rollout's merge commit ${ROLLOUT_MERGE:0:12} (a shallow clone?), so the real rollout cannot be replayed"
+j_repo="$scratch/driftwood-j"
+git clone --quiet --no-checkout "$HERE" "$j_repo"
+git -C "$j_repo" fetch --quiet "$HERE" "$ROLLOUT_MERGE"
+j_base=$(git -C "$j_repo" rev-parse "${ROLLOUT_MERGE}^1")
+j_tag=$(git -C "$j_repo" show "${ROLLOUT_MERGE}:gitops/platform/platform-pin.yaml" | python3 -c '
+import sys, yaml
+for doc in yaml.safe_load_all(sys.stdin):
+    if isinstance(doc, dict) and doc.get("kind") == "GitRepository":
+        print(doc["spec"]["ref"]["tag"]); break')
+j_old_tag=$(git -C "$j_repo" show "${j_base}:gitops/platform/platform-pin.yaml" | python3 -c '
+import sys, yaml
+for doc in yaml.safe_load_all(sys.stdin):
+    if isinstance(doc, dict) and doc.get("kind") == "GitRepository":
+        print(doc["spec"]["ref"]["tag"]); break')
+j_platform="$scratch/platform-j"
+git clone --local --quiet "$platform_repo" "$j_platform"
+git -C "$j_platform" rev-parse -q --verify "refs/tags/${j_tag}^{commit}" > /dev/null \
+  || skip "J: the clone of platform carries no tag ${j_tag}, the tag the rollout pins"
+git -C "$j_platform" -c advice.detachedHead=false checkout --quiet "$j_tag"
+echo "the rollout: base ${j_base:0:12} (platform ${j_old_tag}), head ${ROLLOUT_MERGE:0:12} (platform ${j_tag})"
+
+gate_rollout() {  # $1 head ref, $2 out prefix -> exit code on stdout
+  set +e
+  python3 "$GATE" compose "$j_platform" "$j_old_tag" "$j_tag" \
+    --adopter-dir "$j_repo" --base-ref "$j_base" --head-ref "$1" \
+    --out "$scratch/$2.json" --markdown-out "$scratch/$2.md" > "$scratch/$2.out" 2>&1
+  local code=$?
+  set -e
+  echo "$code"
+}
+j_variant() {  # $1 branch name, $2 python that edits the record in place ("" removes it) -> head sha
+  git -C "$j_repo" checkout --quiet -B "$1" "$ROLLOUT_MERGE"
+  if [ -z "$2" ]; then
+    git_t "$j_repo" rm --quiet accepted-majors/platform-5.0.0.yaml
+  else
+    python3 -c "$2" "$j_repo/accepted-majors/platform-5.0.0.yaml"
+    git_t "$j_repo" add accepted-majors/platform-5.0.0.yaml
+  fi
+  git_t "$j_repo" commit --quiet -m "J: $1"
+  git -C "$j_repo" rev-parse HEAD
+}
+
+j_code=$(gate_rollout "$ROLLOUT_MERGE" j)
+grep -vE '^\s*"' "$scratch/j.out" | tail -6
+[ "$j_code" -eq 0 ] || fail "J: the real rollout carries an acceptance of 5.0.0 for driftwood and the gate still refused it (exit $j_code): $(tail -2 "$scratch/j.out")"
+python3 - "$scratch/j.json" <<'PY' || fail "J: the gate adopted, but its own output does not say it composed major and admitted 5.0.0 on the rollout's own record"
+import json, sys
+result = json.load(open(sys.argv[1]))["result"]
+assert result["composed_bump"] == "major", result["composed_bump"]
+assert result["added"] == ["5.0.0"], result["added"]
+acceptance = result["acceptance"]
+assert acceptance["admitted"] is True, acceptance
+assert [a["record"] for a in acceptance["accepted"]] == ["accepted-majors/platform-5.0.0.yaml"], acceptance
+PY
+echo "OK  J[accepted]: the real rollout composes major (5.0.0 added), and the gate admits it on accepted-majors/platform-5.0.0.yaml at ${ROLLOUT_MERGE:0:12}"
+
+for variant in removed other-version other-party; do
+  case "$variant" in
+    removed) edit=""; label="removed" ;;
+    other-version) label="naming 5.0.1"; edit='import sys, pathlib; p = pathlib.Path(sys.argv[1]); p.write_text(p.read_text().replace("version: 5.0.0", "version: 5.0.1"))' ;;
+    other-party) label="naming tuppence"; edit='import sys, pathlib; p = pathlib.Path(sys.argv[1]); p.write_text(p.read_text().replace("party: driftwood", "party: tuppence"))' ;;
+  esac
+  j_head=$(j_variant "j-$variant" "$edit")
+  code=$(gate_rollout "$j_head" "j-$variant")
+  tail -3 "$scratch/j-$variant.out"
+  [ "$code" -ne 0 ] || fail "J[$variant]: the rollout with its record $label must refuse, got exit 0"
+  grep -q "REFUSED: composed bump is major" "$scratch/j-$variant.out" \
+    || fail "J[$variant]: the refusal does not name the composed major: $(tail -1 "$scratch/j-$variant.out")"
+  grep -q "5.0.0" "$scratch/j-$variant.out" || fail "J[$variant]: the refusal does not name 5.0.0"
+  if [ "$variant" = other-party ]; then
+    grep -q "for tuppence, not for driftwood" "$scratch/j-$variant.out" \
+      || fail "J[other-party]: the refusal does not name the record that accepts 5.0.0 for another party"
+  fi
+  echo "OK  J[$variant]: the same rollout with its record $label REFUSES, exit ${code}, naming 5.0.0"
+done
+
+# ---------------------------------------------------------------------------
 say "H: the gate's own selfcheck -- its pure logic, on planted inputs"
 # ---------------------------------------------------------------------------
 set +e
@@ -410,4 +499,6 @@ echo "      real cosign REFUSES the same bundle with one signature byte changed 
 echo "      REFUSED under a foreign identity constant (E), a retirement is a forced major that refuses (F), the"
 echo "      gate's own selfcheck passes (H), and -- eco-system ticket 105 -- the gate verifies that bundle with a"
 echo "      cold TUF cache and egress blocked, exit 0, through its own compose (G), while a wrong, corrupt, retired"
-echo "      or absent trust root refuses on the trust material and never on the network, cold and warm (I)."
+echo "      or absent trust root refuses on the trust material and never on the network, cold and warm (I);"
+echo "      and -- eco-system ticket 132 -- the real v3.3.0 rollout composes major and is admitted on its own"
+echo "      acceptance record, and refuses when that record is removed or names another version or party (J)."

@@ -66,6 +66,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import datetime
 import hashlib
 import json
 import os
@@ -504,6 +505,159 @@ def compose(added: list[str], retired: list[str], evidence_by_version: dict[str,
     }
 
 
+# --------------------------------------------------------------------------
+# 4b. eco-system ticket 132 -- an accepted major is admitted
+#
+# Accepting a major is an authorisation the owner makes (ADR-0025). It reaches
+# this repository as a major acceptance record under accepted-majors/, landed
+# by a reviewed pull request, and this gate reads it at the head it grades.
+# A composed major is admitted only when this pull request retires nothing
+# and every major version it adds is accepted for driftwood, for platform,
+# at that exact version. The composed bump itself is never lowered: it stays
+# "major" in every output, and the admission is printed beside it.
+#
+# The block between the two marker lines below is not this repository's to
+# edit. It is the hub's reader (verify/unreviewed-major/unreviewed_major.py),
+# copied byte for byte; the hub check fails driftwood if the copy differs.
+# --------------------------------------------------------------------------
+
+# >>> major-acceptance reader >>>
+# Eco-system ticket 132. This block is the ONE definition of the major acceptance record: its
+# format, the rule a record must meet to count, and how a record is read out of a tree. It is
+# defined in the hub, in verify/unreviewed-major/unreviewed_major.py, and every adopter gate
+# carries a byte-for-byte copy between these two marker lines. The hub check compares each served
+# copy with this one on every run and fails the adopter whose copy differs. Change it here first,
+# then copy it into each gate; never edit a copy alone.
+RECORD_DIR = "accepted-majors"
+RECORD_KIND = "major-acceptance"
+PUBLISHER = "platform"
+
+
+def acceptance_from_text(text: str) -> dict | str:
+    """One record, parsed to the five fields that make it one; or the reason it is not a record."""
+    try:
+        doc = yaml.safe_load(text)
+    except yaml.YAMLError as err:
+        return f"is not readable YAML ({str(err).splitlines()[0][:80]})"
+    if not isinstance(doc, dict):
+        return "is not a YAML mapping"
+    if doc.get("kind") != RECORD_KIND:
+        return f"carries kind {doc.get('kind')!r}, not {RECORD_KIND!r}"
+    got: dict = {}
+    for key in ("party", "publisher", "version", "accepted_by"):
+        value = doc.get(key)
+        if value is None or not str(value).strip():
+            return f"carries no {key}"
+        got[key] = str(value).strip()
+    on = doc.get("accepted_on")
+    if isinstance(on, datetime.datetime):
+        on = on.date()
+    if isinstance(on, datetime.date):
+        got["accepted_on"] = on.isoformat()
+    else:
+        try:
+            got["accepted_on"] = datetime.date.fromisoformat(str(on).strip()).isoformat()
+        except ValueError:
+            return f"carries accepted_on {on!r}, which is not an ISO date"
+    return {k: got[k] for k in ("party", "publisher", "version", "accepted_by", "accepted_on")}
+
+
+def acceptance_for(records: list[tuple[str, str]], adopter: str, version: str,
+                   publisher: str = PUBLISHER) -> tuple[tuple[str, dict] | None, list[str]]:
+    """The first record in this adopter's own tree that accepts this version of this publisher's
+    policy for this adopter, and a reason for every record that names the version but does not
+    count, so a near miss is named rather than silently read as no record at all."""
+    near: list[str] = []
+    for path, text in records:
+        parsed = acceptance_from_text(text)
+        if isinstance(parsed, str):
+            near.append(f"{path} {parsed}")
+            continue
+        if parsed["version"] != version:
+            continue
+        if parsed["party"] != adopter:
+            near.append(f"{path} accepts {version} for {parsed['party']}, not for {adopter}")
+            continue
+        if parsed["publisher"] != publisher:
+            near.append(f"{path} accepts {parsed['publisher']}'s {version}, not {publisher}'s")
+            continue
+        return (path, parsed), near
+    return None, near
+
+
+def acceptance_records_at(repo: Path, ref: str) -> list[tuple[str, str]]:
+    """Every file under accepted-majors/ in `repo`'s tree at `ref`, as (path, text), sorted by
+    path. Only a committed tree is read: a working-tree or staged file is not a record. A ref that
+    does not resolve raises ValueError, because an unreadable tree is not an empty directory."""
+    listed = subprocess.run(["git", "-C", str(repo), "ls-tree", "-r", "--name-only", ref, "--",
+                             f"{RECORD_DIR}/"], capture_output=True, text=True)
+    if listed.returncode != 0:
+        raise ValueError(f"could not list {RECORD_DIR}/ at {ref[:12]} in {repo}: "
+                         f"{listed.stderr.strip()[:160]}")
+    records: list[tuple[str, str]] = []
+    for path in sorted(p for p in listed.stdout.splitlines() if p.strip()):
+        shown = subprocess.run(["git", "-C", str(repo), "show", f"{ref}:{path}"],
+                               capture_output=True, text=True)
+        if shown.returncode != 0:
+            raise ValueError(f"could not read {path} at {ref[:12]} in {repo}: "
+                             f"{shown.stderr.strip()[:160]}")
+        records.append((path, shown.stdout))
+    return records
+# <<< major-acceptance reader <<<
+
+
+def acceptance_verdict(records: list[tuple[str, str]], party: str, majors: list[str],
+                       retired: list[str]) -> dict:
+    """Whether a composed major is admitted, and why. `majors` are the versions this pull
+    request adds whose own verified evidence records a major; `retired` are the versions it
+    retires. A retired version is not carried, so no record can accept it: a retirement still
+    refuses. Every major must be accepted; one unaccepted major refuses the lot."""
+    accepted: list[dict] = []
+    unaccepted: list[dict] = []
+    for version in majors:
+        match, near = acceptance_for(records, party, version)
+        if match is None:
+            unaccepted.append({"version": version, "near": near})
+            continue
+        path, rec = match
+        accepted.append({"version": version, "record": path, "accepted_by": rec["accepted_by"],
+                         "accepted_on": rec["accepted_on"]})
+    return {"admitted": bool(majors) and not retired and not unaccepted,
+            "accepted": accepted, "unaccepted": unaccepted, "retired": list(retired)}
+
+
+def acceptance_lines(verdict: dict, party: str, ref: str) -> list[str]:
+    """The verdict in sentences, each naming what was read and where."""
+    at = ref[:12]
+    lines = [f"{a['version']} is a major, accepted for {party} by {a['accepted_by']} on "
+             f"{a['accepted_on']} ({a['record']} at {at})" for a in verdict["accepted"]]
+    for u in verdict["unaccepted"]:
+        nearly = ("; records that name it and do not count: " + "; ".join(u["near"])) if u["near"] else ""
+        lines.append(f"{u['version']} is a major, and no {RECORD_DIR}/ record at {at} accepts it "
+                     f"for {party}{nearly}")
+    if verdict["retired"]:
+        lines.append(f"retired {', '.join(verdict['retired'])}: a retirement is a forced major, and "
+                     f"an acceptance record accepts a version the window carries, so none can admit it")
+    return lines
+
+
+def admit_major(result: dict, evidence_by_version: dict[str, dict],
+                adopter_dir: Path | None, head_ref: str | None, party: str) -> dict:
+    """Read the records at the head this gate grades and decide. Without an adopter directory
+    and a head ref there is no tree to read a record from, so nothing is admitted."""
+    majors = [v for v in result["added"] if evidence_by_version[v].get("computed_bump") == "major"]
+    if adopter_dir is None or head_ref is None:
+        return {"admitted": False, "accepted": [], "unaccepted": [], "retired": result["retired"],
+                "lines": ["no --adopter-dir and --head-ref, so no acceptance record could be read"]}
+    try:
+        records = acceptance_records_at(adopter_dir, head_ref)
+    except ValueError as exc:
+        raise RefusalError(f"could not read the acceptance records: {exc}") from exc
+    verdict = acceptance_verdict(records, party, majors, result["retired"])
+    verdict["lines"] = acceptance_lines(verdict, party, head_ref)
+    return verdict
+
+
 def run_compose(platform_dir: Path, old_tag: str, new_tag: str,
                  adopter_dir: Path | None = None, base_ref: str | None = None,
                  head_ref: str | None = None) -> tuple[dict, dict[str, dict]]:
@@ -866,6 +1020,12 @@ def main(argv: list[str]) -> int:
             result, evidence_by_version = run_compose(
                 Path(args.platform_dir), args.old_tag, args.new_tag,
                 adopter_dir=adopter_dir, base_ref=args.base_ref, head_ref=args.head_ref)
+            if result["composed_bump"] == "major":
+                # Ticket 132: the composed bump stays major; the admission is decided beside it.
+                result["acceptance"] = admit_major(result, evidence_by_version, adopter_dir,
+                                                   args.head_ref, PARTY)
+                result["reasons"].extend(f"acceptance: {line}"
+                                         for line in result["acceptance"]["lines"])
             print(json.dumps(result, indent=2))
             for reason in result["reasons"]:
                 print(f"  - {reason}")
@@ -879,7 +1039,12 @@ def main(argv: list[str]) -> int:
                 # pair inside the outer one.
                 Path(args.markdown_out).write_text(render_markdown(result, evidence_by_version))
             if result["composed_bump"] == "major":
-                print("REFUSED: composed bump is major", file=sys.stderr)
+                if result["acceptance"]["admitted"]:
+                    print("OK: composed bump is 'major', admitted: every major this pull request "
+                          "adds is accepted by a record in accepted-majors/ (eco-system ticket 132)")
+                    return 0
+                print("REFUSED: composed bump is major, and not every major it brings is accepted "
+                      "-- " + "; ".join(result["acceptance"]["lines"]), file=sys.stderr)
                 return 1
             print(f"OK: composed bump is {result['composed_bump']!r}")
             return 0
@@ -1225,6 +1390,52 @@ def selfcheck() -> None:
     )
     print("OK EXPECTED_PLATFORM_IDENTITY_REGEXP: matches platform's real identity shapes, "
           "refuses a renamed workflow path and a foreign org/repo")
+
+    # ---- eco-system ticket 132: a composed major is admitted only when accepted ----
+    # Planted records; none of them is a real acceptance. The rule is the hub's (acceptance_for,
+    # in the reader block this file carries byte for byte).
+    def _rec(party: str = "driftwood", version: str = "5.0.0", publisher: str = "platform",
+             by: str = "Example Owner") -> str:
+        return (f"kind: major-acceptance\nparty: {party}\npublisher: {publisher}\n"
+                f"version: {version}\naccepted_by: {by}\naccepted_on: 2026-09-23\n")
+    here = "accepted-majors/platform-5.0.0.yaml"
+    v = acceptance_verdict([(here, _rec())], "driftwood", ["5.0.0"], [])
+    assert v["admitted"] is True and v["accepted"][0]["record"] == here, v
+    assert v["accepted"][0]["accepted_by"] == "Example Owner", v
+    for records, why in (([], "no record"),
+                         ([(here, _rec(party="tuppence"))], "another party"),
+                         ([(here, _rec(version="5.0.1"))], "another version"),
+                         ([(here, _rec(publisher="nist"))], "another publisher"),
+                         ([(here, _rec(by="''"))], "a malformed record")):
+        v = acceptance_verdict(records, "driftwood", ["5.0.0"], [])
+        assert v["admitted"] is False and [u["version"] for u in v["unaccepted"]] == ["5.0.0"], (why, v)
+    assert any("tuppence" in n for n in acceptance_verdict(
+        [(here, _rec(party="tuppence"))], "driftwood", ["5.0.0"], [])["unaccepted"][0]["near"])
+    v = acceptance_verdict([(here, _rec())], "driftwood", ["5.0.0"], ["4.0.0"])
+    assert v["admitted"] is False and v["retired"] == ["4.0.0"], v
+    v = acceptance_verdict([(here, _rec())], "driftwood", ["4.0.0", "5.0.0"], [])
+    assert v["admitted"] is False and [u["version"] for u in v["unaccepted"]] == ["4.0.0"], v
+    assert acceptance_verdict([], "driftwood", [], ["4.0.0"])["admitted"] is False
+    print("OK acceptance_verdict: a major is admitted only by a record for driftwood, platform and "
+          "that exact version; another party, version or publisher, a malformed record, a second "
+          "unaccepted major or any retirement still refuses")
+
+    # The records are read at the ref the gate grades, never at a working tree.
+    hooks = Path(tempfile.mkdtemp(prefix="adopter-gate-no-hooks-"))
+    rec_repo = Path(tempfile.mkdtemp(prefix="adopter-gate-records-"))
+    _git(rec_repo, "init", "-q")
+    _git(rec_repo, "-c", f"core.hooksPath={hooks}", "commit", "-q", "--allow-empty", "-m", "base")
+    rec_base = _git(rec_repo, "rev-parse", "HEAD").stdout.strip()
+    (rec_repo / "accepted-majors").mkdir()
+    (rec_repo / "accepted-majors" / "platform-5.0.0.yaml").write_text(_rec())
+    _git(rec_repo, "add", "accepted-majors/platform-5.0.0.yaml")
+    _git(rec_repo, "-c", f"core.hooksPath={hooks}", "commit", "-q", "-m", "accept")
+    rec_head = _git(rec_repo, "rev-parse", "HEAD").stdout.strip()
+    (rec_repo / "accepted-majors" / "platform-4.0.0.yaml").write_text(_rec(version="4.0.0"))
+    assert acceptance_records_at(rec_repo, rec_base) == []
+    assert [p for p, _ in acceptance_records_at(rec_repo, rec_head)] == [here]
+    print("OK acceptance_records_at: reads accepted-majors/ at the ref named, and never an "
+          "uncommitted file")
 
     # ---- compose(): every acceptance criterion, as a pure function ----
     ev = {
