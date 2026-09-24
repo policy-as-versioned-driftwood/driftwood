@@ -12,7 +12,9 @@
 #
 # MOVED 2026-09-24 (Phase B, owner-instructed): 4.0.0 to 5.0.0. Every
 # institution accepts 5.0.0 and 4.0.0 retires from platform. The composed
-# array still carries both, so this move leaves nothing uncaged. Under 5.0.0
+# array carried both when the claim moved, so the move left nothing uncaged.
+# Platform v4.0.0 then retired 4.0.0, and the array now holds 5.0.0 only
+# (driftwood v3.0.0). Under 5.0.0
 # require-nonroot admits this pod on its first branch (runAsNonRoot and a
 # read-only root filesystem on every container), so it carries no
 # root-attestation label.
