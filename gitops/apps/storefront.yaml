@@ -25,7 +25,8 @@
 #      set that grades this pod. A claim outside that array is an orphan that reaches no cage at
 #      all (ticket 89). The pod claimed 4.0.0 until 2026-09-24, when it moved to 5.0.0 (Phase B,
 #      owner-instructed: every institution accepts 5.0.0 and 4.0.0 retires from platform). The
-#      array still carries both, so the move left nothing uncaged.
+#      array carried both when the claim moved, so the move left nothing uncaged. It now holds
+#      5.0.0 only (driftwood v3.0.0, composed under platform v4.0.0).
 #   3. RE-NAMESPACED into driftwood's governed Namespace, where the cage tier is declared
 #      (`gitops/apps/namespace.yaml`, `posture.acme.io/tier: isolated`). This manifest carries no
 #      tier label of its own: under 5.0.0 the tier is declared on the Namespace and `cage-tier`
