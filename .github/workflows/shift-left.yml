@@ -456,7 +456,7 @@ jobs:
       # (found by its label, never by a path), and refuses a declaration looser
       # than the strictest priced line clamped to this party's own overlay.floor.
       # Compiler tools have their own signed pin. The accepted implementation
-      # may remain v2.0.1 while this gate uses the published tier-binding rule.
+      # may lag the compiler while this gate uses the published tier-binding rule.
       # Missing tooling now fails closed; there is no legacy skip.
       #
       # Exit 3 is could-not-look (no evidence, no
