@@ -43,7 +43,7 @@ kind: Pod
 metadata:
   name: checkout-svc
   namespace: driftwood
-  labels: { "policy-as-versioned.dev/policy-version": "4.0.0" }
+  labels: { "policy-as-versioned.dev/policy-version": "5.0.0" }
 spec:
   securityContext: { runAsNonRoot: true, runAsUser: 101 }
   containers:
