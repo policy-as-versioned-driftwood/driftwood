@@ -38,28 +38,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          path: driftwood
           fetch-depth: 0
 
 
       - name: Install pinned identity verifier
-        uses: ./.github/actions/install-gitsign
+        uses: ./driftwood/.github/actions/install-gitsign
 
       - name: Independently pinned compiler tools
-        uses: ./.github/actions/platform-tools
+        uses: ./driftwood/.github/actions/platform-tools
         with:
-          adopter-dir: .
+          adopter-dir: driftwood
 
       - name: read driftwood's own pinned platform and nist tags
         id: pins
         run: |
           set -euo pipefail
           pip install --quiet pyyaml
-          python3 .github/scripts/read-pins.py \
-            gitops/platform/platform-pin.yaml platform \
-            gitops/flux-system/gotk-sync-nist.yaml nist \
-            gitops/flux-system/gotk-sync-ico.yaml ico \
-            gitops/flux-system/gotk-sync-feeds.yaml feeds \
-            gitops/flux-system/gotk-sync-insurer.yaml insurer \
+          python3 driftwood/.github/scripts/read-pins.py \
+            driftwood/gitops/platform/platform-pin.yaml platform \
+            driftwood/gitops/flux-system/gotk-sync-nist.yaml nist \
+            driftwood/gitops/flux-system/gotk-sync-ico.yaml ico \
+            driftwood/gitops/flux-system/gotk-sync-feeds.yaml feeds \
+            driftwood/gitops/flux-system/gotk-sync-insurer.yaml insurer \
             >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v4
@@ -112,24 +113,25 @@ jobs:
         # moved tag would go unnoticed.
         run: |
           set -euo pipefail
-          python3 .github/scripts/verify-pinned-checkouts.py \
-            gitops/platform/platform-pin.yaml platform \
-            gitops/flux-system/gotk-sync-nist.yaml nist \
-            gitops/flux-system/gotk-sync-ico.yaml ico \
-            gitops/flux-system/gotk-sync-feeds.yaml feeds \
-            gitops/flux-system/gotk-sync-insurer.yaml insurer
+          python3 driftwood/.github/scripts/verify-pinned-checkouts.py \
+            driftwood/gitops/platform/platform-pin.yaml platform \
+            driftwood/gitops/flux-system/gotk-sync-nist.yaml nist \
+            driftwood/gitops/flux-system/gotk-sync-ico.yaml ico \
+            driftwood/gitops/flux-system/gotk-sync-feeds.yaml feeds \
+            driftwood/gitops/flux-system/gotk-sync-insurer.yaml insurer
 
       - name: ticket 18 -- re-render the composed artefact from the recorded parent SHAs, byte-for-byte, before any tag is cut
         # Ticket 12's verify(): a release gate after the tag can only burn
         # the version number (ADR-0011's own reasoning for the publisher
-        # gate, reused here). driftwood itself is checked out at "." (the
-        # workflow's own default checkout above), so this reaches
-        # platform/nist/ico as siblings via --estate-clone . directly.
+        # gate, reused here). driftwood is checked out at driftwood/ and every parent
+        # beside it, the layout compose-check uses (ticket 131). A parent nested
+        # inside driftwood/ would be hashed into the comparison identity and refused.
         run: |
           set -euo pipefail
-          python3 .github/scripts/platform-tools.py --tools-dir platform-tools verify . --estate-clone .
+          python3 driftwood/.github/scripts/platform-tools.py --adopter-dir driftwood --tools-dir platform-tools verify driftwood --estate-clone .
 
       - name: reject a tag that already exists (no force-move, ever)
+        working-directory: driftwood
         run: |
           set -euo pipefail
           if git rev-parse "refs/tags/${{ inputs.version }}" >/dev/null 2>&1; then
@@ -138,6 +140,7 @@ jobs:
           fi
 
       - name: create the signed annotated tag (ambient Actions identity, no interactive login)
+        working-directory: driftwood
         run: |
           set -euo pipefail
           git -c gpg.format=x509 -c gpg.x509.program=gitsign \
@@ -146,4 +149,5 @@ jobs:
             tag -s "${{ inputs.version }}" -m "${{ inputs.message }}"
 
       - name: push the tag (git push only -- never the git-data REST API)
+        working-directory: driftwood
         run: git push origin "${{ inputs.version }}"
