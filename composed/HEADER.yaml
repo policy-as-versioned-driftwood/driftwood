@@ -616,7 +616,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: 1fe97a6a7e1ed44398414048eb5755006e4634217c364326f788dc54d416e447
+  after: 5e0bcfaf6f4c27a2c4fadc7d701ee5a7f2435ae88bb39fa0118fe75b80736d15
   before:
     header:
       parents:
@@ -1284,8 +1284,8 @@ vendored-feeds:
   path: composed/feeds/feeds/threat-register/v2
   sha: 50a0b330a730f4f9ee9520561b0c05c8be4c9268
   files:
-    party.yaml: 204f41b1138803ed5a43f7a7f910627d428d9f3ead7232c48b926da62f427e48
-    threat-register/to_fair_scenario.py: 10e2f5b412b09a16ff8bff2e1fe108938c79b25ac20b95b4047b4e17631bcbe7
+    party.yaml: 6d5211a16fe5bfbe6bd28fc0f4c876f9de8fca8a2a43d2750a4f855610ee0823
+    threat-register/to_fair_scenario.py: 6afad65dd84451206ed276d08e34473cba652f97ef782bc7e2385ec4dc0e445d
     threat-register/v2/feed.json: c94ae8335d13edcbdc63b2d8f7c7cda3fbefd4d80e78022be51aba30d70b9a6c
 - party: insurer
   name: quote-driftwood
