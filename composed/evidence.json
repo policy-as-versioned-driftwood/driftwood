@@ -2901,7 +2901,7 @@
       "publisher_observation_scope": "Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.",
       "superseded": {
         "state": "behind",
-        "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut; this checkout carries no directory for threat-register/v3.0.0, so the line is priced from the signed tags alone"
+        "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut"
       }
     },
     {
@@ -2920,8 +2920,7 @@
         "version": "v3",
         "tag": "threat-register/v3.0.0",
         "tagged": "2026-09-10",
-        "published_at": null,
-        "readable": false,
+        "published_at": "2026-09-09",
         "since_tag": "threat-register/v3.0.0",
         "since": "2026-09-10"
       },
@@ -2933,10 +2932,9 @@
       "changed": false,
       "basis": "the pinned line's own amount x (eol_ramp(since, as_of) - 1): the surcharge the feeds module's EOL ramp puts on a version its publisher has superseded, +1x per year behind and capped at +4x, where `since` is the day the newer major's signing tag was cut; zero on that day, printed with both dates, and never summed into the exposure the line itself is already in",
       "limits": [
-        "zero (as_of 2026-08-28 precedes the tag day 2026-09-10): the signed artefact's as-of is its newest signed input; only a re-composition --as-of a later day (the scheduled proposer's) grows this line",
-        "the pinned checkout carries no directory for threat-register/v3.0.0, so the newer major's content is unread here: this line is priced from the signed tags alone, and no retirement to v3 is proposed until the feeds pin reaches a commit that carries it"
+        "zero (as_of 2026-08-28 precedes the tag day 2026-09-10): the signed artefact's as-of is its newest signed input; only a re-composition --as-of a later day (the scheduled proposer's) grows this line"
       ],
-      "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut; this checkout carries no directory for threat-register/v3.0.0, so the line is priced from the signed tags alone"
+      "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut"
     },
     {
       "source": "insurer",
@@ -3337,7 +3335,7 @@
       "feed_path": "threat-register/v2/feed.json",
       "party_artefact": "party.yaml",
       "converter": "threat-register/to_fair_scenario.py",
-      "converter_from": "platform",
+      "converter_from": "feeds",
       "invocation": [
         "threat",
         "driftwood"
@@ -3346,8 +3344,8 @@
       "payload_version_key": "feed_version",
       "published_at": "2026-07-31",
       "files": {
-        "party.yaml": "204f41b1138803ed5a43f7a7f910627d428d9f3ead7232c48b926da62f427e48",
-        "threat-register/to_fair_scenario.py": "10e2f5b412b09a16ff8bff2e1fe108938c79b25ac20b95b4047b4e17631bcbe7",
+        "party.yaml": "6d5211a16fe5bfbe6bd28fc0f4c876f9de8fca8a2a43d2750a4f855610ee0823",
+        "threat-register/to_fair_scenario.py": "6afad65dd84451206ed276d08e34473cba652f97ef782bc7e2385ec4dc0e445d",
         "threat-register/v2/feed.json": "c94ae8335d13edcbdc63b2d8f7c7cda3fbefd4d80e78022be51aba30d70b9a6c"
       },
       "publisher_observation": {
@@ -3365,14 +3363,13 @@
           "version": "v3",
           "tag": "threat-register/v3.0.0",
           "tagged": "2026-09-10",
-          "published_at": null,
-          "readable": false,
+          "published_at": "2026-09-09",
           "since_tag": "threat-register/v3.0.0",
           "since": "2026-09-10"
         },
         "superseded": {
           "state": "behind",
-          "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut; this checkout carries no directory for threat-register/v3.0.0, so the line is priced from the signed tags alone"
+          "detail": "tag threat-register/v3.0.0, signed 2026-09-10, publishes threat-register v3 ahead of the pinned v2; behind since 2026-09-10, the day threat-register/v3.0.0 was cut"
         }
       },
       "path": "composed/feeds/feeds/threat-register/v2"
