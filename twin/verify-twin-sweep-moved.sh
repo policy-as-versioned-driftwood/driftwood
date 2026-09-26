@@ -58,10 +58,12 @@ def out(status, msg):
 
 # --- 1. the step, as GitHub runs it -------------------------------------------------------
 doc = yaml.safe_load(WORKFLOW.read_text())
-steps = ((doc.get("jobs") or {}).get("sweep") or {}).get("steps") or []
+# Job `twin`, not `sweep`: since eco-system ticket 143 the sweep is a read-only twin job that
+# hands its reading to a writer job, and the step under test is the twin job's.
+steps = ((doc.get("jobs") or {}).get("twin") or {}).get("steps") or []
 step = next((s for s in steps if s.get("id") == "sweep"), None)
 if step is None or not step.get("run"):
-    out("FAIL", "twin-sweep.yml job `sweep` has no step with id `sweep` carrying a run: shell")
+    out("FAIL", "twin-sweep.yml job `twin` has no step with id `sweep` carrying a run: shell")
     print("TOTAL: %d pass, %d fail, %d could-not-look" % (LINES.count("PASS"), LINES.count("FAIL"), LINES.count("SKIP")))
     sys.exit(1)
 script = str(step["run"])
@@ -70,8 +72,9 @@ script = str(step["run"])
 # directly under the hub rather than .estate-clone/ so no estate-wide glob sees it.
 plant_root = Path(tempfile.mkdtemp(prefix=".plant-", dir=str(HUB)))
 try:
-    # `pip install --quiet pyyaml` is the one line of the step that reaches for a network; here
-    # python3 is the interpreter this check already runs under, so pip is shimmed to a no-op.
+    # The step reaches for no network since ticket 143 (its hash-pinned pip install is a step of
+    # its own); python3 is the interpreter this check already runs under, and pip stays shimmed
+    # to a no-op so a step that grew one back could not fetch anything here.
     shim = plant_root / "shim"
     shim.mkdir()
     (shim / "pip").write_text("#!/bin/sh\nexit 0\n")
