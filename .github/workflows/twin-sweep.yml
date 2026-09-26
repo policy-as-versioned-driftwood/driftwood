@@ -229,7 +229,11 @@ jobs:
           mkdir -p "${HANDOFF}"
           proposal=""
           if [ "${MOVED}" = "true" ]; then proposal="twin/forward-intel-${SWEPT_AT%%T*}"; fi
-          PROPOSAL="${proposal}" ADOPTER_REF="$(git rev-parse HEAD)" python3 - > "${HANDOFF}/observation.jsonl" <<'PY'
+          adopter_ref="$(git rev-parse HEAD)"
+          export PROPOSAL="${proposal}" ADOPTER_REF="${adopter_ref}"
+          # `python3 -` at the start of its own line, so the hub's schedule checker names this
+          # program in the job's PASS line instead of missing it behind a VAR="$(...)" prefix.
+          python3 - > "${HANDOFF}/observation.jsonl" <<'PY'
           import json, os
           print(json.dumps({
               "swept_at": os.environ["SWEPT_AT"],
