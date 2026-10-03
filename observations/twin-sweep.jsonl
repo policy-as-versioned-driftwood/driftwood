@@ -26,3 +26,4 @@
 {"feed": "forward-intel", "moved": false, "org": "driftwood", "proposal": "", "run": "36722651810", "swept_at": "2026-09-30T13:35:13Z", "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)"}
 {"feed": "forward-intel", "moved": false, "org": "driftwood", "proposal": "", "run": "36876049435", "swept_at": "2026-10-01T14:24:30Z", "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)"}
 {"feed": "forward-intel", "moved": false, "org": "driftwood", "proposal": "", "run": "37015320453", "swept_at": "2026-10-02T13:47:37Z", "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)"}
+{"feed": "forward-intel", "moved": false, "org": "driftwood", "proposal": "", "run": "37122868885", "swept_at": "2026-10-03T12:26:33Z", "twin_ref": "policy-as-versioned-flux@main -- the twin package does not self-version yet (ticket 29)"}
