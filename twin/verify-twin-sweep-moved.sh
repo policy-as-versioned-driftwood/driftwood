@@ -44,7 +44,7 @@ WORKFLOW="$REPO/.github/workflows/twin-sweep.yml"
 
 log="$(mktemp)"; trap 'rm -f "$log"' EXIT
 HUB="$HUB" REPO="$REPO" PY="$PY" WORKFLOW="$WORKFLOW" "$PY" - >"$log" 2>&1 <<'PY'
-import json, os, re, shutil, stat, subprocess, sys, tempfile
+import ast, json, os, re, shutil, stat, subprocess, sys, tempfile
 from pathlib import Path
 
 HUB, REPO, PY, WORKFLOW = (Path(os.environ[k]) for k in ("HUB", "REPO", "PY", "WORKFLOW"))
@@ -67,6 +67,22 @@ if step is None or not step.get("run"):
     print("TOTAL: %d pass, %d fail, %d could-not-look" % (LINES.count("PASS"), LINES.count("FAIL"), LINES.count("SKIP")))
     sys.exit(1)
 script = str(step["run"])
+
+# Mutate the current publisher declaration, just as the actual emitter selects
+# its output. Retained major directories are immutable history, not the feed
+# checked by this clock. Read the literal without importing/executing the emitter.
+tree = ast.parse((REPO / "twin" / "emit-forward-intel.py").read_text())
+declarations = [node for node in tree.body if isinstance(node, ast.Assign)
+                and any(isinstance(target, ast.Name) and target.id == "VERSION" for target in node.targets)]
+if (len(declarations) != 1 or not isinstance(declarations[0].value, ast.Constant)
+        or not isinstance(declarations[0].value.value, str)
+        or not re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", declarations[0].value.value)):
+    out("FAIL", "emitter must declare exactly one literal semantic VERSION")
+    sys.exit(1)
+current_feed = Path("twin") / "forward-intel" / ("v" + declarations[0].value.value.split(".")[0]) / "feed.json"
+if not (REPO / current_feed).is_file():
+    out("FAIL", "current declared emitter feed is absent: %s" % current_feed)
+    sys.exit(1)
 
 # Planted under the hub, not /tmp, because the emitter finds the twin package by walking up;
 # directly under the hub rather than .estate-clone/ so no estate-wide glob sees it.
@@ -112,10 +128,16 @@ try:
 
     cases = [
         ("a fresh copy", lambda p: None, "moved=false"),
-        ("a stale feed", lambda p: (p / "twin" / "forward-intel" / "v1" / "feed.json").open("a").write("\n"),
+        ("a stale feed", lambda p: (p / current_feed).open("a").write("\n"),
          "moved=true"),
         ("a stale signal lookup", stale_lookup, "moved=true"),
     ]
+    for old_feed in sorted((REPO / "twin" / "forward-intel").glob("v*/feed.json")):
+        relative = old_feed.relative_to(REPO)
+        if relative != current_feed:
+            cases.append(("a stale retained %s feed" % old_feed.parent.name,
+                          lambda p, relative=relative: (p / relative).open("a").write("\n"),
+                          "moved=false"))
     for label, mutate, want in cases:
         rc, outputs, said = run_step(label, mutate)
         ok = rc == 0 and want in outputs and any(o.startswith("swept_at=") for o in outputs)
