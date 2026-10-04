@@ -34,7 +34,7 @@ command -v git >/dev/null 2>&1 || skip "git is needed to stage the overlay's det
 
 log="$(mktemp)"
 HUB="$HUB" HERE="$HERE" "$PY" - >"$log" 2>&1 <<'PY'
-import json, os, re, subprocess, sys
+import ast, json, os, re, subprocess, sys
 
 HUB, HERE = os.environ["HUB"], os.environ["HERE"]
 sys.path.insert(0, HUB)
@@ -47,14 +47,17 @@ def out(status, msg):
     print("%s: %s" % (status, msg))
 
 EMIT = os.path.join(HERE, "twin", "emit-forward-intel.py")
-FEED = os.path.join(HERE, "twin", "forward-intel", "v1", "feed.json")
+feed_version = next(ast.literal_eval(node.value) for node in ast.parse(open(EMIT).read()).body
+               if isinstance(node, ast.Assign)
+               and any(isinstance(target, ast.Name) and target.id == "VERSION" for target in node.targets))
+FEED = os.path.join(HERE, "twin", "forward-intel", "v" + feed_version.split(".")[0], "feed.json")
 VENDORED = os.path.join(HERE, "twin", "forward-intel", "payload.schema.json")
 CANONICAL = os.path.join(HERE, "..", "platform", "feeds", "forward-intel.payload.schema.json")
 
 # 1. the overlay loads, and re-emitting it is byte-identical
 r = subprocess.run([sys.executable, EMIT, "--check"], capture_output=True, text=True)
 if r.returncode == 0:
-    out("PASS", "the overlay loads and re-renders twin/forward-intel/v1/feed.json byte-identically")
+    out("PASS", "the overlay loads and re-renders %s byte-identically" % os.path.relpath(FEED, HERE))
 else:
     out("FAIL", "emit-forward-intel.py --check: " + (r.stdout + r.stderr).strip().replace("\n", " | "))
     print("TOTAL: could not read the feed; nothing further was observed")
@@ -69,12 +72,30 @@ errs = [e.message for e in Draft7Validator(schema).iter_errors(payload)]
 out("FAIL" if errs else "PASS",
     "payload vs %s%s" % (feed["payload_schema"], "; ".join([""] + errs) if errs else ""))
 
-# 3. the vendored schema is the platform's canonical one, byte for byte
+# 3. the owned schema preserves the canonical contract and exactly its declared optional additions
 if os.path.isfile(CANONICAL):
-    same = open(CANONICAL, "rb").read() == open(VENDORED, "rb").read()
+    canonical = json.load(open(CANONICAL))
+    owned = json.load(open(VENDORED))
+    extensions = {
+        "rests_on_grade": {"type": "integer", "enum": [1, 2, 3]},
+        "valuation": {
+            "type": "object",
+            "required": ["amount", "currency", "native_amount", "native_currency", "party_fact", "fx"],
+            "properties": {
+                "amount": {"type": "number"}, "currency": {"type": "string"},
+                "native_amount": {"type": "number"}, "native_currency": {"type": "string"},
+                "party_fact": {"type": "string"}, "fx": {"type": ["object", "null"]}},
+            "additionalProperties": False}}
+    base = dict(owned)
+    base["properties"] = {key: value for key, value in owned["properties"].items()
+                          if key not in extensions}
+    same = (base == canonical and
+            all(owned["properties"].get(key) == value for key, value in extensions.items()) and
+            not (set(extensions) & set(owned["required"])))
     out("PASS" if same else "FAIL",
-        "vendored payload schema %s platform/feeds/forward-intel.payload.schema.json"
-        % ("is byte-identical to" if same else "DIFFERS from"))
+        "owned payload schema %s the immutable canonical contract plus exactly the optional "
+        "valuation and rests_on_grade declarations"
+        % ("preserves" if same else "DIFFERS from"))
 else:
     out("SKIP", "platform/feeds/forward-intel.payload.schema.json is not in this estate yet, so "
                 "the vendored copy could not be compared to its canonical home")
@@ -114,7 +135,7 @@ out("PASS" if people else "FAIL", "overlay floor: %d role(s) declared as people"
 edge_dir = os.path.join(HERE, "twin", "orgs", "driftwood", "edges")
 edges = [yaml.safe_load(open(os.path.join(edge_dir, f))) for f in sorted(os.listdir(edge_dir))]
 from twin import evidence  # the published ladder, not a number copied into this script
-admits = evidence.admission_threshold()
+admits = evidence.declared_threshold(party)
 graded = [e for e in edges if e.get("type") == "influences"
           and e["to"] == persp["cash_flow"][0]
           and int(e["evidence_grade"]) <= admits]
@@ -187,7 +208,7 @@ else:
     problems = []
     if "publisher" not in (party.get("roles") or []):
         problems.append("roles do not include publisher")
-    if os.path.relpath(FEED, HERE) != os.path.join(entry["path"], "v1", "feed.json"):
+    if os.path.relpath(FEED, HERE) != os.path.join(entry["path"], "v" + feed_version.split(".")[0], "feed.json"):
         problems.append("path %r does not hold the emitted feed" % entry["path"])
     if entry.get("payload_schema") != feed["payload_schema"]:
         problems.append("payload_schema %r != the envelope's %r" % (entry.get("payload_schema"), feed["payload_schema"]))

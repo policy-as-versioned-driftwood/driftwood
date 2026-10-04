@@ -81,7 +81,7 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 | feeds | feed | threat-register | driftwood | GBP | GBP 19,558.55 | no | baseline |
 | feeds | feed | cve | driftwood | GBP | could not look (section 6) | no | absent |
 | insurer | premium | quote-driftwood | driftwood | GBP | GBP 113,403.30 | no | — |
-| twin | twin | forward-intel | driftwood | GBP | GBP 758.33 | yes | baseline |
+| twin | twin | forward-intel | driftwood | GBP | GBP 758.33 | no | baseline |
 | platform | agent-cage | twin-agent | driftwood | GBP | GBP 0.00 | no | baseline |
 | ico | switching | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | — |
 | feeds | switching | threat-register | driftwood | GBP | could not look (section 6) | no | — |
@@ -143,11 +143,11 @@ Source: `composed/HEADER.yaml` → `baseline`, `selected-controls`, `holes`; `co
 
 - Baseline: **MODERATE**
 - Controls selected: 287
-- Controls with no implementation behind them (`holes[]`): 285 — closed: 1, recorded: 284
-- So 2 of 287 selected controls have an implementation in this artefact. A hole is priced, never refused (ADR-0020).
+- Controls with no implementation behind them (`holes[]`): 284 — recorded: 284
+- So 3 of 287 selected controls have an implementation in this artefact. A hole is priced, never refused (ADR-0020).
 - `refusals[]`: 0
 - `restatements[]`: 0
-- `deltas[]`: 1
+- `deltas[]`: 0
 - `ungoverned[]`: 0
 
 ## 6. What this handbook cannot say
@@ -190,4 +190,4 @@ Two things this page can never tell you, by construction, and neither is a field
 
 ---
 
-Counted from the artefact: 6 publisher(s), 34 installed object(s), 34 recorded member(s), 11 price(s), 287 selected control(s), 285 hole(s), 2 recorded limit(s), 20 named absence(s).
+Counted from the artefact: 6 publisher(s), 34 installed object(s), 34 recorded member(s), 11 price(s), 287 selected control(s), 284 hole(s), 2 recorded limit(s), 20 named absence(s).

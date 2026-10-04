@@ -624,14 +624,14 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: 687f447958e4a60bfcae965ea4a0ddf5ca34b7cd3323ec5935afffa417d700b7
+  after: 7e5655b9dfd7aec6b740e986a86e80dd94573483fd82074e0e5d3d6298cd8533
   before:
     header:
       parents:
       - party: platform
         kind: implementations
-        version: 4.0.0
-        sha: 557c1538fe022c784ea4ffb345c92d2e4b11fe71
+        version: 5.0.0
+        sha: 703eff6aee959843c4160aa54fd03413f62858cc
       - party: nist
         kind: controls
         version: 1.1.0
@@ -644,8 +644,13 @@ comparison-inputs:
       - party: feeds
         kind: feed
         name: threat-register
-        version: v2
-        sha: 50a0b330a730f4f9ee9520561b0c05c8be4c9268
+        version: v4
+        sha: 37dfe4a2de50f1a1fd7aeb6348d819373188e0e6
+      - party: feeds
+        kind: feed
+        name: cve
+        version: v3
+        sha: 37dfe4a2de50f1a1fd7aeb6348d819373188e0e6
       - party: insurer
         kind: feed
         name: quote-driftwood
@@ -681,7 +686,6 @@ comparison-inputs:
       - ac-21
       - ac-22
       - ac-3
-      - ac-4
       - ac-5
       - ac-6.1
       - ac-6.10
@@ -1245,9 +1249,9 @@ comparison-inputs:
       name: threat-register
       proposed_tier: baseline
       hole: null
-    - kind: supersede
+    - kind: feed
       source: feeds
-      name: threat-register
+      name: cve
       proposed_tier: null
       hole: null
     - kind: premium
@@ -1258,7 +1262,12 @@ comparison-inputs:
     - kind: twin
       source: twin
       name: forward-intel
-      proposed_tier: isolated
+      proposed_tier: baseline
+      hole: null
+    - kind: agent-cage
+      source: platform
+      name: twin-agent
+      proposed_tier: baseline
       hole: null
     - kind: switching
       source: ico
@@ -1268,6 +1277,11 @@ comparison-inputs:
     - kind: switching
       source: feeds
       name: threat-register
+      proposed_tier: null
+      hole: null
+    - kind: switching
+      source: feeds
+      name: cve
       proposed_tier: null
       hole: null
     - kind: switching

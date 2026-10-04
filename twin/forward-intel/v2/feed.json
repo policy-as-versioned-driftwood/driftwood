@@ -58,7 +58,7 @@
         "party": "feeds",
         "kind": "feed",
         "name": "threat-register",
-        "version": "2"
+        "version": "4"
       },
       {
         "party": "driftwood",

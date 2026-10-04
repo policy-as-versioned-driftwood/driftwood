@@ -2910,15 +2910,6 @@
       "currency": "GBP",
       "amount": null,
       "priced_by": null
-    },
-    {
-      "source": "nist",
-      "control_id": "ac-4",
-      "status": "closed",
-      "perspective": "driftwood",
-      "currency": "GBP",
-      "amount": null,
-      "priced_by": null
     }
   ],
   "ungoverned": [],
@@ -3035,7 +3026,7 @@
         "currency": "GBP"
       },
       "name": "threat-register",
-      "old_version": "v2",
+      "old_version": "v4",
       "new_version": "v4",
       "old_price": 19558.549772440045,
       "new_price": 19558.549772440045,
@@ -4880,9 +4871,9 @@
       "lef_basis": "cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). Frequency basis (editorial, read 2026-09-09): Annual loss-event frequency for this institution's headline threat. DBIR retail-sector web-app-attack base rate, editorial midpoint COULD NOT LOOK: the DBIR publishes sector breach-frequency ranges, not a rate for one named institution, and no run of this estate has counted events for these three. Editorial midpoints, labelled as such. Magnitude basis (editorial, read 2026-09-09): Impact per cart/checkout PII exfiltration event for a mid-market UK e-commerce institution: short-life cart data, high traffic, low sensitivity per record. COULD NOT LOOK: no run of this estate has counted per-event losses for any institution in this register, and none of the three publishes one. These are the publisher's editorial bands, moved here from platform/feeds/to_fair_scenario.py's THREAT_LM_GBP unchanged so that the move itself moves no price. What would close it: a per-sector per-event loss figure with a published source and a date, or an institution's own signed incident cost.",
       "lef_from": "threat-register",
       "rests_on_grade": 3,
-      "old_tier": "isolated",
+      "old_tier": "baseline",
       "proposed_tier": "baseline",
-      "changed": true,
+      "changed": false,
       "proposed_as": "label"
     },
     {
@@ -5234,18 +5225,7 @@
       ]
     }
   ],
-  "deltas": [
-    {
-      "kind": "closed-hole",
-      "source": "nist",
-      "control_id": "ac-4",
-      "perspective": "driftwood",
-      "currency": "GBP",
-      "amount": null,
-      "priced_by": null,
-      "detail": "nist:ac-4 was a recorded hole and a claim now covers it; no pinned instrument names a price for it"
-    }
-  ],
+  "deltas": [],
   "floor_change": {
     "schema": 1,
     "before": {
