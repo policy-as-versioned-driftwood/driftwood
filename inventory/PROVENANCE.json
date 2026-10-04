@@ -1,6 +1,6 @@
 {
   "apps_source": {
-    "commit": "17302ecd20041df61a52428e67246c330294d2a6",
+    "commit": "1cd446f62a531c0aeee7e50c0a59a11ac5d00d67",
     "path": "gitops/apps",
     "repository": "https://github.com/policy-as-versioned-driftwood/driftwood",
     "signature": {
@@ -9,11 +9,11 @@
       "identity": "https://github.com/policy-as-versioned-driftwood/driftwood/.github/workflows/cut-release.yml@refs/heads/main",
       "issuer": "https://token.actions.githubusercontent.com",
       "rekor": true,
-      "rekor_entry": "https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3075511413",
-      "tlog_index": "3075511413"
+      "rekor_entry": "https://rekor.sigstore.dev/api/v1/log/entries?logIndex=3077567350",
+      "tlog_index": "3077567350"
     },
-    "tag": "v3.0.1",
-    "tag_object": "4cdf9152d2af61d9e476f5e0f487d85a2808f42f"
+    "tag": "v4.0.0",
+    "tag_object": "bff31936b9e34074a7ce078e873d3a0df31ecd35"
   },
   "binding": "The complete exact tagged apps graph and primary reports reproduce images.json; no release or cluster activation is asserted.",
   "cached_database_unchanged": true,
