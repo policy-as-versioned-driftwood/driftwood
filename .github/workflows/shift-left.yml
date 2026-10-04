@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { path: driftwood }
+        with: { path: driftwood, fetch-depth: 0 }
 
       - name: install pyyaml (adopter-gate.py needs it early, to read the platform pin)
         run: pip install --quiet pyyaml
@@ -81,7 +81,7 @@ jobs:
           set -euo pipefail
           python3 driftwood/.github/scripts/adopter-gate.py read-pin \
             driftwood/gitops/platform/platform-pin.yaml | sed 's/^/head_/' >> "$GITHUB_OUTPUT"
-          git -C driftwood fetch --depth=1 origin "${{ github.event.pull_request.base.sha }}"
+          git -C driftwood fetch origin "${{ github.event.pull_request.base.sha }}"
           git -C driftwood show "${{ github.event.pull_request.base.sha }}:gitops/platform/platform-pin.yaml" \
             | python3 driftwood/.github/scripts/adopter-gate.py read-pin /dev/stdin | sed 's/^/base_/' >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
@@ -163,6 +163,23 @@ jobs:
             [ -n "${manifest}" ] || continue
             python3 platform/shift-left/ci-check.py --resource "${manifest}"
           done < "${RUNNER_TEMP}/served.txt"
+
+      - name: the cage probe grades the served documents (eco-system ticket 161)
+        # The lane's facts 6 and 7 prove the cage on a cluster. This proves the DOCUMENTS the
+        # cluster reads, offline, with the CLI the step above installed: the sampler's own probe
+        # objects (drift/five-facts.py) run against composed/ at the tag
+        # gitops/composed/composed-set.yaml pins and at HEAD, through drift/cage_probe.py. It
+        # fails when the fall-closed pod is not on the ladder's bottom, when anything selects the
+        # reference pod, or when a PriorityClass a mutation names is not served. This job checks
+        # the repository out without tags, so the pinned tag is fetched first; a tag that is still
+        # missing is a could-not-look the script names (exit 3), and here that fails the job.
+        # It sits after the version cross-check gate, and not beside the CLI install step,
+        # so a change to how the CLI is installed (ticket 147) does not collide with it.
+        run: |
+          set -euo pipefail
+          tag="$(python3 -c 'import sys; sys.path.insert(0, "driftwood/scripts"); import render_composed as rc; print(rc.pinned_tag())')"
+          git -C driftwood fetch --quiet origin "refs/tags/${tag}:refs/tags/${tag}"
+          bash driftwood/verify-cage-probe.sh
 
       - name: install pinned cosign (binary + checksum, no marketplace action)
         env:
@@ -342,7 +359,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-        with: { path: driftwood }
+        with: { path: driftwood, fetch-depth: 0 }
 
       - name: Install pinned identity verifier
         uses: ./driftwood/.github/actions/install-gitsign
@@ -448,7 +465,7 @@ jobs:
         # delivered by exactly one Kustomization that ResourceSet generates, the array must be the
         # version directories that tag carries, and every machinery allow-list must be the array.
         # The ResourceSet is read from this pull request's head, composed/ from the tag, which is
-        # how the lane applies them. Tags are fetched because the checkout above is shallow.
+        # how the lane applies them. Refresh tags without truncating the complete checkout history.
         run: |
           set -euo pipefail
           git -C driftwood fetch --quiet --tags origin

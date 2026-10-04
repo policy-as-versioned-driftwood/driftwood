@@ -26,8 +26,8 @@ beside it is not a pin.
 
 **The tag.** `twin/v0.1.0` is prefixed because the hub repository is not only the twin. It does
 not exist yet: a signed tag is cut by a release workflow with gitsign, never on a laptop, so until
-the owner merges and that workflow runs, `world_ref` is the only pin with bytes behind it and
-`PIN.yaml` carries `tag_cut: false`. When the tag lands, Renovate's `git-refs` datasource bumps
+the owner merges and that workflow runs, `PIN.yaml` carries `tag_cut: false`. Its full
+`hub_commit` pins published producer code and `world_ref` pins vendored world bytes. When the tag lands, Renovate's `git-refs` datasource bumps
 `twin_version` and `twin_tag` together the way `gitops/platform/platform-pin.yaml` is bumped
 today. See `twin/RELEASE.md` in the hub.
 
@@ -70,13 +70,17 @@ check 6 as a presence check on the map, never a provenance check on its contents
 
 ## `forward-intel/payload.schema.json`
 
-The canonical home is `platform/feeds/forward-intel.payload.schema.json`, and the copy here is a
-byte-for-byte vendoring of it. It is vendored beside the feed for two reasons:
+This is the adopter's owned schema for its forward-intel envelope. Its base is the
+immutable `platform/feeds/forward-intel.payload.schema.json` at authenticated tools
+v5.0.0 (`703eff6aee959843c4160aa54fd03413f62858cc`). It preserves every canonical
+property, requirement and type. Ticket 144 adds exactly two optional declarations:
+`rests_on_grade` (integer grades 1–3) and `valuation` (the native amount/currency,
+party fact, reporting amount/currency and nullable dated FX record). No inherited
+constraint is removed and the closed property set remains closed.
 
-1. a feed envelope's `payload_schema` is resolved **inside the publishing repository**
-   (`verify/feed-contract/feed_contract.py`), so a path into another repo cannot validate; and
-2. a departing adopter must be able to re-derive its prices offline from this checkout alone
-   (spec.md, "A departing adopter").
-
-`verify-twin-overlay.sh` byte-compares the two copies whenever the platform one is present, and
-says it could not look when it is not. It never treats absence as agreement.
+The active schema is an owned extension, not a byte-for-byte vendored copy. It lives
+inside this publishing repository because the envelope resolves `payload_schema`
+here, and the feed can be validated offline from these self-contained bytes.
+`verify-twin-overlay.sh` checks the complete canonical base semantically and the
+exact two optional additions against the materialized authentic platform schema.
+It reports could-not-look if that parent is absent; absence never proves agreement.

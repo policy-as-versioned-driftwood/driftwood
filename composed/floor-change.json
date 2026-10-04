@@ -38,16 +38,29 @@
       "residual_delta": null
     },
     {
+      "source": "feeds",
+      "kind": "feed",
+      "name": "cve",
+      "perspective": "driftwood",
+      "currency": "GBP",
+      "uncaged_amount": null,
+      "before_tier": null,
+      "after_tier": null,
+      "before_residual": null,
+      "after_residual": null,
+      "residual_delta": null
+    },
+    {
       "source": "twin",
       "kind": "twin",
       "name": "forward-intel",
       "perspective": "driftwood",
       "currency": "GBP",
-      "uncaged_amount": 1897646.1130078766,
+      "uncaged_amount": 758.33189997347,
       "before_tier": null,
-      "after_tier": "isolated",
+      "after_tier": "baseline",
       "before_residual": null,
-      "after_residual": 37952.92226015757,
+      "after_residual": 530.832329981429,
       "residual_delta": null
     }
   ],

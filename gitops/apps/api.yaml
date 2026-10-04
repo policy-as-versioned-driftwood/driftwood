@@ -9,7 +9,7 @@ metadata:
   labels:
     app: api
     app.kubernetes.io/part-of: driftwood
-    policy-as-versioned.dev/policy-version: "5.0.0"
+    policy-as-versioned.dev/policy-version: "7.0.0"
 spec:
   securityContext:
     runAsNonRoot: true

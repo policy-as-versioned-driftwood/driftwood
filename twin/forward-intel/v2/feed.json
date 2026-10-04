@@ -1,0 +1,72 @@
+{
+  "kind": "feed",
+  "name": "forward-intel",
+  "version": "2.0.0",
+  "published_by": "driftwood",
+  "published_at": "2026-10-03T00:00:00Z",
+  "payload_schema": "twin/forward-intel/payload.schema.json",
+  "payload": {
+    "perspective": "driftwood",
+    "valuation": {
+      "amount": 3200000.0000000005,
+      "currency": "GBP",
+      "native_amount": 3200000.0000000005,
+      "native_currency": "GBP",
+      "party_fact": "size.turnover",
+      "fx": null
+    },
+    "rests_on_grade": 3,
+    "shock": "Published comparable anchor, not an observed revenue suppression. DSG penalty readings250000GBP (FTT substituted) and500000GBP (original notice) divided by Currys group FY2024/25 revenue8706000000GBP. The case remains unsettled; group revenue is not DSG standalone turnover and the filing date is not the incident date. Grade3 permits the declared comparative assumption, not a measurement. Sources: https://caselaw.nationalarchives.gov.uk/ukftt/grc/2023/983 and https://www.currysplc.com/media/ap4dtkwn/currys-annual-report-2024-25-web.pdf; existing research94 supplies the historical rulings. Bounds were fixed before repricing.",
+    "horizon": 1,
+    "lef": null,
+    "lm": [
+      91.89,
+      183.78,
+      183.78
+    ],
+    "currency": "GBP",
+    "curve": [
+      {
+        "account": "baseline",
+        "net_cost_of_risk": 8183.78
+      },
+      {
+        "account": "restricted",
+        "net_cost_of_risk": 20183.78
+      },
+      {
+        "account": "quarantine",
+        "net_cost_of_risk": 42183.78
+      },
+      {
+        "account": "isolated",
+        "net_cost_of_risk": 95183.78
+      }
+    ],
+    "register": [],
+    "claim_scope": {
+      "included": [
+        "uk-gdpr"
+      ],
+      "excluded": [
+        "pci-dss"
+      ],
+      "note": "The shock is an exfiltration of customer records, priced under the one regime this party subscribes to a pricing feed for. Card-scheme penalties are carved out: no publisher in this party's inherits[] prices pci-dss, so a number here would have no instrument behind it."
+    },
+    "derived_from": [
+      {
+        "party": "feeds",
+        "kind": "feed",
+        "name": "threat-register",
+        "version": "4"
+      },
+      {
+        "party": "driftwood",
+        "kind": "feed",
+        "name": "forward-intel",
+        "version": "2.0.0",
+        "ref": "0b348f4a66facee1cc7823204d7fa13a7295e7ef"
+      }
+    ]
+  }
+}

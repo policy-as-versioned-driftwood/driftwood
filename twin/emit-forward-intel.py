@@ -42,8 +42,8 @@ ORG = "driftwood"
 # The publisher's own declaration. A release bumps these two lines and `forward-intel/bump.yaml`
 # in the same PR a human merges -- they are not derived from the overlay, which is exactly why a
 # re-emit at any hour of any day produces the same bytes.
-VERSION = "1.0.0"
-PUBLISHED_AT = "2026-08-28T00:00:00Z"
+VERSION = "2.0.0"
+PUBLISHED_AT = "2026-10-03T00:00:00Z"
 HORIZON = 1  # years; ticket 08: "horizon is one year and is stated in the payload"
 
 # The publisher's own declaration of what a claim off this scenario covers, keyed the way the
@@ -155,7 +155,7 @@ def stage(dest: Path) -> Path:
     return dest
 
 
-def cash_flow_edge(graph, cash_flow: str):
+def cash_flow_edge(graph, cash_flow: str, threshold: int):
     """The one graded causal edge that carries an impact into this perspective's currency."""
     hits = [e for e in graph.edges if e.type == CAUSAL_EDGE and e.target == cash_flow]
     if len(hits) != 1:
@@ -164,7 +164,7 @@ def cash_flow_edge(graph, cash_flow: str):
             "shock, so the overlay must carry exactly one." % (len(hits), cash_flow)
         )
     edge = hits[0]
-    if not evidence.may_price(edge.grade):
+    if not evidence.may_price(edge.grade, threshold=threshold):
         sys.exit(
             "REFUSED: causal edge %r is grade %d, outside the pricing threshold of %d. An impact "
             "that may not price cannot leave as a number." % (edge.id, edge.grade, evidence.threshold())
@@ -199,10 +199,46 @@ def curve(overlay: Overlay, ladder, impact: float) -> list[dict]:
                 "curve missing a rung reads as a rung nobody would choose, which is a different "
                 "claim from one nobody priced." % tier
             )
-        reduction = float(response["mitigates"]["reduction"]["mode"])
+        reduction = (float(response["mitigates"]["reduction"]["mode"])
+                     if evidence.may_price(int(response["mitigates"]["evidence_grade"]),
+                                           threshold=overlay.pricing_threshold) else 0.0)
         cost = float(response["cost"]["mode"])
         out.append({"account": tier, "net_cost_of_risk": money(impact * (1.0 - reduction) + cost)})
     return out
+
+
+def valuation_amount(party, value, currency):
+    """A native filing amount reaches GBP only through its pinned, verified dated FX feed."""
+    from twin.valuation import MissingInstrument, rederive
+    native = party.get("size", {}).get("turnover", {}).get("currency")
+    fx = None
+    if native != currency:
+        pin_path = REPO / "gitops/flux-system/gotk-sync-fx.yaml"
+        if not pin_path.exists():
+            raise CannotLook("no pinned signature-verified FX source for the filing date; "
+                             "USD turnover and service fees remain native USD, never labelled GBP")
+        spec = yaml.safe_load(pin_path.read_text())["spec"]
+        pin = spec["ref"]
+        feeds = HUB / ".estate-clone/feeds"
+        try:
+            commit = subprocess.check_output(["git", "-C", str(feeds), "rev-parse", pin["tag"] + "^{commit}"], text=True).strip()
+            if commit != pin["commit"] or not str(pin["tag"]).startswith("fx/v"):
+                raise CannotLook("FX pin tag and commit do not describe the same FX release")
+            subprocess.run(["gitsign", "verify-tag", pin["tag"],
+                "--certificate-identity-regexp=^https://github\\.com/policy-as-versioned-feeds/feeds/\\.github/workflows/cut-release\\.yml@refs/heads/(main|release/[0-9]+\\.[0-9]+\\.x)$",
+                "--certificate-oidc-issuer=https://token.actions.githubusercontent.com"],
+                cwd=feeds, check=True, capture_output=True)
+            version = str(pin["tag"]).split("/v", 1)[1].split(".", 1)[0]
+            raw = subprocess.check_output(["git", "-C", str(feeds), "show", pin["commit"] + ":fx/v" + version + "/feed.json"], text=True)
+            fx = json.loads(raw)
+            if "illustrative" in str(fx["payload"].get("note", "")).lower():
+                raise CannotLook("the pinned FX release declares illustrative rates; no observed currency instrument")
+        except (OSError, subprocess.CalledProcessError, KeyError, ValueError) as exc:
+            raise CannotLook("FX signature/rate instrument could not be read: " + str(exc)) from exc
+    try:
+        return rederive(party, value, currency, fx=fx)
+    except MissingInstrument as exc:
+        raise CannotLook(str(exc)) from exc
 
 
 def payload(overlay: Overlay, currency: str, party: dict) -> dict:
@@ -213,8 +249,9 @@ def payload(overlay: Overlay, currency: str, party: dict) -> dict:
     if cash_flow not in priced:
         sys.exit("REFUSED: perspective %r declares %r as its cash flow and puts no priced valuation "
                  "on it, so nothing can cross into the currency." % (ORG, cash_flow))
-    base = float(priced[cash_flow]["amount"])
-    edge = cash_flow_edge(overlay.graph(), cash_flow)
+    valuation_reading = valuation_amount(party, priced[cash_flow], currency)
+    base = float(valuation_reading["amount"])
+    edge = cash_flow_edge(overlay.graph(), cash_flow, overlay.pricing_threshold)
     elasticity = edge.causal["elasticity"]
 
     # One magnitude claim, from this overlay's own numbers: the share of the declared cash flow the
@@ -258,6 +295,8 @@ def payload(overlay: Overlay, currency: str, party: dict) -> dict:
 
     return {
         "perspective": ORG,
+        "valuation": valuation_reading,
+        "rests_on_grade": max(edge.grade, int(overlay.perspectives[ORG]["values"][str(overlay.perspectives[ORG]["cash_flow"][0])]["evidence_grade"])),
         "shock": str(overlay.edges[edge.id]["note"]).strip(),
         "horizon": HORIZON,
         # Null: this twin has no frequency. The subscribed pricing feed supplies it, and that
@@ -301,7 +340,7 @@ def render() -> str:
         )
     with tempfile.TemporaryDirectory() as tmp:
         repo = ModelRepo.open(stage(Path(tmp) / "mirror"))
-        overlay = Overlay.load(repo, ORG)
+        overlay = Overlay.load(repo, ORG, pricing_threshold=evidence.declared_threshold(party))
         return json.dumps(envelope(payload(overlay, currency, party)), indent=2, ensure_ascii=False) + "\n"
 
 
