@@ -45,18 +45,6 @@ python3 .github/scripts/verify-pinned-checkouts.py \
 # gitsign must be installed on the Renovate runner; the tool runner refuses
 # missing verifiers and rejects an incorrect release identity before execution.
 
-# Compose TWICE, deliberately. Composition reads the previous composed
-# HEADER from disk to fill each price entry's old_version, so a single run
-# here would commit a transition record (old_version v1, new_version v2)
-# that the NEXT recompose -- compose-check on this PR, and on every PR
-# after the merge -- can never reproduce, failing the drift check forever.
-# The committed artefact must be the settled fixpoint (old == new); the
-# pull request diff itself is the record of the transition.
-python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
-  --estate-clone "$work" --out "$PWD" > /dev/null
-python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
-  --estate-clone "$work" --out "$PWD"
-
 # --- the twin's derived artefacts follow the pin, in the SAME commit (ticket 72) ---
 # The first real bump (PR #20, threat-register v1 -> v2) moved party.yaml and
 # composed/ together and left twin/forward-intel/v1/feed.json carrying
@@ -72,17 +60,16 @@ python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" com
 # a pin with no row, or a row with no pin, is refused -- a human writes those.
 python3 .github/scripts/rederive-signals.py
 
-# The forward-intel feed: emit-forward-intel.py finds the hub's `twin` package
-# by walking UP from the overlay (it does not self-version yet, ticket 29), and
-# Renovate's branch workdir has no hub above it. So the hub is cloned into
-# $work and the overlay's inputs are copied to the path clone-estate.sh would
-# assemble -- the same plant verify-twin-overlay.sh uses -- rendered there, and
-# the one output copied back. A copy, not a symlink: the emitter resolves
-# symlinks before it walks, so a link would land it back here, hub-less.
-git clone --quiet --depth 1 --branch main \
-  "https://github.com/policy-as-versioned-flux/policy-as-versioned-flux" "$work/hub"
-mirror="$work/hub/.estate-clone/driftwood"
-mkdir -p "$mirror"
-cp -R twin selection-policy party.yaml "$mirror/"
-python3 "$mirror/twin/emit-forward-intel.py"
-cp "$mirror/twin/forward-intel/v1/feed.json" twin/forward-intel/v1/feed.json
+# Render against the exact published hub_commit in twin/PIN.yaml, never
+# whatever happens to be on main. A temporary mirror supplies the emitter's
+# hub layout, and only its declared current VERSION's feed is copied back.
+python3 .github/scripts/refresh-twin-feed.py "$work/hub"
+
+# All nonhidden twin inputs above participate in tools5's comparison identity.
+# Compose after deriving them so the committed output replays from this source.
+# Compose TWICE with the existing authenticated runner, after all derived inputs.
+# Both passes see the same final source; the second publishes the settled output.
+python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
+  --estate-clone "$work" --out "$PWD" > /dev/null
+python3 .github/scripts/platform-tools.py --tools-dir "$work/platform-tools" compose "$PWD" \
+  --estate-clone "$work" --out "$PWD"
