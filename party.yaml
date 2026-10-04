@@ -50,6 +50,7 @@ size:
 # is retired, because whose money is at risk is this party's own declaration
 # and nobody else's. Loosest in the estate: Audit-heavy, short-life cart PII.
 appetite:
+  pricing_threshold: 3
   tolerance: { amount: 40000, currency: GBP }
 # MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
 # one of the two controls this estate implements (ADR-0013). May add
@@ -57,10 +58,11 @@ appetite:
 # in gitops/apps/nist-pin-configmap.yaml's data.baselineName.
 baseline: MODERATE
 inherits:
-  - { party: platform, kind: implementations, version: "4.0.0", since: '2026-08-28' }
+  - { party: platform, kind: implementations, version: "5.0.0", since: '2026-08-28' }
   - { party: nist,     kind: controls,        version: "1.1.0", since: '2026-08-28' }
   - { party: ico,      kind: feed, name: penalty-schema,    version: "v3", since: '2026-08-28' }
-  - { party: feeds,    kind: feed, name: threat-register,   version: "v2", since: '2026-08-28' }
+  - { party: feeds,    kind: feed, name: threat-register,   version: "v4", since: '2026-08-28' }
+  - { party: feeds,    kind: feed, name: cve,               version: "v3", since: '2026-10-03' }
   # The insurer's signed quote for THIS party, one feed name per adopter
   # (ticket 36; ticket 14 answers 3 and 4). It is the only parent whose price
   # is a COST rather than an exposure: composition books its premium into

@@ -4,7 +4,15 @@ from: cart-pii
 to: checkout-revenue
 sign: negative
 lag_days: 30
-elasticity: { min: 0.06, mode: 0.12, max: 0.25 }
-evidence_grade: 2
-note: >-
-  An exfiltration of the cart record store suppresses checkout conversion for a quarter.
+elasticity:
+  min: 2.8715828164484264e-05
+  mode: 5.743165632896853e-05
+  max: 5.743165632896853e-05
+evidence_grade: 3
+note: 'Published comparable anchor, not an observed revenue suppression. DSG penalty
+  readings250000GBP (FTT substituted) and500000GBP (original notice) divided by Currys
+  group FY2024/25 revenue8706000000GBP. The case remains unsettled; group revenue
+  is not DSG standalone turnover and the filing date is not the incident date. Grade3
+  permits the declared comparative assumption, not a measurement. Sources: https://caselaw.nationalarchives.gov.uk/ukftt/grc/2023/983
+  and https://www.currysplc.com/media/ap4dtkwn/currys-annual-report-2024-25-web.pdf;
+  existing research94 supplies the historical rulings. Bounds were fixed before repricing.'

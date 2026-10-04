@@ -33,19 +33,16 @@ org: driftwood
 pins_read_from: party.yaml
 
 signals:
-  - pin: { party: platform, kind: implementations, version: '4.0.0' }
+  - pin: { party: platform, kind: implementations, version: '5.0.0' }
     signal:
-      id: platform-implementations-4.0.0-is-the-pinned-release
-      at: '2026-09-24'
+      id: platform-implementations-5.0.0-is-the-pinned-release
+      at: '2026-10-04'
       scenario: eol-date-passes-2026
       what: >-
-        driftwood's cage policy line comes from platform 4.0.0. The end-of-life date for that
-        release is the publisher's to publish; this row is what binds it to the standing question
-        about a pinned dependency passing one. The pin moved off 3.3.0 on 2026-09-24. That move
-        retired policy 4.0.0 (owner-instructed 2026-09-24), so policy 5.0.0, which the owner
-        accepted for driftwood on 2026-09-23 (accepted-majors/platform-5.0.0.yaml), is the only
-        served line. `at` is that re-derivation date, per this file's own upgrade path, not the
-        subscription's `since`, which still records when driftwood first pinned platform at all.
+        Platform repository v5.0.0 carries signed policy5,6 and7. This institution claims
+        the corrected compatible policy7 under its exact delegated acceptance, retaining
+        the older supported lines during this engine1.18.2 window. End-of-life remains the
+        publisher's dated declaration; this lookup supplies no retirement decision.
 
   - pin: { party: nist, kind: controls, version: '1.1.0' }
     signal:
@@ -67,10 +64,10 @@ signals:
         that regime is the dated signal; what it does to the value chain is the scenario, and the
         amount of the fine is the estate's, never the twin's.
 
-  - pin: { party: feeds, kind: feed, name: threat-register, version: v2 }
+  - pin: { party: feeds, kind: feed, name: threat-register, version: v4 }
     signal:
-      id: feeds-threat-register-v2-names-driftwood
-      at: '2026-09-01'
+      id: feeds-threat-register-v4-names-driftwood
+      at: '2026-10-04'
       scenario: rival-reads-my-holes-2026
       what: >-
         The threat register is a PUBLISHED document naming this organisation's exposure, and the
@@ -86,6 +83,17 @@ signals:
         A quote is a feed like any other and the insurer is a publisher like any other. The
         standing question about a publisher withdrawing a feed this organisation pins is the one
         a withdrawn quote moves.
+
+  - pin: { party: feeds, kind: feed, name: cve, version: v3 }
+    signal:
+      id: feeds-cve-v3-is-the-sole-source-feed
+      at: '2026-10-04'
+      scenario: publisher-withdraws-2026
+      what: >-
+        The exact cve/v3.0.0 release is the sole feed source for the captured KEV facts
+        intersected with this institution's tagged workload inventory. Withdrawal of that
+        publisher is the existing standing question. This binding is an owner-delegated
+        declaration recorded on 2026-10-04; it supplies no probability or synthetic price.
 
 # Scenarios no subscribed feed version binds. Declared, so that "six scenarios and five rows" is
 # an observation rather than a hole somebody has to notice. Neither is feed-derived: no publisher
