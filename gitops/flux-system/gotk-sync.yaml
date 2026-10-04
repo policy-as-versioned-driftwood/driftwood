@@ -34,6 +34,14 @@ spec:
   interval: 5m
   retryInterval: 1m
   timeout: 3m
+  # A cold cluster must install the complete composed window before native
+  # workloads are admitted. Ready is Flux's delivery boundary; the scheduled
+  # lane still observes actual webhook mutation and keeps missing stamps honest.
+  dependsOn:
+    - name: composed-v5-0-0
+    - name: composed-v6-0-0
+    - name: composed-v7-0-0
+    - name: composed-machinery
   sourceRef:
     kind: GitRepository
     name: driftwood
