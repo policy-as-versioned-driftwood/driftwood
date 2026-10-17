@@ -75,9 +75,13 @@ class TwinSweepSplit(unittest.TestCase):
         self.assertIn("needs.twin.outputs.agent_rung != 'isolated'", self.write['if'])
         for step in _steps(self.write):
             run = COMMENT.sub('', str(step.get('run', '')))
-            if 'gh pr create' in run or 'git checkout -b' in run:
+            if step.get('id') == 'propose':
                 self.assertIn("steps.cage.outputs.rung == 'baseline'", step['if'])
                 self.assertIn("steps.cage.outputs.rung == 'restricted'", step['if'])
+            elif 'gh pr create' in run:
+                self.assertIn('observation cage', step['name'])
+                self.assertIn('HEAD:"${DELIVERY_BRANCH}"', run)
+                self.assertNotIn('PROPOSAL_PATHS', run)
 
     @classmethod
     def setUpClass(cls):
@@ -206,7 +210,7 @@ class TwinSweepSplit(unittest.TestCase):
         self.assertIn('commit -S', _steps(self.write)[propose]['run'])
         self.assertIn('gh pr create', _steps(self.write)[propose]['run'])
         self.assertEqual([i for i, s in enumerate(_steps(self.write)) if 'gh pr create' in str(s.get('run', ''))],
-                         [propose])
+                         [propose, cage])
         cage_shell = _steps(self.write)[cage]['run']
         for fragment in CAGE_SHELL:
             self.assertIn(fragment, cage_shell)
@@ -322,7 +326,7 @@ class TwinSweepSplit(unittest.TestCase):
             env = dict(os.environ, GIT_CONFIG_COUNT='3', GIT_CONFIG_KEY_0='commit.gpgsign',
                        GIT_CONFIG_VALUE_0='false', GIT_CONFIG_KEY_1='tag.gpgsign',
                        GIT_CONFIG_VALUE_1='false', GIT_CONFIG_KEY_2='core.hooksPath',
-                       GIT_CONFIG_VALUE_2='/dev/null', GITHUB_REF_NAME='main',
+                       GIT_CONFIG_VALUE_2='/dev/null', GITHUB_REF_NAME='main', DEFAULT_BRANCH='main',
                        OBSERVATION_LANE=self.doc['env']['OBSERVATION_LANE'])
 
             def git(*args):
