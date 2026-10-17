@@ -30,6 +30,20 @@ def selfcheck() -> int:
     risk = {"related-observations": [{"observation-uuid": "failed-observation"}]}
     assert missing_risks(assessment, [risk]) == [], "the actual risk resolves the failed observation"
     assert missing_risks(assessment, [{"related-observations": [{"observation-uuid": "somebody-else"}]}]) == ["failed-observation"]
+    # One real check/subject UUID can carry a failing served version alongside
+    # skipped/passing versions. Their order must never erase the failure.
+    for state in ("skip", "pass"):
+        same_id = {"uuid": fail["uuid"], "props": [{"name": "result", "value": state}]}
+        for ordered in ([fail, same_id, passed], [same_id, fail, passed]):
+            mixed = {"assessment-results": {"results": [{**result, "observations": ordered}]}}
+            assert missing_risks(mixed, []) == ["failed-observation"], "same-ID nonfailure must not hide a failure"
+            assert missing_risks(mixed, [risk]) == [], "the real linked risk still covers either order"
+            satisfied = {"assessment-results": {"results": [{**result, "observations": ordered,
+                "findings": [{"target": {"status": {"state": "satisfied"}},
+                              "related-observations": [{"observation-uuid": fail["uuid"]}]}]}]}}
+            assert missing_risks(satisfied, []) == [], "satisfied findings do not require a risk"
+        nonfailed = {"assessment-results": {"results": [{**result, "observations": [same_id, passed]}]}}
+        assert missing_risks(nonfailed, []) == [], "nonfailed observations do not require a risk"
     # A bare link is not a priced Cage decision. This fixture exercises the collector's
     # validation only; the composer tests bind the real select()/oscal_risk() pair.
     decision = {"action": "Cage", "org": "fixture", "tier": "isolated", "reason": "fixture decision",
@@ -92,14 +106,15 @@ def selfcheck() -> int:
 def missing_risks(assessment: dict, risks: list[dict]) -> list[str]:
     failed = set()
     for result in (assessment.get("assessment-results") or {}).get("results") or []:
-        observations = {o["uuid"]: o for o in result.get("observations") or []}
+        failed_observations = {o["uuid"] for o in result.get("observations") or []
+                               if any(p.get("name") == "result" and p.get("value") == "fail"
+                                      for p in o.get("props") or [])}
         for finding in result.get("findings") or []:
             if ((finding.get("target") or {}).get("status") or {}).get("state") != "not-satisfied":
                 continue
             for link in finding.get("related-observations") or []:
                 ident = link["observation-uuid"]
-                obs = observations.get(ident) or {}
-                if any(p.get("name") == "result" and p.get("value") == "fail" for p in obs.get("props") or []):
+                if ident in failed_observations:
                     failed.add(ident)
     linked = {link["observation-uuid"] for risk in risks for link in risk.get("related-observations") or []}
     return sorted(failed - linked)
