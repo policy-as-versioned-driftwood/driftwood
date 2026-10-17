@@ -97,6 +97,16 @@ class ProposalSigning(unittest.TestCase):
         self.assertEqual(self.git('rev-parse', 'HEAD'), self.before)
         self.assertEqual(self.git('remote'), '')
 
+    def test_native_missing_pyyaml_remains_could_not_look(self) -> None:
+        self.executable('python3', 'exec "$REAL_PYTHON" -S "$@"\n')
+        self.executable('cosign',
+                        'printf called > "$SIGNING_MODE_PROBE"\nexit 97\n')
+        result = subprocess.run(['bash', str(ROOT / 'scripts/verify-adopter-gate.sh')],
+                                cwd=self.root, env=self.env, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 3, result.stdout + result.stderr)
+        self.assertIn('SKIP: python3 has no pyyaml', result.stdout)
+        self.assertFalse(self.record.exists(), 'missing dependencies must not invoke cryptography')
+
 
 if __name__ == '__main__':
     unittest.main()
