@@ -180,8 +180,8 @@ One recorded limit is deliberately not stated above: `publisher-clone-absent` re
 - `spec of cage-restricted-7-0-0` (in `composed/policies/v7.0.0/cage-restricted.yaml`) — this object declares no mutation, validation or generation this page can read
 - `prices[3].amount` (in `composed/evidence.json`) — feeds/cve could not be priced: No scanned CVE is in the pinned KEV feed; 388 scanned CVE(s) outside it are named absences carrying no amount.
 - `prices[3].proposed_tier` (in `composed/evidence.json`) — feeds/cve is a `feed` entry that proposes no tier
-- `prices[8].amount` (in `composed/evidence.json`) — feeds/threat-register could not be priced: missing instrument: driftwood/twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
-- `prices[9].amount` (in `composed/evidence.json`) — feeds/cve could not be priced: missing instrument: driftwood/twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
+- `prices[8].amount` (in `composed/evidence.json`) — feeds/threat-register could not be priced: missing instrument: twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
+- `prices[9].amount` (in `composed/evidence.json`) — feeds/cve could not be priced: missing instrument: twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at
 - `prices[4].lef_basis` (in `composed/evidence.json`) — the loss frequencies behind insurer/quote-driftwood's amount are not sourced in this artefact
 - `exposure.total` (in `composed/HEADER.yaml`) — no total is stated
 - `exposure.regimes[2].amount` (in `composed/HEADER.yaml`) — cve from feeds feed cve is unpriced; no monetary amount is stated
