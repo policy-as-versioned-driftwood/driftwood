@@ -55,6 +55,7 @@ command -v cosign > /dev/null \
   || skip "cosign is not installed, and every scenario here turns on the real binary verifying platform's real published bundles"
 python3 -c 'import yaml' 2>/dev/null \
   || skip "python3 has no pyyaml, which adopter-gate.py needs to read the platform pin"
+python3 "$HERE/.github/tests/test_proposal_signing.py" || exit 1
 
 platform_repo="${PLATFORM_REPO:-$HERE/../platform}"
 [ -d "$platform_repo/.git" ] \
