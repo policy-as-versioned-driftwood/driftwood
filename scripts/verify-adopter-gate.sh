@@ -35,7 +35,6 @@
 # Exit 0 true, 3 could-not-look (reason on the last line), other false.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-python3 "$HERE/.github/tests/test_proposal_signing.py" || exit 1
 GATE="$HERE/.github/scripts/adopter-gate.py"
 scratch="$(mktemp -d)"
 trap 'rm -rf "$scratch"' EXIT
@@ -56,6 +55,7 @@ command -v cosign > /dev/null \
   || skip "cosign is not installed, and every scenario here turns on the real binary verifying platform's real published bundles"
 python3 -c 'import yaml' 2>/dev/null \
   || skip "python3 has no pyyaml, which adopter-gate.py needs to read the platform pin"
+python3 "$HERE/.github/tests/test_proposal_signing.py" || exit 1
 
 platform_repo="${PLATFORM_REPO:-$HERE/../platform}"
 [ -d "$platform_repo/.git" ] \
