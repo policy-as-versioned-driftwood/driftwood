@@ -35,6 +35,7 @@
 # Exit 0 true, 3 could-not-look (reason on the last line), other false.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+python3 "$HERE/.github/tests/test_proposal_signing.py" || exit 1
 GATE="$HERE/.github/scripts/adopter-gate.py"
 scratch="$(mktemp -d)"
 trap 'rm -rf "$scratch"' EXIT
