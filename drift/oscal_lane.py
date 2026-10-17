@@ -44,6 +44,14 @@ def selfcheck() -> int:
             assert missing_risks(satisfied, []) == [], "satisfied findings do not require a risk"
         nonfailed = {"assessment-results": {"results": [{**result, "observations": [same_id, passed]}]}}
         assert missing_risks(nonfailed, []) == [], "nonfailed observations do not require a risk"
+    malformed = {"assessment-results": {"results": [{**result,
+        "observations": [{"props": [{"name": "result", "value": "pass"}]}]}]}}
+    try:
+        missing_risks(malformed, [])
+    except KeyError as exc:
+        assert exc.args == ("uuid",), exc
+    else:
+        raise AssertionError("an observation without a UUID must retain the original format failure")
     # A bare link is not a priced Cage decision. This fixture exercises the collector's
     # validation only; the composer tests bind the real select()/oscal_risk() pair.
     decision = {"action": "Cage", "org": "fixture", "tier": "isolated", "reason": "fixture decision",
@@ -106,15 +114,16 @@ def selfcheck() -> int:
 def missing_risks(assessment: dict, risks: list[dict]) -> list[str]:
     failed = set()
     for result in (assessment.get("assessment-results") or {}).get("results") or []:
-        failed_observations = {o["uuid"] for o in result.get("observations") or []
-                               if any(p.get("name") == "result" and p.get("value") == "fail"
-                                      for p in o.get("props") or [])}
+        observations: dict[str, list[dict]] = {}
+        for observation in result.get("observations") or []:
+            observations.setdefault(observation["uuid"], []).append(observation)
         for finding in result.get("findings") or []:
             if ((finding.get("target") or {}).get("status") or {}).get("state") != "not-satisfied":
                 continue
             for link in finding.get("related-observations") or []:
                 ident = link["observation-uuid"]
-                if ident in failed_observations:
+                if any(p.get("name") == "result" and p.get("value") == "fail"
+                       for obs in observations.get(ident, []) for p in obs.get("props") or []):
                     failed.add(ident)
     linked = {link["observation-uuid"] for risk in risks for link in risk.get("related-observations") or []}
     return sorted(failed - linked)
