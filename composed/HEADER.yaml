@@ -1290,6 +1290,8 @@ comparison-inputs:
       proposed_tier: null
       hole: null
     cages: []
+quote-validity-schema: 1
+quote-condition-schema: 1
 vendored-feeds:
 - party: ico
   name: penalty-schema

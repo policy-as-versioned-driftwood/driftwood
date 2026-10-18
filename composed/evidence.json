@@ -5087,6 +5087,31 @@
       ],
       "valid_from": "2026-08-28",
       "valid_until": "2027-08-28",
+      "quote_validity": {
+        "schema": 1,
+        "as_of": "2026-10-03",
+        "state": "within-window",
+        "retention": "not-assessed",
+        "basis": "The examined composition date is inside the quote's inclusive validity window; retention is not assessed by dates alone. Conditions, priced_against matching and claim payability are not assessed here; no transfer credit or retained-loss amount is calculated. The contractual premium is unchanged."
+      },
+      "quote_condition_evidence": {
+        "schema": 1,
+        "conditions": [
+          {
+            "source": "nist",
+            "id": "ac-6",
+            "consequence": "void",
+            "state": "counted-implementation-claim"
+          },
+          {
+            "source": "nist",
+            "id": "cm-6",
+            "consequence": "uplift",
+            "state": "counted-implementation-claim"
+          }
+        ],
+        "basis": "Implementation claims counted for this composition's selected baseline; not observed enforcement or fulfilled insurance conditions. No eligibility, claim payability, priced_against matching or transfer credit is assessed. Quoted consequences, contractual premium and retention are unchanged."
+      },
       "priced_against": [
         {
           "party": "platform",
