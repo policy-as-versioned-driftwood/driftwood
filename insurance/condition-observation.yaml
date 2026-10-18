@@ -2,7 +2,7 @@ schema: 1
 profile: served-policy-conditions/v1
 party: driftwood
 repository: policy-as-versioned-driftwood/driftwood
-examined_at: '2026-10-18T16:38:11Z'
+examined_at: '2026-10-18T20:10:14Z'
 quote:
   source: insurer
   name: quote-driftwood
