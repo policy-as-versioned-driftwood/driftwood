@@ -5131,7 +5131,37 @@
         "tag": "v1.0.0",
         "detail": "tag v1.0.0 on the insurer checkout carries a signature block"
       },
-      "hole": null
+      "hole": null,
+      "conditional_cost_view": {
+        "schema": 1,
+        "profile": "served-policy-conditions/v1",
+        "as_of": "2026-10-18T16:38:11Z",
+        "state": "unobserved",
+        "retention": "not-assessed",
+        "contract_premium": {
+          "amount": 113403.3,
+          "currency": "GBP"
+        },
+        "effective_premium": null,
+        "conditions": [
+          {
+            "source": "nist",
+            "id": "ac-6",
+            "state": "unobserved",
+            "required_cells": null,
+            "observed_cells": null
+          },
+          {
+            "source": "nist",
+            "id": "cm-6",
+            "state": "unobserved",
+            "required_cells": null,
+            "observed_cells": null
+          }
+        ],
+        "quote_basis": null,
+        "basis": "quoted tag does not carry the quoted exposure digest The booked contract premium is unchanged; this modeled view is not billing, legal payability or transfer."
+      }
     },
     {
       "source": "twin",

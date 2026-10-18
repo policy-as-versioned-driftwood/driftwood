@@ -624,7 +624,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: 0eee5552ee03123695374c03bfcb840a23674399a9ca8440108dc2aa8f6459a9
+  after: aaae6b371ef88f7fab463c40d51e88b4f6174bc587aad5d283c4f596bdf7c3d3
   before:
     header:
       parents:
@@ -1400,3 +1400,4 @@ exposure:
     version: 2.0.0
     amount: 758.33189997347
     controls: []
+quote-assessment-schema: 1
