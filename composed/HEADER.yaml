@@ -30,8 +30,8 @@ parents:
 - party: insurer
   kind: feed
   name: quote-driftwood
-  version: v1
-  sha: db767055119292e400edd63ed260785ce605eb4e
+  version: v2
+  sha: f1563682f76f71c514c21ead3a4cde165bed3bdd
 baseline: MODERATE
 declared-engine:
   engine: kyverno
@@ -624,7 +624,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: ab2bba2ef850e494aba5b5fcbc7a31a719eea74a7ce2a68eaf2a6b68e637e5f8
+  after: a392d3f682e89db61a00d475f1ecf2b0bcfbc45561bd38a4a7f8151fa7d2bf40
   before:
     header:
       parents:
@@ -1322,12 +1322,12 @@ vendored-feeds:
     party.yaml: 6d5211a16fe5bfbe6bd28fc0f4c876f9de8fca8a2a43d2750a4f855610ee0823
 - party: insurer
   name: quote-driftwood
-  version: v1
-  path: composed/feeds/insurer/quote-driftwood/v1
-  sha: db767055119292e400edd63ed260785ce605eb4e
+  version: v2
+  path: composed/feeds/insurer/quote-driftwood/v2
+  sha: f1563682f76f71c514c21ead3a4cde165bed3bdd
   files:
-    party.yaml: c35a3abee4bd822a5356ba6c3a8f67603561f99caabc9f7fe5a7dc3e4160a7e5
-    quote/driftwood/v1/feed.json: e1c39816a12a13cfe21ff137073ce33492e89abc044423372c85284dc3760329
+    party.yaml: aa07f014b7bad9ccf8d84ff44e37719a834da070d4466b2d12d3811cca629ad7
+    quote/driftwood/v2/feed.json: 1b26f55c0a4349f2ebf61224b67f23394d7387f5c5be437825f5fefc7223c2af
 selection-policy: 1.1.0
 exposure:
   perspective: driftwood

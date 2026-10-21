@@ -15,7 +15,7 @@ Source: `composed/HEADER.yaml` → `parents[]`. Each row is a publisher this art
 | ico | feed | penalty-schema | v3 | `e1fb8eb5663e50088b13d872a4e44112476f516e` |
 | feeds | feed | threat-register | v4 | `37dfe4a2de50f1a1fd7aeb6348d819373188e0e6` |
 | feeds | feed | cve | v3 | `37dfe4a2de50f1a1fd7aeb6348d819373188e0e6` |
-| insurer | feed | quote-driftwood | v1 | `db767055119292e400edd63ed260785ce605eb4e` |
+| insurer | feed | quote-driftwood | v2 | `f1563682f76f71c514c21ead3a4cde165bed3bdd` |
 
 ## 2. What is actually installed
 
@@ -77,7 +77,7 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 | priced by | kind | name | perspective | currency | amount | moved | proposed tier |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ico | feed | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | isolated |
-| ico | supersede | penalty-schema | driftwood | GBP | GBP 112,616.64 | no | — |
+| ico | supersede | penalty-schema | driftwood | GBP | GBP 200,751.40 | no | — |
 | feeds | feed | threat-register | driftwood | GBP | GBP 19,558.55 | no | baseline |
 | feeds | feed | cve | driftwood | GBP | could not look (section 6) | no | absent |
 | insurer | premium | quote-driftwood | driftwood | GBP | GBP 113,403.30 | no | — |
@@ -90,14 +90,14 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 
 - **ico/penalty-schema** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
 - **ico/penalty-schema** — basis: lm sourced from ICO (Information Commissioner's Office) real public fines (UK GDPR / Data Protection Act 2018 s157). warn/deny lef are editorial (schema doesn't carry frequency). Scaled to a subscriber turnover of 86,000,000.00 GBP.
-- **ico/penalty-schema supersede** — clock starts 2026-09-10; priced as of 2026-10-03. the pinned checkout carries no directory for v4.0.0, so the newer major's content is unread here: this line is priced from the signed tags alone, and no retirement to v4 is proposed until the ico pin reaches a commit that carries it
+- **ico/penalty-schema supersede** — clock starts 2026-09-10; priced as of 2026-10-21. the pinned checkout carries no directory for v4.0.0, so the newer major's content is unread here: this line is priced from the signed tags alone, and no retirement to v4 is proposed until the ico pin reaches a commit that carries it
 - **ico/penalty-schema** (supersede) — basis: the pinned line's own amount x (eol_ramp(since, as_of) - 1): the surcharge the feeds module's EOL ramp puts on a version its publisher has superseded, +1x per year behind and capped at +4x, where `since` is the day the newer major's signing tag was cut; zero on that day, printed with both dates, and never summed into the exposure the line itself is already in
 - **feeds/threat-register** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
 - **feeds/threat-register** — basis: cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). Frequency basis (editorial, read 2026-09-09): Annual loss-event frequency for this institution's headline threat. DBIR retail-sector web-app-attack base rate, editorial midpoint COULD NOT LOOK: the DBIR publishes sector breach-frequency ranges, not a rate for one named institution, and no run of this estate has counted events for these three. Editorial midpoints, labelled as such. Magnitude basis (editorial, read 2026-09-09): Impact per cart/checkout PII exfiltration event for a mid-market UK e-commerce institution: short-life cart data, high traffic, low sensitivity per record. COULD NOT LOOK: no run of this estate has counted per-event losses for any institution in this register, and none of the three publishes one. These are the publisher's editorial bands, moved here from platform/feeds/to_fair_scenario.py's THREAT_LM_GBP unchanged so that the move itself moves no price. What would close it: a per-sector per-event loss figure with a published source and a date, or an institution's own signed incident cost.
 - **feeds/cve** — Publisher tags were observed when this artefact was composed; the recorded observation is replayed offline and during verification. It does not establish the publisher's current newest major. A fresh composition with the publisher present refreshes it.
 - **feeds/cve** — basis: No scanned CVE is in the pinned KEV feed; 413 scanned CVE(s) outside it are named absences carrying no amount.
-- **Modeled conditional cost — insurer/quote-driftwood**: unobserved; as of 2026-10-18T20:10:14Z; state: unobserved; retention: not-assessed. quoted tag does not carry the quoted exposure digest The booked contract premium is unchanged; this modeled view is not billing, legal payability or transfer.
-- **insurer/quote-driftwood** — validity schema1, as of 2026-10-03: within-window; retention: not-assessed. The examined composition date is inside the quote's inclusive validity window; retention is not assessed by dates alone. Conditions, priced_against matching and claim payability are not assessed here; no transfer credit or retained-loss amount is calculated. The contractual premium is unchanged.
+- **Modeled conditional cost — insurer/quote-driftwood**: unobserved; as of unobserved; state: unobserved; retention: not-assessed. No authenticated observation selector was supplied; technical conditions and the effective conditional cost are unobserved. The booked contract premium is unchanged; this modeled view is not billing, legal payability or transfer.
+- **insurer/quote-driftwood** — validity schema1, as of 2026-10-21: within-window; retention: not-assessed. The examined composition date is inside the quote's inclusive validity window; retention is not assessed by dates alone. Conditions, priced_against matching and claim payability are not assessed here; no transfer credit or retained-loss amount is calculated. The contractual premium is unchanged.
 - **insurer/quote-driftwood** — condition evidence schema1. Implementation claims counted for this composition's selected baseline; not observed enforcement or fulfilled insurance conditions. No eligibility, claim payability, priced_against matching or transfer credit is assessed. Quoted consequences, contractual premium and retention are unchanged.
   nist/ac-6: counted-implementation-claim.
   nist/cm-6: counted-implementation-claim.

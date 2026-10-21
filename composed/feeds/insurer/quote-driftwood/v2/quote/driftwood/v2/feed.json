@@ -1,11 +1,13 @@
 {
   "kind": "feed",
   "name": "quote-driftwood",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "published_by": "insurer",
-  "published_at": "2026-08-28T00:00:00Z",
-  "payload_schema": "quote/payload.schema.json",
+  "published_at": "2026-10-21T18:02:05Z",
+  "payload_schema": "quote/payload.v2.schema.json",
   "payload": {
+    "usage": "illustrative",
+    "disclosure": "Illustrative counterparty. This model-only quote is an ordinal comparison from editorial inputs; it is not an independent insurance offer or actuarial assurance.",
     "adopter": "driftwood",
     "perspective": "insurer",
     "currency": "GBP",
@@ -47,14 +49,14 @@
       {
         "party": "platform",
         "kind": "implementations",
-        "version": "1.1.1"
+        "version": "5.0.0"
       },
       {
         "party": "driftwood",
         "kind": "feed",
         "name": "exposure",
-        "version": "v1.1.0",
-        "exposure_sha256": "sha256:397abe81d6cbdbd7b27a5d2516dd9c35417e9922f995b8b6af7d1fca34829820"
+        "version": "v2.0.0",
+        "exposure_sha256": "sha256:7f6b9c1efc06139d261d18d60fb660d0dc6500df8f48f73e581b0d007cb568ed"
       }
     ],
     "conditions": [

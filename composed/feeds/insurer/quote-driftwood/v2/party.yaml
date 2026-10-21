@@ -1,3 +1,4 @@
+# A demonstration party, not affiliated with, endorsed by or speaking for any real authority it names.
 # The party artefact (policy-composition ticket 11; ADR-0012/ADR-0013,
 # extended by ticket 21/ADR-0019's feed contract and ticket 14's insurer
 # shape). One signed file declaring insurer: its roles, what it publishes,
@@ -21,8 +22,22 @@ reporting_currency: GBP
 # alone -- the pin, which is all the checker reads and all Renovate bumps -- and
 # no Kustomization: a pure consumer pins the platform without pretending to
 # reconcile it. The file is the estate's one declared shape for "which signed
-# version of platform am I on", and this party is on v1.1.1 of it, which is the
-# fair.py and composition its pricer's arithmetic and its premium line share.
+# version of platform am I on". This party now pins the genuine v5.0.0 complete
+# implementation/tool tree, at 703eff6, which carries party/pin_content.py and
+# every currently declared implementations package. The old v3.3.0 tree lacks
+# the cloud package that the publisher's current catalogue resolves first for
+# the existing unnamed implementations edge. No non-feed member name is
+# invented: the current resolver treats that name as meaningless.
+#
+# This insurer consumes one rule from this tree, party/pin_content.py. Its
+# quote formula and signed terms remain its own. The parent move changes
+# future priced_against provenance, not any existing quote body or premium.
+# The exposure pins below stay at the genuine v2.0.0 releases they name;
+# each was composed under platform v3.3.0 at 38089a6. Moving the verifier
+# parent does not assert that those historical snapshots were re-composed.
+# The release gate's platform checkout is pinned separately, as verifier
+# software, in release.yml's env (PLATFORM_TAG), and is not this parent.
+# This line and gitops/platform/platform-pin.yaml move together, always.
 #
 # Each `<adopter>/feed:exposure` edge pins the adopter's OWN signed exposure
 # section, rendered into its composed artefact by composition.py and signed
@@ -40,17 +55,26 @@ reporting_currency: GBP
 # quotes that copied it back out of here -- so the pin resolved to nothing,
 # Renovate could not bump it, and the fabricated version was laundered into
 # driftwood's own signed evidence.json as the provenance of a six-figure cost
-# line (found 2026-08-29). Pinned now to v1.1.0, the highest tag each adopter
-# has actually signed and the one whose tree carries the exposure section, and
-# each adopter's party.yaml carries the matching `publishes[]` record so the pin
-# resolves the way ADR-0019 point 5 says discovery works. Moving to a newer
-# adopter tag is a reviewed pull request that edits these lines and re-renders
-# the quotes; `verify/feed-contract/` resolves them on every gate run.
+# line (found 2026-08-29). The lines then read v1.1.0, the highest tag each
+# adopter had signed, and ticket 77 found on 2026-09-04 that no v1.1.0 TREE
+# carries an `exposure` section. They read v2.0.0 now (2026-09-24): each
+# adopter's signed, published v2.0.0 carries the section in
+# composed/HEADER.yaml, checked with `git show v2.0.0:composed/HEADER.yaml`,
+# and each tag's party.yaml carries the matching `publishes[]` record, so the
+# pin resolves the way ADR-0019 point 5 says discovery works. The tags name
+# these commits, which the schema's inherits[] has no field for:
+#   driftwood v2.0.0 -> c26d95cc7154a56df6b56f70904cd8fba3bfd404
+#   tuppence  v2.0.0 -> d5a4bfee9e01b658118140950693d757c08c59b9
+#   ludlow    v2.0.0 -> ab89691912d40f376b5f0c87b0dcf41294423491
+# The published quotes still name v1.1.0: fetch.yml re-prices each adopter
+# from its pin on its next run and proposes the re-quote as a pull request a
+# human merges. Moving to a newer adopter tag is a reviewed pull request that
+# edits these lines; `verify/feed-contract/` resolves them on every gate run.
 inherits:
-  - { party: platform,  kind: implementations, version: "1.1.1", since: '2026-08-28' }
-  - { party: driftwood, kind: feed, name: exposure, version: "v1.1.0", since: '2026-08-28' }
-  - { party: tuppence,  kind: feed, name: exposure, version: "v1.1.0", since: '2026-08-28' }
-  - { party: ludlow,    kind: feed, name: exposure, version: "v1.1.0", since: '2026-08-28' }
+  - { party: platform,  kind: implementations, version: "5.0.0", since: '2026-08-28' }
+  - { party: driftwood, kind: feed, name: exposure, version: "v2.0.0", since: '2026-08-28' }
+  - { party: tuppence,  kind: feed, name: exposure, version: "v2.0.0", since: '2026-08-28' }
+  - { party: ludlow,    kind: feed, name: exposure, version: "v2.0.0", since: '2026-08-28' }
 # One feed name per insured adopter, each its own path, one shared payload
 # schema, one tag line (ticket 14 answer 4): an adopter's inherits[] entry then
 # names exactly its own cover, and a tag that re-priced only another adopter
@@ -61,19 +85,19 @@ publishes:
   - kind: feed
     name: quote-driftwood
     path: quote/driftwood
-    payload_schema: quote/payload.schema.json
+    payload_schema: quote/payload.v2.schema.json
     # Withdrawal is a new version plus a listing here, never a deleted tag
     # (ADR-0019 point 6). Nothing is withdrawn.
     revoked: []
   - kind: feed
     name: quote-tuppence
     path: quote/tuppence
-    payload_schema: quote/payload.schema.json
+    payload_schema: quote/payload.v2.schema.json
     revoked: []
   - kind: feed
     name: quote-ludlow
     path: quote/ludlow
-    payload_schema: quote/payload.schema.json
+    payload_schema: quote/payload.v2.schema.json
     revoked: []
 overlay:
   add: []
