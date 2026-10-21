@@ -624,7 +624,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: a392d3f682e89db61a00d475f1ecf2b0bcfbc45561bd38a4a7f8151fa7d2bf40
+  after: 457ce44113aec59536433799cf3abfb48926d80aa887db0ccbb346e04ba3bc5f
   before:
     header:
       parents:
@@ -654,8 +654,8 @@ comparison-inputs:
       - party: insurer
         kind: feed
         name: quote-driftwood
-        version: v1
-        sha: db767055119292e400edd63ed260785ce605eb4e
+        version: v2
+        sha: f1563682f76f71c514c21ead3a4cde165bed3bdd
       baseline: MODERATE
       holes:
       - ac-1
