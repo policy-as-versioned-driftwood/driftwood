@@ -1,11 +1,18 @@
 {
   "images": [
     {
-      "database_date": "2026-10-16T01:13:54.947090392Z",
+      "database_date": "2026-10-21T13:15:34.794358024Z",
       "digest": "sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "image": "ghcr.io/policy-as-versioned-driftwood/api:v1.0.1@sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "scanner_version": "0.69.3",
       "vulnerabilities": [
+        {
+          "fixed_version": "1.26.10, 1.27.3",
+          "id": "CVE-2026-111943",
+          "installed_version": "v1.27.1",
+          "package": "stdlib",
+          "severity": "HIGH"
+        },
         {
           "fixed_version": "1.26.9, 1.27.2",
           "id": "CVE-2026-56857",
@@ -81,7 +88,7 @@
           "id": "CVE-2026-97030",
           "installed_version": "v1.27.1",
           "package": "stdlib",
-          "severity": "UNKNOWN"
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.26.9, 1.27.2",
@@ -100,7 +107,7 @@
       ]
     },
     {
-      "database_date": "2026-10-16T01:13:54.947090392Z",
+      "database_date": "2026-10-21T13:15:34.794358024Z",
       "digest": "sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "image": "ghcr.io/policy-as-versioned-driftwood/storefront:v1.0.1@sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "scanner_version": "0.69.3",
@@ -199,6 +206,48 @@
         {
           "fixed_version": "8.14.1-r2",
           "id": "CVE-2025-10148",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-13034",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-13034",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-14524",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-14524",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-14819",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2025-14819",
           "installed_version": "8.12.1-r1",
           "package": "libcurl",
           "severity": "LOW"
@@ -596,11 +645,67 @@
           "severity": "HIGH"
         },
         {
+          "fixed_version": "2.9.0-r0",
+          "id": "CVE-2026-102633",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-103111",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "22.2.1, 21.2.25, 20.3.33",
+          "id": "CVE-2026-111752",
+          "installed_version": "9.1.13",
+          "package": "@angular/router",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "21.0.3, 20.3.34",
+          "id": "CVE-2026-111753",
+          "installed_version": "9.1.13",
+          "package": "@angular/common",
+          "severity": "MEDIUM"
+        },
+        {
           "fixed_version": "2.5.6, 3.0.5, 4.0.6",
           "id": "CVE-2026-12143",
           "installed_version": "2.3.3",
           "package": "form-data",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-1965_1",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-1965_1",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-1965_2",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-1965_2",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "UNKNOWN"
         },
         {
           "fixed_version": "1.3.2-r0",
@@ -932,6 +1037,48 @@
           "severity": "LOW"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3783",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3783",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3784",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3784",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3805",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-3805",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
           "fixed_version": "1.2.5-r11",
           "id": "CVE-2026-40200",
           "installed_version": "1.2.5-r9",
@@ -1093,6 +1240,20 @@
           "severity": "HIGH"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-4873",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-4873",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
           "fixed_version": "22.0.0-rc.2, 20.3.22, 19.2.23, 21.2.15",
           "id": "CVE-2026-50170",
           "installed_version": "9.1.13",
@@ -1198,6 +1359,20 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-5545",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-5545",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
           "fixed_version": "2.8.2-r0",
           "id": "CVE-2026-56131",
           "installed_version": "2.7.0-r0",
@@ -1282,6 +1457,20 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-5773",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-5773",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "7.5.18",
           "id": "CVE-2026-59871",
           "installed_version": "4.4.19",
@@ -1324,6 +1513,34 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6253",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6253",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6276",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6276",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "3.3.7-r1",
           "id": "CVE-2026-63072",
           "installed_version": "3.3.3-r0",
@@ -1363,6 +1580,20 @@
           "id": "CVE-2026-63076",
           "installed_version": "3.3.3-r0",
           "package": "libssl3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6429",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-6429",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
           "severity": "MEDIUM"
         },
         {
@@ -1399,6 +1630,20 @@
           "installed_version": "9.1.13",
           "package": "@angular/core",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-7168",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-7168",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "3.3.7-r2",
@@ -1499,6 +1744,13 @@
           "severity": "HIGH"
         },
         {
+          "fixed_version": "2.9.0-r0",
+          "id": "CVE-2026-77214",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "3.3.7-r2",
           "id": "CVE-2026-77696",
           "installed_version": "3.3.3-r0",
@@ -1518,6 +1770,20 @@
           "installed_version": "6.5.5",
           "package": "qs",
           "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8286",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8286",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "HIGH"
         },
         {
           "fixed_version": "3.3.7-r2",
@@ -1555,6 +1821,13 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-86145",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "22.1.0, 21.2.20, 20.3.28",
           "id": "CVE-2026-88057",
           "installed_version": "9.1.13",
@@ -1576,6 +1849,69 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-89156",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-89157",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-89158",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-89160",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "10.43-r1",
+          "id": "CVE-2026-89161",
+          "installed_version": "10.43-r0",
+          "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8924",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8924",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8927",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-8927",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "3.3.7-r1",
           "id": "CVE-2026-9076",
           "installed_version": "3.3.3-r0",
@@ -1590,6 +1926,20 @@
           "severity": "LOW"
         },
         {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-92392",
+          "installed_version": "8.12.1-r1",
+          "package": "curl",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "8.14.1-r3",
+          "id": "CVE-2026-92392",
+          "installed_version": "8.12.1-r1",
+          "package": "libcurl",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "",
           "id": "CVE-2026-93687",
           "installed_version": "3.0.3",
@@ -1602,11 +1952,18 @@
           "installed_version": "3.8.1",
           "package": "http-cache-semantics",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "2.8.5-r0",
+          "id": "CVE-2026-93990",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
         }
       ]
     },
     {
-      "database_date": "2026-10-16T01:13:54.947090392Z",
+      "database_date": "2026-10-21T13:15:34.794358024Z",
       "digest": "sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "image": "nginx@sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "scanner_version": "0.69.3",
@@ -2291,7 +2648,7 @@
           "severity": "LOW"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-102633",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
@@ -3061,7 +3418,7 @@
           "severity": "MEDIUM"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-66046",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
@@ -3257,14 +3614,14 @@
           "severity": "MEDIUM"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-76956",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
           "severity": "HIGH"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-76957",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
@@ -3285,7 +3642,7 @@
           "severity": "MEDIUM"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-77214",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
@@ -3506,14 +3863,14 @@
           "id": "CVE-2026-80229",
           "installed_version": "8.14.1-2+deb13u5",
           "package": "curl",
-          "severity": "MEDIUM"
+          "severity": "LOW"
         },
         {
           "fixed_version": "",
           "id": "CVE-2026-80229",
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
-          "severity": "MEDIUM"
+          "severity": "LOW"
         },
         {
           "fixed_version": "",
@@ -4244,7 +4601,7 @@
           "severity": "HIGH"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "2.9.0-1~deb13u1",
           "id": "CVE-2026-93990",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
@@ -4437,6 +4794,13 @@
           "id": "DSA-6549-1",
           "installed_version": "5.8.1-1+deb13u1",
           "package": "liblzma5",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "20250419+deb13u1",
+          "id": "DSA-6572-1",
+          "installed_version": "20250419",
+          "package": "ca-certificates",
           "severity": "UNKNOWN"
         },
         {

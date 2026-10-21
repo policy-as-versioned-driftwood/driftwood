@@ -15,7 +15,15 @@
   "published_at": "2026-08-28",
   "publisher_observation": {
     "name": "quote-driftwood",
-    "newer": null,
+    "newer": {
+      "published_at": null,
+      "readable": false,
+      "since": "2026-10-21",
+      "since_tag": "v2.0.0",
+      "tag": "v2.0.0",
+      "tagged": "2026-10-21",
+      "version": "v2"
+    },
     "party": "insurer",
     "pin_signature": {
       "detail": "tag v1.0.0 on the insurer checkout carries a signature block",
@@ -25,8 +33,8 @@
     "schema": 1,
     "sha": "db767055119292e400edd63ed260785ce605eb4e",
     "superseded": {
-      "detail": "no signed tag of the form quote-driftwood/vN.x.y with N > 1 on the insurer checkout, so the pinned v1 is the newest published major",
-      "state": "current"
+      "detail": "tag v2.0.0, signed 2026-10-21, publishes quote-driftwood v2 ahead of the pinned v1; behind since 2026-10-21, the day v2.0.0 was cut; this checkout carries no directory for v2.0.0, so the line is priced from the signed tags alone",
+      "state": "behind"
     },
     "version": "v1"
   },
