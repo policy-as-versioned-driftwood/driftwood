@@ -69,7 +69,7 @@ inherits:
   # prices[] as the `premium` kind under this party's own perspective, beside
   # costs.fix, and never sums it with the insurer's own layer arithmetic.
   # Renovate bumps this line when the insurer tags a re-quote.
-  - { party: insurer,  kind: feed, name: quote-driftwood,    version: "v1", since: '2026-08-28' }
+  - { party: insurer,  kind: feed, name: quote-driftwood,    version: "v2", since: '2026-08-28' }
 # What this party publishes and where it lives in this repo. The twin renders
 # `twin/forward-intel/v1/feed.json` from `twin/orgs/driftwood/` with
 # `twin/emit-forward-intel.py`; rule.yaml and bump.yaml sit beside it. Signed
