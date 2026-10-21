@@ -39,8 +39,8 @@
       "party": "insurer",
       "kind": "feed",
       "name": "quote-driftwood",
-      "version": "v1",
-      "sha": "db767055119292e400edd63ed260785ce605eb4e"
+      "version": "v2",
+      "sha": "f1563682f76f71c514c21ead3a4cde165bed3bdd"
     }
   ],
   "members": [
@@ -2987,9 +2987,9 @@
       "kind": "supersede",
       "perspective": "driftwood",
       "currency": "GBP",
-      "amount": 112616.63761356466,
+      "amount": 200751.39748504997,
       "per_customer": {
-        "amount": 0.4692359900565194,
+        "amount": 0.8364641561877082,
         "currency": "GBP"
       },
       "name": "penalty-schema",
@@ -3004,8 +3004,8 @@
         "since": "2026-09-10"
       },
       "since": "2026-09-10",
-      "as_of": "2026-10-03",
-      "ramp": 1.063013698630137,
+      "as_of": "2026-10-21",
+      "ramp": 1.1123287671232878,
       "base": 1787177.0751717847,
       "proposed_tier": null,
       "changed": false,
@@ -5172,8 +5172,8 @@
       },
       "name": "quote-driftwood",
       "old_version": "v1",
-      "new_version": "v1",
-      "quote_version": "1.0.0",
+      "new_version": "v2",
+      "quote_version": "2.0.0",
       "attachment": {
         "amount": 40000.0,
         "currency": "GBP"
@@ -5214,7 +5214,7 @@
       "valid_until": "2027-08-28",
       "quote_validity": {
         "schema": 1,
-        "as_of": "2026-10-03",
+        "as_of": "2026-10-21",
         "state": "within-window",
         "retention": "not-assessed",
         "basis": "The examined composition date is inside the quote's inclusive validity window; retention is not assessed by dates alone. Conditions, priced_against matching and claim payability are not assessed here; no transfer credit or retained-loss amount is calculated. The contractual premium is unchanged."
@@ -5241,26 +5241,26 @@
         {
           "party": "platform",
           "kind": "implementations",
-          "version": "1.1.1"
+          "version": "5.0.0"
         },
         {
           "party": "driftwood",
           "kind": "feed",
           "name": "exposure",
-          "version": "v1.1.0",
-          "exposure_sha256": "sha256:397abe81d6cbdbd7b27a5d2516dd9c35417e9922f995b8b6af7d1fca34829820"
+          "version": "v2.0.0",
+          "exposure_sha256": "sha256:7f6b9c1efc06139d261d18d60fb660d0dc6500df8f48f73e581b0d007cb568ed"
         }
       ],
       "pin_signature": {
         "state": "signed",
-        "tag": "v1.0.0",
-        "detail": "tag v1.0.0 on the insurer checkout carries a signature block"
+        "tag": "v2.0.0",
+        "detail": "tag v2.0.0 on the insurer checkout carries a signature block"
       },
       "hole": null,
       "conditional_cost_view": {
         "schema": 1,
         "profile": "served-policy-conditions/v1",
-        "as_of": "2026-10-18T20:10:14Z",
+        "as_of": null,
         "state": "unobserved",
         "retention": "not-assessed",
         "contract_premium": {
@@ -5285,7 +5285,7 @@
           }
         ],
         "quote_basis": null,
-        "basis": "quoted tag does not carry the quoted exposure digest The booked contract premium is unchanged; this modeled view is not billing, legal payability or transfer."
+        "basis": "No authenticated observation selector was supplied; technical conditions and the effective conditional cost are unobserved. The booked contract premium is unchanged; this modeled view is not billing, legal payability or transfer."
       }
     },
     {
@@ -5451,7 +5451,7 @@
       "name": "penalty-schema",
       "version": "v3",
       "since": "2026-08-28",
-      "as_of": "2026-10-03",
+      "as_of": "2026-10-21",
       "pin_life_months": 2,
       "over_pin_life": 297862.8458619641,
       "could_not_look": null,
@@ -5471,7 +5471,7 @@
           "name": "penalty-schema",
           "perspective": "driftwood",
           "currency": "GBP",
-          "amount": 112616.63761356466
+          "amount": 200751.39748504997
         }
       ],
       "sized": true,
@@ -5490,7 +5490,7 @@
       "name": "threat-register",
       "version": "v4",
       "since": "2026-08-28",
-      "as_of": "2026-10-03",
+      "as_of": "2026-10-21",
       "pin_life_months": 2,
       "over_pin_life": null,
       "could_not_look": "missing instrument: twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at",
@@ -5510,7 +5510,7 @@
           "name": "penalty-schema",
           "perspective": "driftwood",
           "currency": "GBP",
-          "amount": 112616.63761356466
+          "amount": 200751.39748504997
         },
         {
           "kind": "feed",
@@ -5570,7 +5570,7 @@
       "name": "cve",
       "version": "v3",
       "since": "2026-10-03",
-      "as_of": "2026-10-03",
+      "as_of": "2026-10-21",
       "pin_life_months": 0,
       "over_pin_life": null,
       "could_not_look": "missing instrument: twin/forward-intel/v2/feed.json supplies no lef and its derived_from names 0 subscribed feeds that price one (none); a borrowed frequency has to be named, not guessed at",
@@ -5590,7 +5590,7 @@
           "name": "penalty-schema",
           "perspective": "driftwood",
           "currency": "GBP",
-          "amount": 112616.63761356466
+          "amount": 200751.39748504997
         },
         {
           "kind": "feed",
@@ -5651,9 +5651,9 @@
         "currency": "GBP"
       },
       "name": "quote-driftwood",
-      "version": "v1",
+      "version": "v2",
       "since": "2026-08-28",
-      "as_of": "2026-10-03",
+      "as_of": "2026-10-21",
       "pin_life_months": 2,
       "over_pin_life": 0.0,
       "could_not_look": null,
@@ -5671,7 +5671,7 @@
       "sized": true,
       "basis": "re-composed with this publisher's feed edges dropped",
       "dropped_edges": [
-        "insurer/feed:quote-driftwood@v1"
+        "insurer/feed:quote-driftwood@v2"
       ]
     }
   ],
@@ -5907,46 +5907,38 @@
       "party": "insurer",
       "kind": "feed",
       "name": "quote-driftwood",
-      "version": "v1",
-      "sha": "db767055119292e400edd63ed260785ce605eb4e",
-      "feed_path": "quote/driftwood/v1/feed.json",
+      "version": "v2",
+      "sha": "f1563682f76f71c514c21ead3a4cde165bed3bdd",
+      "feed_path": "quote/driftwood/v2/feed.json",
       "party_artefact": "party.yaml",
       "converter": null,
       "converter_from": null,
       "invocation": null,
       "scenario_sha256": null,
       "payload_version_key": null,
-      "published_at": "2026-08-28",
+      "published_at": "2026-10-21",
       "files": {
-        "party.yaml": "c35a3abee4bd822a5356ba6c3a8f67603561f99caabc9f7fe5a7dc3e4160a7e5",
-        "quote/driftwood/v1/feed.json": "e1c39816a12a13cfe21ff137073ce33492e89abc044423372c85284dc3760329"
+        "party.yaml": "aa07f014b7bad9ccf8d84ff44e37719a834da070d4466b2d12d3811cca629ad7",
+        "quote/driftwood/v2/feed.json": "1b26f55c0a4349f2ebf61224b67f23394d7387f5c5be437825f5fefc7223c2af"
       },
       "publisher_observation": {
         "schema": 1,
         "party": "insurer",
         "name": "quote-driftwood",
-        "version": "v1",
-        "sha": "db767055119292e400edd63ed260785ce605eb4e",
+        "version": "v2",
+        "sha": "f1563682f76f71c514c21ead3a4cde165bed3bdd",
         "pin_signature": {
           "state": "signed",
-          "tag": "v1.0.0",
-          "detail": "tag v1.0.0 on the insurer checkout carries a signature block"
-        },
-        "newer": {
-          "version": "v2",
           "tag": "v2.0.0",
-          "tagged": "2026-10-21",
-          "published_at": null,
-          "readable": false,
-          "since_tag": "v2.0.0",
-          "since": "2026-10-21"
+          "detail": "tag v2.0.0 on the insurer checkout carries a signature block"
         },
+        "newer": null,
         "superseded": {
-          "state": "behind",
-          "detail": "tag v2.0.0, signed 2026-10-21, publishes quote-driftwood v2 ahead of the pinned v1; behind since 2026-10-21, the day v2.0.0 was cut; this checkout carries no directory for v2.0.0, so the line is priced from the signed tags alone"
+          "state": "current",
+          "detail": "no signed tag of the form quote-driftwood/vN.x.y with N > 2 on the insurer checkout, so the pinned v2 is the newest published major"
         }
       },
-      "path": "composed/feeds/insurer/quote-driftwood/v1"
+      "path": "composed/feeds/insurer/quote-driftwood/v2"
     }
   ],
   "engine": {
