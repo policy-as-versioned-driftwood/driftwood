@@ -74,10 +74,10 @@ signals:
         subscription is public on the party artefact. That is exactly the standing question about
         a rival reading the published exposure and acting on it.
 
-  - pin: { party: insurer, kind: feed, name: quote-driftwood, version: v1 }
+  - pin: { party: insurer, kind: feed, name: quote-driftwood, version: v2 }
     signal:
-      id: insurer-quote-driftwood-v1-is-the-pinned-quote
-      at: '2026-08-28'
+      id: insurer-quote-driftwood-v2-is-the-pinned-quote
+      at: '2026-10-22'
       scenario: publisher-withdraws-2026
       what: >-
         A quote is a feed like any other and the insurer is a publisher like any other. The
