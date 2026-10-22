@@ -133,7 +133,7 @@ def rederive(party_text: str, lookup_text: str, at: str) -> tuple[str, list[str]
                           r"\g<1>" + new + r"\g<2>", block, f"row {'/'.join(k)} signal.id")
         block = _sub_once(r"(\bat:\s*)['\"]?[0-9]{4}-[0-9]{2}-[0-9]{2}['\"]?",
                           r"\g<1>'" + at + "'", block, f"row {'/'.join(k)} signal.at")
-        lines[start:end] = [block]
+        lines[start:end] = block.splitlines(keepends=True)
         changes.append(f"{'/'.join(k)}: {old} -> {new}, at {at}")
 
     out = "".join(lines)
@@ -245,6 +245,18 @@ def selfcheck() -> int:
     # 2. idempotent: re-deriving the rewritten table changes nothing
     again, changes2 = rederive(_PARTY, out, "2099-01-01")
     expect("re-deriving a derived table is a no-op", again == out and changes2 == [])
+    # Two pins can move in one proposal: rewriting the first row must preserve
+    # the later row's position and binding, including its prose and comments.
+    try:
+        multi, moved = rederive(_PARTY.replace('2.0.1', '2.0.2'), _LOOKUP, "2026-10-22")
+        expect("two stale rows derive together", len(moved) == 2
+               and "platform-implementations-2.0.2-" in multi
+               and "feeds-threat-register-v2-" in multi
+               and "untouched by a bump." in multi and "# a trailing comment" in multi)
+        stable, moved_again = rederive(_PARTY.replace('2.0.1', '2.0.2'), multi, "2099-01-01")
+        expect("two-row derivation is idempotent", stable == multi and moved_again == [])
+    except Refused as error:
+        expect("two stale rows derive together: " + str(error), False)
     # 3. the refusals bite, each for its own reason
     refused("planted pin with no row",
             _PARTY + "  - { party: ico, kind: feed, name: penalty-schema, version: \"v3\" }\n",
