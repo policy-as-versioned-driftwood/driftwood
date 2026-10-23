@@ -81,7 +81,7 @@ Source: `composed/evidence.json` → `prices[]`, and `composed/HEADER.yaml` → 
 | feeds | feed | threat-register | driftwood | GBP | GBP 19,558.55 | no | isolated |
 | feeds | feed | cve | driftwood | GBP | could not look (section 6) | no | absent |
 | insurer | premium | quote-driftwood | driftwood | GBP | GBP 113,403.30 | no | — |
-| twin | twin | forward-intel | driftwood | GBP | GBP 758.33 | yes | isolated |
+| twin | twin | forward-intel | driftwood | GBP | GBP 758.33 | no | isolated |
 | platform | agent-cage | twin-agent | driftwood | GBP | GBP 0.00 | no | isolated |
 | ico | switching | penalty-schema | driftwood | GBP | GBP 1,787,177.08 | no | — |
 | feeds | switching | threat-register | driftwood | GBP | could not look (section 6) | no | — |
