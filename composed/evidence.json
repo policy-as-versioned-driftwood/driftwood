@@ -353,7 +353,422 @@
   ],
   "refusals": [],
   "restatements": [],
-  "cages": [],
+  "cages": [
+    {
+      "party": "driftwood",
+      "rule": "graded-enforcement/cage-tier@7.0.0",
+      "band": 40000.0,
+      "residual": 12.887902070104314,
+      "tier": "isolated",
+      "action": "Cage",
+      "priced_from": "scenarios/workload-storefront-recovery.json",
+      "mode": "recovery_planning",
+      "why": "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss.",
+      "decision": {
+        "version": "draft-recovery-planning-20261022",
+        "name": "UNVALIDATED PLANNING: Restore the demo HTTP storefront after a security-control containment/rebuild event.",
+        "org": "driftwood",
+        "uncaged_residual": 644.3951035052152,
+        "tolerance": 40000.0,
+        "tier": "isolated",
+        "floor": "isolated",
+        "action": "Cage",
+        "dials": {
+          "reduce": 0.98,
+          "cost": 15000,
+          "cpu": "100m",
+          "mem": "64Mi",
+          "priorityClass": "cage-isolated",
+          "dropAll": true,
+          "readOnlyRootFs": true,
+          "waf": "heavy",
+          "reach": "none",
+          "evictFirst": true
+        },
+        "tcor": {
+          "tier": "isolated",
+          "residual": 12.887902070104314,
+          "cost_of_controls": 15000.0,
+          "tcor": 15012.887902070104
+        },
+        "reason": "uncaged \u00a3644; isolated cage -> residual \u00a313 + controls \u00a315,000 = TCoR \u00a315,013 (fits band \u00a340,000)"
+      },
+      "binding": {
+        "subject": "driftwood/storefront",
+        "policy": "cage-tier",
+        "control": "ac-6"
+      },
+      "oscal_risk": {
+        "uuid": "324e0951-2526-5198-ace6-baebc2bd3926",
+        "title": "driftwood/storefront: cage-tier caged at isolated in driftwood",
+        "description": "uncaged \u00a3644; isolated cage -> residual \u00a313 + controls \u00a315,000 = TCoR \u00a315,013 (fits band \u00a340,000)",
+        "statement": "Conditional control cage-tier is not satisfied for driftwood/storefront; a isolated cage implements the control on its behalf and the residual is retained, priced, not carved out.",
+        "props": [
+          {
+            "name": "policy",
+            "value": "cage-tier"
+          },
+          {
+            "name": "control",
+            "value": "ac-6"
+          },
+          {
+            "name": "cage-tier",
+            "value": "isolated"
+          }
+        ],
+        "status": "open",
+        "origins": [
+          {
+            "actors": [
+              {
+                "type": "party",
+                "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+              }
+            ]
+          }
+        ],
+        "characterizations": [
+          {
+            "origin": {
+              "actors": [
+                {
+                  "type": "party",
+                  "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+                }
+              ]
+            },
+            "facets": [
+              {
+                "name": "likelihood",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "likely"
+              },
+              {
+                "name": "impact",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "high"
+              },
+              {
+                "name": "annualised-loss-expectancy",
+                "system": "https://pavf.dev/ns/risk/gbp",
+                "value": "13",
+                "props": [
+                  {
+                    "name": "currency",
+                    "value": "GBP"
+                  },
+                  {
+                    "name": "basis",
+                    "value": "caged-residual"
+                  },
+                  {
+                    "name": "cost-of-controls",
+                    "value": "15000"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "remediations": [
+          {
+            "uuid": "041f1627-7df8-5929-88e1-0b1eb7904762",
+            "lifecycle": "implemented",
+            "title": "isolated cage",
+            "description": "uncaged \u00a3644; isolated cage -> residual \u00a313 + controls \u00a315,000 = TCoR \u00a315,013 (fits band \u00a340,000)",
+            "props": [
+              {
+                "name": "type",
+                "value": "mitigate"
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "66ff5dd8-f343-5074-957f-541c6efb0fe5"
+          }
+        ]
+      }
+    },
+    {
+      "party": "driftwood",
+      "rule": "graded-enforcement/cage-tier@7.0.0",
+      "band": 40000.0,
+      "residual": 25.775804140208628,
+      "tier": "isolated",
+      "action": "Cage",
+      "priced_from": "scenarios/workload-api-recovery.json",
+      "mode": "recovery_planning",
+      "why": "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss.",
+      "decision": {
+        "version": "draft-recovery-planning-20261022",
+        "name": "UNVALIDATED PLANNING: Restore the demo API and verify its deployment/configuration after a security-control containment/rebuild event.",
+        "org": "driftwood",
+        "uncaged_residual": 1288.7902070104303,
+        "tolerance": 40000.0,
+        "tier": "isolated",
+        "floor": "isolated",
+        "action": "Cage",
+        "dials": {
+          "reduce": 0.98,
+          "cost": 15000,
+          "cpu": "100m",
+          "mem": "64Mi",
+          "priorityClass": "cage-isolated",
+          "dropAll": true,
+          "readOnlyRootFs": true,
+          "waf": "heavy",
+          "reach": "none",
+          "evictFirst": true
+        },
+        "tcor": {
+          "tier": "isolated",
+          "residual": 25.775804140208628,
+          "cost_of_controls": 15000.0,
+          "tcor": 15025.775804140208
+        },
+        "reason": "uncaged \u00a31,289; isolated cage -> residual \u00a326 + controls \u00a315,000 = TCoR \u00a315,026 (fits band \u00a340,000)"
+      },
+      "binding": {
+        "subject": "driftwood/api",
+        "policy": "cage-tier",
+        "control": "ac-6"
+      },
+      "oscal_risk": {
+        "uuid": "2f6f2093-745f-5391-bde0-228d9206aa78",
+        "title": "driftwood/api: cage-tier caged at isolated in driftwood",
+        "description": "uncaged \u00a31,289; isolated cage -> residual \u00a326 + controls \u00a315,000 = TCoR \u00a315,026 (fits band \u00a340,000)",
+        "statement": "Conditional control cage-tier is not satisfied for driftwood/api; a isolated cage implements the control on its behalf and the residual is retained, priced, not carved out.",
+        "props": [
+          {
+            "name": "policy",
+            "value": "cage-tier"
+          },
+          {
+            "name": "control",
+            "value": "ac-6"
+          },
+          {
+            "name": "cage-tier",
+            "value": "isolated"
+          }
+        ],
+        "status": "open",
+        "origins": [
+          {
+            "actors": [
+              {
+                "type": "party",
+                "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+              }
+            ]
+          }
+        ],
+        "characterizations": [
+          {
+            "origin": {
+              "actors": [
+                {
+                  "type": "party",
+                  "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+                }
+              ]
+            },
+            "facets": [
+              {
+                "name": "likelihood",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "likely"
+              },
+              {
+                "name": "impact",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "high"
+              },
+              {
+                "name": "annualised-loss-expectancy",
+                "system": "https://pavf.dev/ns/risk/gbp",
+                "value": "26",
+                "props": [
+                  {
+                    "name": "currency",
+                    "value": "GBP"
+                  },
+                  {
+                    "name": "basis",
+                    "value": "caged-residual"
+                  },
+                  {
+                    "name": "cost-of-controls",
+                    "value": "15000"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "remediations": [
+          {
+            "uuid": "af7fd3d0-4075-5d77-a049-2984826f6a65",
+            "lifecycle": "implemented",
+            "title": "isolated cage",
+            "description": "uncaged \u00a31,289; isolated cage -> residual \u00a326 + controls \u00a315,000 = TCoR \u00a315,026 (fits band \u00a340,000)",
+            "props": [
+              {
+                "name": "type",
+                "value": "mitigate"
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "fdbe2f47-4741-5e32-a96e-9a4b53037149"
+          }
+        ]
+      }
+    },
+    {
+      "party": "driftwood",
+      "rule": "graded-enforcement/cage-tier@7.0.0",
+      "band": 40000.0,
+      "residual": 7.3242735011922395,
+      "tier": "isolated",
+      "action": "Cage",
+      "priced_from": "scenarios/workload-checkout-svc-recovery.json",
+      "mode": "recovery_planning",
+      "why": "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss.",
+      "decision": {
+        "version": "draft-recovery-planning-20261022",
+        "name": "UNVALIDATED PLANNING: Restore the digest-pinned nginx demo Pod and verify its HTTP service.",
+        "org": "driftwood",
+        "uncaged_residual": 366.21367505961166,
+        "tolerance": 40000.0,
+        "tier": "isolated",
+        "floor": "isolated",
+        "action": "Cage",
+        "dials": {
+          "reduce": 0.98,
+          "cost": 15000,
+          "cpu": "100m",
+          "mem": "64Mi",
+          "priorityClass": "cage-isolated",
+          "dropAll": true,
+          "readOnlyRootFs": true,
+          "waf": "heavy",
+          "reach": "none",
+          "evictFirst": true
+        },
+        "tcor": {
+          "tier": "isolated",
+          "residual": 7.3242735011922395,
+          "cost_of_controls": 15000.0,
+          "tcor": 15007.324273501192
+        },
+        "reason": "uncaged \u00a3366; isolated cage -> residual \u00a37 + controls \u00a315,000 = TCoR \u00a315,007 (fits band \u00a340,000)"
+      },
+      "binding": {
+        "subject": "driftwood/checkout-svc",
+        "policy": "cage-tier",
+        "control": "ac-6"
+      },
+      "oscal_risk": {
+        "uuid": "39d17496-11a2-504f-98de-cf36bee3afc2",
+        "title": "driftwood/checkout-svc: cage-tier caged at isolated in driftwood",
+        "description": "uncaged \u00a3366; isolated cage -> residual \u00a37 + controls \u00a315,000 = TCoR \u00a315,007 (fits band \u00a340,000)",
+        "statement": "Conditional control cage-tier is not satisfied for driftwood/checkout-svc; a isolated cage implements the control on its behalf and the residual is retained, priced, not carved out.",
+        "props": [
+          {
+            "name": "policy",
+            "value": "cage-tier"
+          },
+          {
+            "name": "control",
+            "value": "ac-6"
+          },
+          {
+            "name": "cage-tier",
+            "value": "isolated"
+          }
+        ],
+        "status": "open",
+        "origins": [
+          {
+            "actors": [
+              {
+                "type": "party",
+                "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+              }
+            ]
+          }
+        ],
+        "characterizations": [
+          {
+            "origin": {
+              "actors": [
+                {
+                  "type": "party",
+                  "actor-uuid": "da04b2c4-2b77-576c-b282-d07d37a41634"
+                }
+              ]
+            },
+            "facets": [
+              {
+                "name": "likelihood",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "likely"
+              },
+              {
+                "name": "impact",
+                "system": "https://pavf.dev/ns/risk",
+                "value": "high"
+              },
+              {
+                "name": "annualised-loss-expectancy",
+                "system": "https://pavf.dev/ns/risk/gbp",
+                "value": "7",
+                "props": [
+                  {
+                    "name": "currency",
+                    "value": "GBP"
+                  },
+                  {
+                    "name": "basis",
+                    "value": "caged-residual"
+                  },
+                  {
+                    "name": "cost-of-controls",
+                    "value": "15000"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "remediations": [
+          {
+            "uuid": "e380cb77-5b05-53bb-b1e5-2df0275764a5",
+            "lifecycle": "implemented",
+            "title": "isolated cage",
+            "description": "uncaged \u00a3366; isolated cage -> residual \u00a37 + controls \u00a315,000 = TCoR \u00a315,007 (fits band \u00a340,000)",
+            "props": [
+              {
+                "name": "type",
+                "value": "mitigate"
+              }
+            ]
+          }
+        ],
+        "related-observations": [
+          {
+            "observation-uuid": "c2ee6df7-cc96-5d54-b8d5-f54044da769c"
+          }
+        ]
+      }
+    }
+  ],
   "holes": [
     {
       "source": "nist",
@@ -3030,8 +3445,8 @@
       "new_version": "v4",
       "old_price": 19558.549772440045,
       "new_price": 19558.549772440045,
-      "old_tier": "baseline",
-      "proposed_tier": "baseline",
+      "old_tier": "isolated",
+      "proposed_tier": "isolated",
       "changed": false,
       "lef": [
         2.0,
@@ -5302,7 +5717,7 @@
       "feed_version": "2.0.0",
       "tail": "bounded-pert",
       "policy_version": "1.1.0",
-      "policy_basis": "loosest tier whose caged residual (530.83 GBP) is within the tolerance (40000.00 GBP)",
+      "policy_basis": "loosest tier whose caged residual (530.83 GBP) is within the tolerance (40000.00 GBP); clamped up to the party's declared floor 'isolated'",
       "residual_basis": "platform-cage-tiers@1.0.0",
       "residuals": {
         "baseline": 530.832329981429,
@@ -5322,8 +5737,8 @@
       "lef_from": "threat-register",
       "rests_on_grade": 3,
       "old_tier": "baseline",
-      "proposed_tier": "baseline",
-      "changed": false,
+      "proposed_tier": "isolated",
+      "changed": true,
       "proposed_as": "label"
     },
     {
@@ -5331,9 +5746,9 @@
       "kind": "agent-cage",
       "perspective": "driftwood",
       "currency": "GBP",
-      "amount": 0.0,
+      "amount": 0.00016837784890187112,
       "per_customer": {
-        "amount": 0.0,
+        "amount": 7.01574370424463e-10,
         "currency": "GBP"
       },
       "subject": "twin-agent",
@@ -5355,14 +5770,14 @@
           "one day is the schedule's whole interval, the upper bound on the wait for the next run; the mean wait is half of it"
         ]
       },
-      "proposed_tier": "baseline",
-      "old_tier": "baseline",
+      "proposed_tier": "isolated",
+      "old_tier": "isolated",
       "changed": false,
-      "old_amount": 0.0,
+      "old_amount": 0.00016837784890187112,
       "residuals": {
-        "baseline": 0.0,
-        "restricted": 0.0,
-        "quarantine": 0.0,
+        "baseline": 0.00016837784890187112,
+        "restricted": 0.00016837784890187112,
+        "quarantine": 0.00016837784890187112,
         "isolated": 0.0
       },
       "closes": {
@@ -5394,11 +5809,11 @@
         "model-step-writes-a-wrong-binding-or-forecast": "no priced line rests on a grade above 3 (party/schema.json admits appetite.pricing_threshold 2 or 3 only, and a model's claim is grade 5, which never prices), so a wrong binding or forecast a model step writes reaches no figure this composition prices"
       },
       "scenario": {
-        "gap": 0.0,
+        "gap": 515.6656919819595,
         "gap_currency": "GBP",
         "loosest_pod_tier": "baseline",
-        "selected_pod_tier": "baseline",
-        "gap_from": "the `source: twin` line's residuals (platform-cage-tiers@1.0.0): baseline 530.832329981429 minus baseline 530.832329981429",
+        "selected_pod_tier": "isolated",
+        "gap_from": "the `source: twin` line's residuals (platform-cage-tiers@1.0.0): baseline 530.832329981429 minus isolated 15.166637999469412",
         "window_days": 1.0,
         "window_source": "the hub's .github/workflows/truth.yml `schedule: cron: '47 5 * * *'` (once a day), read 2026-09-26 at policy-as-versioned-flux/policy-as-versioned-flux origin/main 9c3b1f22",
         "window_detects": "a push to main or a merge made by a scheduled identity (verify/schedules/lane.py, eco-system ticket 142a) and a served declaration looser than the strictest priced line (verify/tier-binding)",
@@ -5408,11 +5823,11 @@
           "one day is the schedule's whole interval, the upper bound on the wait for the next run; the mean wait is half of it"
         ],
         "lm": [
-          0.0,
-          0.0,
-          0.0
+          1.4118157206898276,
+          1.4118157206898276,
+          1.4118157206898276
         ],
-        "lm_basis": "the gap (0.0 GBP a year) times the window (1.0 day(s) of 365.25), a point magnitude: the loss of serving the loosest rung instead of the selected one for the window, per event",
+        "lm_basis": "the gap (515.6656919819595 GBP a year) times the window (1.0 day(s) of 365.25), a point magnitude: the loss of serving the loosest rung instead of the selected one for the window, per event",
         "annualised_by": "expectation",
         "annualised_basis": "E[events a year] x E[loss per event] over the PERT means (fair.expected_ale); fair.simulate at 10000 iterations rounds each year's event count to an integer and resolved 0.0000 of its years with an event (simulated ALE 0.0000), so the simulated mean is the engine's resolution, not the scenario's",
         "simulated_ale": 0.0,
@@ -5428,9 +5843,9 @@
       "register_version": "v4",
       "tail": "bounded-pert",
       "policy_version": "1.1.0",
-      "policy_basis": "loosest tier whose caged residual (0.00 GBP) is within the tolerance (40000.00 GBP)",
+      "policy_basis": "loosest tier whose caged residual (0.00 GBP) is within the tolerance (40000.00 GBP); clamped up to the party's declared floor 'isolated'",
       "tcor": {
-        "tier": "baseline",
+        "tier": "isolated",
         "residual": 0.0,
         "cost_of_controls": 0.0,
         "tcor": 0.0
@@ -5550,7 +5965,7 @@
           "name": "twin-agent",
           "perspective": "driftwood",
           "currency": "GBP",
-          "amount": 0.0
+          "amount": 0.00016837784890187112
         }
       ],
       "sized": true,
@@ -5630,7 +6045,7 @@
           "name": "twin-agent",
           "perspective": "driftwood",
           "currency": "GBP",
-          "amount": 0.0
+          "amount": 0.00016837784890187112
         }
       ],
       "sized": true,
@@ -5675,17 +6090,94 @@
       ]
     }
   ],
-  "deltas": [],
+  "deltas": [
+    {
+      "kind": "floor-change",
+      "subject": "driftwood",
+      "detail": "floor-only counterfactual at current publisher, scenario, appetite and selection inputs",
+      "comparison": {
+        "schema": 1,
+        "before": {
+          "known": true,
+          "value": null
+        },
+        "after": {
+          "known": true,
+          "value": "isolated"
+        },
+        "changed": true,
+        "basis": "floor-only counterfactual at current publisher, scenario, appetite and selection inputs",
+        "residual_basis": "platform-cage-tiers@1.0.0",
+        "lines": [
+          {
+            "source": "ico",
+            "kind": "feed",
+            "name": "penalty-schema",
+            "perspective": "driftwood",
+            "currency": "GBP",
+            "uncaged_amount": 1787177.0751717847,
+            "before_tier": "isolated",
+            "after_tier": "isolated",
+            "before_residual": 35743.54150343573,
+            "after_residual": 35743.54150343573,
+            "residual_delta": 0.0
+          },
+          {
+            "source": "feeds",
+            "kind": "feed",
+            "name": "threat-register",
+            "perspective": "driftwood",
+            "currency": "GBP",
+            "uncaged_amount": 19558.549772440045,
+            "before_tier": "baseline",
+            "after_tier": "isolated",
+            "before_residual": 13690.98484070803,
+            "after_residual": 391.17099544880125,
+            "residual_delta": -13299.813845259228
+          },
+          {
+            "source": "feeds",
+            "kind": "feed",
+            "name": "cve",
+            "perspective": "driftwood",
+            "currency": "GBP",
+            "uncaged_amount": null,
+            "before_tier": null,
+            "after_tier": null,
+            "before_residual": null,
+            "after_residual": null,
+            "residual_delta": null
+          },
+          {
+            "source": "twin",
+            "kind": "twin",
+            "name": "forward-intel",
+            "perspective": "driftwood",
+            "currency": "GBP",
+            "uncaged_amount": 758.33189997347,
+            "before_tier": "baseline",
+            "after_tier": "isolated",
+            "before_residual": 530.832329981429,
+            "after_residual": 15.166637999469412,
+            "residual_delta": -515.6656919819595
+          }
+        ],
+        "could_not_look": "one or more exposure lines have no selectable tier",
+        "limit": "selection evidence, not an enacted Namespace tier; platform reductions are self-declared calibration, not measured effectiveness"
+      }
+    }
+  ],
   "floor_change": {
     "schema": 1,
     "before": {
-      "known": false
-    },
-    "after": {
       "known": true,
       "value": null
     },
-    "changed": null,
+    "after": {
+      "known": true,
+      "value": "isolated"
+    },
+    "changed": true,
     "basis": "floor-only counterfactual at current publisher, scenario, appetite and selection inputs",
     "residual_basis": "platform-cage-tiers@1.0.0",
     "lines": [
@@ -5696,11 +6188,11 @@
         "perspective": "driftwood",
         "currency": "GBP",
         "uncaged_amount": 1787177.0751717847,
-        "before_tier": null,
+        "before_tier": "isolated",
         "after_tier": "isolated",
-        "before_residual": null,
+        "before_residual": 35743.54150343573,
         "after_residual": 35743.54150343573,
-        "residual_delta": null
+        "residual_delta": 0.0
       },
       {
         "source": "feeds",
@@ -5709,11 +6201,11 @@
         "perspective": "driftwood",
         "currency": "GBP",
         "uncaged_amount": 19558.549772440045,
-        "before_tier": null,
-        "after_tier": "baseline",
-        "before_residual": null,
-        "after_residual": 13690.98484070803,
-        "residual_delta": null
+        "before_tier": "baseline",
+        "after_tier": "isolated",
+        "before_residual": 13690.98484070803,
+        "after_residual": 391.17099544880125,
+        "residual_delta": -13299.813845259228
       },
       {
         "source": "feeds",
@@ -5735,14 +6227,14 @@
         "perspective": "driftwood",
         "currency": "GBP",
         "uncaged_amount": 758.33189997347,
-        "before_tier": null,
-        "after_tier": "baseline",
-        "before_residual": null,
-        "after_residual": 530.832329981429,
-        "residual_delta": null
+        "before_tier": "baseline",
+        "after_tier": "isolated",
+        "before_residual": 530.832329981429,
+        "after_residual": 15.166637999469412,
+        "residual_delta": -515.6656919819595
       }
     ],
-    "could_not_look": "previous floor was not recorded; absence of history is not an absent floor",
+    "could_not_look": "one or more exposure lines have no selectable tier",
     "limit": "selection evidence, not an enacted Namespace tier; platform reductions are self-declared calibration, not measured effectiveness"
   },
   "limits": [
