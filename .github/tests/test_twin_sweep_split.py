@@ -93,12 +93,12 @@ class TwinSweepSplit(unittest.TestCase):
         cls.pin = yaml.safe_load(PIN.read_text())
 
     # --- the pin ------------------------------------------------------------------------------
-    def test_pin_names_a_full_hub_commit_and_the_tag_is_not_cut(self):
+    def test_pin_names_a_full_hub_commit_and_authenticated_tag(self):
         self.assertRegex(str(self.pin['hub_commit']), SHA)
-        self.assertEqual(self.pin['tag_cut'], False)
+        self.assertIs(self.pin['tag_cut'], True)
         self.assertNotIn('ref: main', self.text, 'the hub is never checked out at a branch')
 
-    def test_twin_job_checks_the_hub_out_at_the_pinned_commit_and_reads_only(self):
+    def test_twin_job_checks_the_declared_tag_and_reads_only(self):
         self.assertEqual(sorted(self.jobs), ['twin', 'write'])
         self.assertEqual(self.doc['permissions'], {'contents': 'read'})
         self.assertEqual(self.twin['permissions'], {'contents': 'read'})
@@ -106,7 +106,7 @@ class TwinSweepSplit(unittest.TestCase):
         hub = [s for s in checkouts if s.get('with', {}).get('repository') == HUB]
         own = [s for s in checkouts if 'repository' not in s.get('with', {})]
         self.assertEqual((len(hub), len(own), len(checkouts)), (1, 1, 2))
-        self.assertEqual(hub[0]['with']['ref'], '${{ steps.pin.outputs.hub_commit }}')
+        self.assertEqual(hub[0]['with']['ref'], self.pin['twin_tag'])
         self.assertEqual(hub[0]['with']['fetch-depth'], 0)
         self.assertTrue(hub[0]['with']['fetch-tags'])
         self.assertEqual(hub[0]['with']['path'], 'hub')
