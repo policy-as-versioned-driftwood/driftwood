@@ -1,0 +1,30 @@
+{
+  "version": "draft-recovery-planning-20261022",
+  "name": "UNVALIDATED PLANNING: Restore the demo HTTP storefront after a security-control containment/rebuild event.",
+  "currency": "GBP",
+  "status": "OWNER_ADOPTED_UNVALIDATED_PLANNING_NOT_OBSERVATION_NOT_CALIBRATION",
+  "note": "Owner-adopted 2026-10-23 unvalidated recovery planning inputs using the existing accepted ordinal reduction/cost arithmetic and an explicit isolated overlay floor. No empirical mitigation evidence, calibration or evidence-grade promotion is claimed. Not an incident, forecast registration, observed loss or explanation of any PolicyReport failure. Overlapping contingencies are not added to institutional prices.",
+  "planning_assumptions": {
+    "charge_out_GBP_per_engineer_hour": 100,
+    "engineers": 1,
+    "engineer_effort_hours_PERT_min_mode_max": [
+      2,
+      8,
+      24
+    ],
+    "evidence_class": "Unvalidated planning assumptions; neither incident counts nor empirical loss/mitigation evidence. No evidence grade is promoted.",
+    "accounting": "A counterfactual workload recovery scenario, not an allocation of institutional total. Never sum these overlapping contingencies into prices[] or count one shared incident more than once."
+  },
+  "recovery_planning": {
+    "lef": [
+      0.1,
+      0.5,
+      2
+    ],
+    "lm": [
+      200,
+      800,
+      2400
+    ]
+  }
+}

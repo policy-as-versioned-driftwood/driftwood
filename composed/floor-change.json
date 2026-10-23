@@ -1,13 +1,14 @@
 {
   "schema": 1,
   "before": {
-    "known": false
-  },
-  "after": {
     "known": true,
     "value": null
   },
-  "changed": null,
+  "after": {
+    "known": true,
+    "value": "isolated"
+  },
+  "changed": true,
   "basis": "floor-only counterfactual at current publisher, scenario, appetite and selection inputs",
   "residual_basis": "platform-cage-tiers@1.0.0",
   "lines": [
@@ -18,11 +19,11 @@
       "perspective": "driftwood",
       "currency": "GBP",
       "uncaged_amount": 1787177.0751717847,
-      "before_tier": null,
+      "before_tier": "isolated",
       "after_tier": "isolated",
-      "before_residual": null,
+      "before_residual": 35743.54150343573,
       "after_residual": 35743.54150343573,
-      "residual_delta": null
+      "residual_delta": 0.0
     },
     {
       "source": "feeds",
@@ -31,11 +32,11 @@
       "perspective": "driftwood",
       "currency": "GBP",
       "uncaged_amount": 19558.549772440045,
-      "before_tier": null,
-      "after_tier": "baseline",
-      "before_residual": null,
-      "after_residual": 13690.98484070803,
-      "residual_delta": null
+      "before_tier": "baseline",
+      "after_tier": "isolated",
+      "before_residual": 13690.98484070803,
+      "after_residual": 391.17099544880125,
+      "residual_delta": -13299.813845259228
     },
     {
       "source": "feeds",
@@ -57,13 +58,13 @@
       "perspective": "driftwood",
       "currency": "GBP",
       "uncaged_amount": 758.33189997347,
-      "before_tier": null,
-      "after_tier": "baseline",
-      "before_residual": null,
-      "after_residual": 530.832329981429,
-      "residual_delta": null
+      "before_tier": "baseline",
+      "after_tier": "isolated",
+      "before_residual": 530.832329981429,
+      "after_residual": 15.166637999469412,
+      "residual_delta": -515.6656919819595
     }
   ],
-  "could_not_look": "previous floor was not recorded; absence of history is not an absent floor",
+  "could_not_look": "one or more exposure lines have no selectable tier",
   "limit": "selection evidence, not an enacted Namespace tier; platform reductions are self-declared calibration, not measured effectiveness"
 }

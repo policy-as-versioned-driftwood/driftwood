@@ -50,6 +50,12 @@ size:
 # is retired, because whose money is at risk is this party's own declaration
 # and nobody else's. Loosest in the estate: Audit-heavy, short-life cart PII.
 appetite:
+  # Owner-adopted 2026-10-23 GBP/year assurance policy; not empirical calibration.
+  assurance_bands:
+    currency: GBP
+    step_up_at: 4000.0
+    attest_at: 40000
+    no_cage_at: 400000
   pricing_threshold: 3
   tolerance: { amount: 40000, currency: GBP }
 # MODERATE: 287 controls, holds ac-6, cm-6 and ac-6.10. LOW excludes ac-6,
@@ -94,5 +100,32 @@ publishes:
     payload_schema: twin/forward-intel/payload.schema.json
     revoked: []
 overlay:
+  # Owner-adopted 2026-10-23 explicit global minimum; Namespace remains isolated.
+  floor: isolated
+  workload_cages:
+    - publisher: platform
+      family: graded-enforcement
+      name: cage-tier
+      version: "7.0.0"
+      subject: driftwood/storefront
+      scenario: scenarios/workload-storefront-recovery.json
+      mode: recovery_planning
+      why: "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss."
+    - publisher: platform
+      family: graded-enforcement
+      name: cage-tier
+      version: "7.0.0"
+      subject: driftwood/api
+      scenario: scenarios/workload-api-recovery.json
+      mode: recovery_planning
+      why: "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss."
+    - publisher: platform
+      family: graded-enforcement
+      name: cage-tier
+      version: "7.0.0"
+      subject: driftwood/checkout-svc
+      scenario: scenarios/workload-checkout-svc-recovery.json
+      mode: recovery_planning
+      why: "Owner-adopted 2026-10-23 UNVALIDATED recovery planning through the existing accepted ordinal reduction/cost formula, with explicit isolated minimum. No empirical mitigation/calibration evidence or grade promotion. Overlapping contingency, not additive institutional loss."
   add: []
   restate: []
