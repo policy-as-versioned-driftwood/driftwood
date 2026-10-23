@@ -24,7 +24,7 @@
 #     install platform's tree; it installs the artefact its own composition rendered from
 #     platform's and nist's signed parents (composed/HEADER.yaml records those parent SHAs, and
 #     fact 3 of the sample checks the live platform and nist pins against them).
-#   * composed delivery uses genuine v5.1.0, containing the compatible feeds 4.1 ABI.
+#   * composed delivery uses genuine v5.2.0, containing the owner-adopted assurance/recovery policy and compatible feeds 4.1 ABI.
 #     Its complete policy window remains 5.0.0,6.0.0,7.0.0. Apps and native inventory
 #     retain their existing bindings; this reviewed pointer moves only composed delivery.
 #   * there is no `spec.verify` here. Flux's GitRepository.spec.verify speaks OpenPGP, and one
@@ -70,9 +70,9 @@ spec:
   interval: 1m
   url: https://github.com/policy-as-versioned-driftwood/driftwood
   ref:
-    tag: v5.1.0
-    commit: 138ddd652aa23f940cab378f7f8fb7d88eb7ba97
-    # The resolved source SHA of the genuine signed v5.1.0 release.
+    tag: v5.2.0
+    commit: 52169217a08344960aa8947c31888a4ff1dd5612
+    # The resolved source SHA of the genuine signed v5.2.0 release.
     # Belt-and-braces immutability, ADR-0001.
 ---
 apiVersion: fluxcd.controlplane.io/v1

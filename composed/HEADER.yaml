@@ -625,7 +625,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: ef8f8164fa9a4e2cfe45fc2407c2bef893c1915f4113bb845ef4063146a4c28c
+  after: 1c35b1e371a2321ed272012b705eeb64b50d959358dfe3488e2564e644cacb5c
   before:
     header:
       parents:
@@ -1248,7 +1248,7 @@ comparison-inputs:
     - kind: feed
       source: feeds
       name: threat-register
-      proposed_tier: baseline
+      proposed_tier: isolated
       hole: null
     - kind: feed
       source: feeds
@@ -1263,12 +1263,12 @@ comparison-inputs:
     - kind: twin
       source: twin
       name: forward-intel
-      proposed_tier: baseline
+      proposed_tier: isolated
       hole: null
     - kind: agent-cage
       source: platform
       name: twin-agent
-      proposed_tier: baseline
+      proposed_tier: isolated
       hole: null
     - kind: switching
       source: ico
@@ -1290,7 +1290,16 @@ comparison-inputs:
       name: quote-driftwood
       proposed_tier: null
       hole: null
-    cages: []
+    cages:
+    - party: driftwood
+      rule: graded-enforcement/cage-tier@7.0.0
+      tier: isolated
+    - party: driftwood
+      rule: graded-enforcement/cage-tier@7.0.0
+      tier: isolated
+    - party: driftwood
+      rule: graded-enforcement/cage-tier@7.0.0
+      tier: isolated
 quote-validity-schema: 1
 quote-condition-schema: 1
 vendored-feeds:

@@ -5736,9 +5736,9 @@
       "lef_basis": "cart/checkout PII exfiltration (e-commerce, short-life cart data, high traffic/low sensitivity per-record). Frequency basis (editorial, read 2026-09-09): Annual loss-event frequency for this institution's headline threat. DBIR retail-sector web-app-attack base rate, editorial midpoint COULD NOT LOOK: the DBIR publishes sector breach-frequency ranges, not a rate for one named institution, and no run of this estate has counted events for these three. Editorial midpoints, labelled as such. Magnitude basis (editorial, read 2026-09-09): Impact per cart/checkout PII exfiltration event for a mid-market UK e-commerce institution: short-life cart data, high traffic, low sensitivity per record. COULD NOT LOOK: no run of this estate has counted per-event losses for any institution in this register, and none of the three publishes one. These are the publisher's editorial bands, moved here from platform/feeds/to_fair_scenario.py's THREAT_LM_GBP unchanged so that the move itself moves no price. What would close it: a per-sector per-event loss figure with a published source and a date, or an institution's own signed incident cost.",
       "lef_from": "threat-register",
       "rests_on_grade": 3,
-      "old_tier": "baseline",
+      "old_tier": "isolated",
       "proposed_tier": "isolated",
-      "changed": true,
+      "changed": false,
       "proposed_as": "label"
     },
     {
