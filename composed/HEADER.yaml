@@ -8,7 +8,7 @@ parents:
   kind: feed
   name: recovery-expense
   version: v1
-  sha: 1d54097c6746646a87c70677f29243a506666eee
+  sha: 63b0c9a709fc8acd9cf8d410ef69fece68a58669
 - party: platform
   kind: implementations
   version: 5.0.0
@@ -630,7 +630,7 @@ ungoverned-namespaces: []
 withdrawn-selectable: false
 comparison-inputs:
   schema: 1
-  after: b845fc97e992c7bfd252f895a88546ecfe333db80c1bb5beb3a28ff6a90c03af
+  after: a4f9426c18f80109a1b50a017f82da54f85621aa77f9beeaa9a034310e8db758
   before:
     header:
       parents:
@@ -1317,11 +1317,11 @@ vendored-feeds:
   name: recovery-expense
   version: v1
   path: composed/feeds/feeds/recovery-expense/v1
-  sha: 1d54097c6746646a87c70677f29243a506666eee
+  sha: 63b0c9a709fc8acd9cf8d410ef69fece68a58669
   files:
     party.yaml: d4d1ab70a3e0575f44f2c86d693eb5ba7e889d521aed34312921f16bfdf61116
     recovery-expense/to_fair_scenario.py: e1ad7d4951ad35b7de2bad9722f0c7e645bf4d420166c16658e05206981799ea
-    recovery-expense/v1/feed.json: e7bd9873578ad5b18fd90356785432f65aba1afe7f3dc461707fed84254dd030
+    recovery-expense/v1/feed.json: 33cfbeba36beb5b39d34c8783042dc8465f0bd12b39333bec677ab60ddb19092
 - party: ico
   name: penalty-schema
   version: v3

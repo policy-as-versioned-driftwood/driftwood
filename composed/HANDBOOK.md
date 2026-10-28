@@ -10,7 +10,7 @@ Source: `composed/HEADER.yaml` → `parents[]`. Each row is a publisher this art
 
 | publisher | kind | feed name | version | commit |
 | --- | --- | --- | --- | --- |
-| feeds | feed | recovery-expense | v1 | `1d54097c6746646a87c70677f29243a506666eee` |
+| feeds | feed | recovery-expense | v1 | `63b0c9a709fc8acd9cf8d410ef69fece68a58669` |
 | platform | implementations | — | 5.0.0 | `703eff6aee959843c4160aa54fd03413f62858cc` |
 | nist | controls | — | 1.1.0 | `33a05df1f5241bca6ffbc1c69a70075cdb7a5819` |
 | ico | feed | penalty-schema | v3 | `e1fb8eb5663e50088b13d872a4e44112476f516e` |
