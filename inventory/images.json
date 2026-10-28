@@ -1,17 +1,38 @@
 {
   "images": [
     {
-      "database_date": "2026-10-21T13:15:34.794358024Z",
+      "database_date": "2026-10-27T07:13:33.504287223Z",
       "digest": "sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "image": "ghcr.io/policy-as-versioned-driftwood/api:v1.0.1@sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "scanner_version": "0.69.3",
       "vulnerabilities": [
+        {
+          "fixed_version": "1.2.5-r4",
+          "id": "CVE-2026-107891",
+          "installed_version": "1.2.5-r3",
+          "package": "musl",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.2.5-r4",
+          "id": "CVE-2026-107891",
+          "installed_version": "1.2.5-r3",
+          "package": "musl-utils",
+          "severity": "UNKNOWN"
+        },
         {
           "fixed_version": "1.26.10, 1.27.3",
           "id": "CVE-2026-111943",
           "installed_version": "v1.27.1",
           "package": "stdlib",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "5.4.0",
+          "id": "CVE-2026-114437",
+          "installed_version": "v5.3.1",
+          "package": "github.com/go-chi/chi/v5",
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.26.9, 1.27.2",
@@ -107,7 +128,7 @@
       ]
     },
     {
-      "database_date": "2026-10-21T13:15:34.794358024Z",
+      "database_date": "2026-10-27T07:13:33.504287223Z",
       "digest": "sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "image": "ghcr.io/policy-as-versioned-driftwood/storefront:v1.0.1@sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "scanner_version": "0.69.3",
@@ -656,6 +677,27 @@
           "id": "CVE-2026-103111",
           "installed_version": "10.43-r0",
           "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.2.5-r12",
+          "id": "CVE-2026-107891",
+          "installed_version": "1.2.5-r9",
+          "package": "musl",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.2.5-r12",
+          "id": "CVE-2026-107891",
+          "installed_version": "1.2.5-r9",
+          "package": "musl-utils",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.1.1-r0",
+          "id": "CVE-2026-111497",
+          "installed_version": "1.1.0-r2",
+          "package": "brotli-libs",
           "severity": "HIGH"
         },
         {
@@ -1941,13 +1983,6 @@
         },
         {
           "fixed_version": "",
-          "id": "CVE-2026-93687",
-          "installed_version": "3.0.3",
-          "package": "braces",
-          "severity": "HIGH"
-        },
-        {
-          "fixed_version": "",
           "id": "CVE-2026-93748",
           "installed_version": "3.8.1",
           "package": "http-cache-semantics",
@@ -1963,7 +1998,7 @@
       ]
     },
     {
-      "database_date": "2026-10-21T13:15:34.794358024Z",
+      "database_date": "2026-10-27T07:13:33.504287223Z",
       "digest": "sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "image": "nginx@sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "scanner_version": "0.69.3",
@@ -2772,6 +2807,27 @@
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
           "severity": "LOW"
+        },
+        {
+          "fixed_version": "1.1.0-2+deb13u1",
+          "id": "CVE-2026-111497",
+          "installed_version": "1.1.0-2+b7",
+          "package": "libbrotli1",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-113351",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115506",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "UNKNOWN"
         },
         {
           "fixed_version": "",
@@ -4804,21 +4860,42 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "DSA-6583-1",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "DSA-6583-1",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "DSA-6583-1",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-0F03E5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-0F03E5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-0F03E5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
@@ -4846,105 +4923,105 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-18A2CE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-18A2CE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-18A2CE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-1B5D39",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-1B5D39",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-1B5D39",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-21F713",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-21F713",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-21F713",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-301DE5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-301DE5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-301DE5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-415AE1",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-415AE1",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-415AE1",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
@@ -4972,63 +5049,63 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-5124DE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-5124DE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-5124DE",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-57F868",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-57F868",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-57F868",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-6C5194",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-6C5194",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-6C5194",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
@@ -5056,84 +5133,84 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-809756",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-809756",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-809756",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-8A4B18",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-8A4B18",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-8A4B18",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-9253BB",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-9253BB",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-9253BB",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-956D99",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-956D99",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-956D99",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
@@ -5189,84 +5266,84 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-D2EEB5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-D2EEB5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-D2EEB5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-F2B97A",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-F2B97A",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-F2B97A",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-FDE8B2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-FDE8B2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-FDE8B2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
