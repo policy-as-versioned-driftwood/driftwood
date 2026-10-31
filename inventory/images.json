@@ -1,7 +1,7 @@
 {
   "images": [
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-10-31T07:07:33.630580495Z",
       "digest": "sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "image": "ghcr.io/policy-as-versioned-driftwood/api:v1.0.1@sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "scanner_version": "0.69.3",
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-10-31T07:07:33.630580495Z",
       "digest": "sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "image": "ghcr.io/policy-as-versioned-driftwood/storefront:v1.0.1@sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "scanner_version": "0.69.3",
@@ -698,7 +698,7 @@
           "id": "CVE-2026-111497",
           "installed_version": "1.1.0-r2",
           "package": "brotli-libs",
-          "severity": "HIGH"
+          "severity": "CRITICAL"
         },
         {
           "fixed_version": "22.2.1, 21.2.25, 20.3.33",
@@ -712,6 +712,13 @@
           "id": "CVE-2026-111753",
           "installed_version": "9.1.13",
           "package": "@angular/common",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "11.0.1",
+          "id": "CVE-2026-118764",
+          "installed_version": "3.1.5",
+          "package": "minimatch",
           "severity": "MEDIUM"
         },
         {
@@ -1982,13 +1989,6 @@
           "severity": "HIGH"
         },
         {
-          "fixed_version": "",
-          "id": "CVE-2026-93748",
-          "installed_version": "3.8.1",
-          "package": "http-cache-semantics",
-          "severity": "HIGH"
-        },
-        {
           "fixed_version": "2.8.5-r0",
           "id": "CVE-2026-93990",
           "installed_version": "2.7.0-r0",
@@ -1998,7 +1998,7 @@
       ]
     },
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-10-31T07:07:33.630580495Z",
       "digest": "sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "image": "nginx@sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "scanner_version": "0.69.3",
@@ -2813,7 +2813,7 @@
           "id": "CVE-2026-111497",
           "installed_version": "1.1.0-2+b7",
           "package": "libbrotli1",
-          "severity": "HIGH"
+          "severity": "CRITICAL"
         },
         {
           "fixed_version": "",
@@ -2825,6 +2825,20 @@
         {
           "fixed_version": "",
           "id": "CVE-2026-115506",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-117610",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118370",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
           "severity": "UNKNOWN"
@@ -4018,6 +4032,20 @@
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-84243",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc-bin",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-84243",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc6",
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
