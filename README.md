@@ -1,133 +1,35 @@
-# policy-as-versioned-driftwood
-
-**GitHub org:** [`policy-as-versioned-driftwood`](https://github.com/policy-as-versioned-driftwood) ·
-**Role:** institution — risk-bearer, adopter · **Licence:** [Apache-2.0](LICENSE)
+# driftwood
 
 *A demonstration party, not affiliated with, endorsed by or speaking for any real authority it names.*
 
-Part of the *Policy as Versioned Code* estate: a shared platform, two regulators, three regulated
-institutions, each its own independent GitHub organisation, exchanging signed, versioned
-dependencies. Full thesis, design decisions (ADRs) and the other five parties:
-[policy-as-versioned-flux](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux).
+Driftwood is the adopter: the organisation that is caged. A loop prices its exposure in pounds a year, adds the running cost of the cage, compares the sum with the tolerance, and moves the cage one notch at a time. The loop's code is in [platform](https://github.com/policy-as-versioned-platform/platform). The numbers come from [ico](https://github.com/policy-as-versioned-ico/ico) and [feeds](https://github.com/policy-as-versioned-feeds/feeds). `LOOP.md` in the [hub](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux) says what the loop is, and `CONTEXT.md` there defines the terms.
 
-**Institution — e-comm, PCI + GDPR, the teaching default.** Audit-heavy (loosest
-£ — short-life cart data). Owns its own KinD cluster; this is the **provenance
-base** the whole talk stacks on: Flux reconciling a pinned, signed
-`GitRepository` at admission.
+## Where things are
 
-## Bring-up (idempotent, offline-safe, resettable — the touring requirement)
+| Path | What it holds |
+|---|---|
+| `party.json` | Turnover, tolerance, margin, dwell and mode. The three pins: the exact commits of platform, ico and feeds that the loop uses. |
+| `gitops/apps/namespace.yaml` | The governed Namespace and the one rung line. A notch changes that line and nothing else. |
+| `gitops/apps/` | The three workloads, as bare Pods. `pod.yaml` is the probe pod. |
+| `.github/workflows/loop.yml` | The cycle. It runs once a day, and after each merge that changes `party.json` or `gitops/apps/`. |
+| `.github/pins.sh` | Checks out the three pins and verifies them. |
+| `renovate.json` | Keeps the hosted Renovate app silent. |
+
+## How to read the ledger
+
+The ledger is `loop.jsonl` on the branch `ledger`. It is not on `main`. Each cycle appends one JSON line. Skip a line with no `verdict`.
 
 ```sh
-scripts/up.sh          # KinD -> Flux -> in-cluster git source -> reconcile healthy
-verify-reconcile.sh    # asserts the beat (exits non-zero if it would fail on stage)
-scripts/reset.sh       # delete the cluster (or: reset.sh soft = re-seed only)
+git fetch origin ledger
+git show origin/ledger:loop.jsonl | tail -n 1 | python3 -m json.tool
 ```
 
-`up.sh` is safe to re-run: it skips the cluster/Flux if already up and re-seeds
-the source. Everything after the first controller-image pull is offline.
+- `figure` is the compared number: `exposure` plus `cost`, the running cost of the current rung in pounds a year. It is compared with `tolerance`.
+- `verdict` is the judgement. `within` and `within-partial` hold. `tighten` and `release` move one notch, to `rung_to`. `saturated` and `cage-ineffective` are red. `could-not-look` means the loop could not measure, so it moves nothing.
+- `rung` is the rung line in git. `rung_set_by` is the author of the last change to it.
+- `looked` says whether the cluster was measured. When it is false, `why` says what failed, and the figure is the uncaged one, not a measurement.
+- `rows` lists each way a loss happens, its amount and whether it is open. `unpriced` names the rows with a missing number.
+- `sourced_share` is the share of the figure that rests on sourced numbers. `weakest_basis` names the weakest basis in it. `tolerance_basis` and `cost_basis` say where those two numbers come from.
+- `pins`, `commit`, `run` and `cause` say which commits the cycle used and what started it.
 
-## How the source works
-
-For the tour there is no network luck: `up.sh` seeds the [`gitops/`](gitops/)
-tree into a git repo, tags it `v1.0.0`, bakes it into a tiny
-[`git-server/`](git-server/) image (busybox-httpd smart-HTTP CGI over
-`git-http-backend`), `kind load`s it, and points a `GitRepository` **pinned to
-that tag + commit SHA** at the in-cluster service. Git is the only way cluster
-state changes; the revision is immutable.
-
-The committed [`gitops/flux-system/gotk-sync.yaml`](gitops/flux-system/gotk-sync.yaml)
-is the canonical form pointed at the real `policy-as-versioned-driftwood` GitHub
-remote — where the `v1.0.0` tag is **gitsign-signed** (keyless → Rekor) and
-verified in the provenance beat (ticket 24). Flux's `GitRepository.spec.verify`
-only speaks OpenPGP, so the gitsign signature is verified out-of-band by
-`git verify-tag` / Rekor rather than mis-declared as a PGP block; the pin + the
-signed tag are the provenance.
-
-## Pinned regulator dependency (`nist`)
-
-`gitops/flux-system/gotk-sync-nist.yaml` pins a specific signed tag+commit of
-the real `nist` 800-53 OSCAL catalog (`estate/nist`) as a Flux `GitRepository`
-— the same in-cluster git server driftwood's own source uses, serving both
-bare repos. `driftwood-nist-pin` (`gitops/apps/nist-pin-configmap.yaml`) is
-the human/audit-readable mirror of that pin. `verify-reconcile.sh` asserts
-both reconcile Ready and pinned.
-
-A regulator version bump arrives as a reviewable PR:
-`scripts/bump-nist-pin.sh v1.1.0` edits the pin on a branch and prints the
-diff — propose only, a human merges. (Ticket 17's cage-tier proposer,
-`.github/workflows/propose-tier.yml`, is the one exception in this repo: it
-actually commits, pushes and opens — see
-[`platform`'s `wargamer/README.md`](https://github.com/policy-as-versioned-platform/platform/blob/main/wargamer/README.md)
-for the safety property that stays the same either way.)
-
-## Pinned platform dependency (the config-base pattern)
-
-`gitops/platform/platform-pin.yaml` pins a specific signed tag+commit of
-`platform` and reconciles its `./distribution` — flux-operator fans the version
-array out into this cluster (per-version policies + orphan-guard). driftwood
-consumes the discipline; it never authors it. Opt-in (not in the Phase-0 `apps`
-reconcile) and needs Kyverno + flux-operator installed first — see
-[`platform`'s `distribution/README.md`](https://github.com/policy-as-versioned-platform/platform/blob/main/distribution/README.md).
-A platform bump arrives as a reviewed PR editing `.spec.ref.tag` here.
-
-## What's here now vs later
-
-Phase 0 (this ticket): cluster + Flux + one reconciled version marker. Later
-tickets add the Kyverno CEL policy set (fanned out from platform's `ResourceSet`
-version array), the `ico` pin, and the risk skin.
-
-## Compiler tools and accepted implementations
-
-`.github/platform-tools-pin.yaml` pins the compiler software independently of
-`gitops/platform/platform-pin.yaml` and `party.yaml`'s implementation inheritance.
-The compiler is currently `v4.0.0`, and so is the accepted implementation
-(policy members `{5.0.0}`). Updating tools does not accept a new policy window.
-The existing adopter gate still refuses additions classified as major. driftwood
-accepted the 5.0.0 major on 2026-09-23; `accepted-majors/platform-5.0.0.yaml` records it.
-Platform v4.0.0 retired policy 4.0.0 (owner-instructed 2026-09-24). The gate reads
-any retirement as a major that no acceptance record can admit, so the gate on the
-pull request that moved to v4.0.0 refuses by design.
-
-PR composition, release replay, tier proposals and Renovate completion use the
-same verified tools runner. It checks the tool tag's commit and the exact platform
-`cut-release.yml` signing identity before executing it. Missing pins/verifiers,
-moved tags and wrong identities fail closed. The tools pin is outside GitOps and
-is never deployed. Local runners need Python with PyYAML and gitsign 0.17.1. The shared
-installer provisions the checksum-pinned verifier before CI and Renovate run,
-under `RUNNER_TEMP`; it leaves the observed checkout untouched.
-
-For local composition, keep all five parent clones at this adopter's exact
-GitRepository pins under `$estate_dir`, including `platform` at the implementation
-pin. Separately check out the tools tag at `$estate_dir/platform-tools` with full
-history and tags. From this adopter checkout:
-
-```bash
-python3 .github/scripts/platform-tools.py --tools-dir "$estate_dir/platform-tools" check
-python3 .github/scripts/verify-pinned-checkouts.py \
-  gitops/platform/platform-pin.yaml "$estate_dir/platform" \
-  gitops/flux-system/gotk-sync-nist.yaml "$estate_dir/nist" \
-  gitops/flux-system/gotk-sync-ico.yaml "$estate_dir/ico" \
-  gitops/flux-system/gotk-sync-feeds.yaml "$estate_dir/feeds" \
-  gitops/flux-system/gotk-sync-insurer.yaml "$estate_dir/insurer"
-python3 .github/scripts/platform-tools.py --tools-dir "$estate_dir/platform-tools" \
-  compose . --estate-clone "$estate_dir" --out .
-python3 .github/scripts/platform-tools.py --tools-dir "$estate_dir/platform-tools" \
-  verify . --estate-clone "$estate_dir"
-python3 -m unittest discover -s tests -p 'test_platform_tools.py'
-```
-
-Delegated architectural decision (ADR-0025, 2026-09-10): use the composer's existing
-separate executable and `--estate-clone` inputs instead of changing party schema
-or filtering inherited policies. This makes software maintenance possible without
-making the owner's policy acceptance decision. Fresh provenance records publisher
-observations as observed, including an explicit inability to price newer feed
-majors absent from the pinned publisher checkout. Money, appetite, original dates,
-and enacted deployment pins are unchanged.
-
-The runner executes from the adopter root and passes `.` as the adopter argument.
-Caller-relative estate, output, evidence and rejection-ledger paths are resolved
-before changing directory. This keeps diagnostic paths—and generated bytes—the
-same in local, CI, release and Renovate layouts. CI also runs the signed compiler
-from both checkout layouts and compares every generated file and replay result;
-locally enable that regression with `PAVF_REAL_ESTATE="$estate_dir"` when running
-the tests above.
+The `verdict` job of a run is red when the verdict is `saturated`, `cage-ineffective` or `could-not-look`. The line is written all the same.

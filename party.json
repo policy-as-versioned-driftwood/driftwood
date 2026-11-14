@@ -1,0 +1,16 @@
+{
+  "note": "A demonstration party, not affiliated with, endorsed by or speaking for any real authority it names.",
+  "party": "driftwood",
+  "currency": "GBP",
+  "turnover": 86000000,
+  "turnover_as_of": "2026-06-30",
+  "tolerance": {"amount": 40000, "basis": "fixture 2026-07-31, not owner-declared"},
+  "margin": 0.2,
+  "dwell_days": 7,
+  "mode": "measure",
+  "pins": {
+    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "main", "commit": "0000000000000000000000000000000000000000"},
+    "ico": {"repo": "policy-as-versioned-ico/ico", "ref": "main", "commit": "0000000000000000000000000000000000000000"},
+    "feeds": {"repo": "policy-as-versioned-feeds/feeds", "ref": "main", "commit": "0000000000000000000000000000000000000000"}
+  }
+}

@@ -1,0 +1,195 @@
+name: loop
+on:
+  schedule: [{cron: "47 6 * * *"}]
+  workflow_dispatch: {}
+  push: {branches: [main], paths: [party.json, "gitops/apps/**"]}
+  pull_request: {}
+permissions: {contents: read}
+concurrency: {group: "loop-${{ github.ref }}", cancel-in-progress: false}
+jobs:
+  # Measures and decides. It can write nothing.
+  cycle:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.cycle.outputs.code }}
+      line: ${{ steps.cycle.outputs.line }}
+      rung_patch: ${{ steps.cycle.outputs.rung_patch }}
+      pins_patch: ${{ steps.cycle.outputs.pins_patch }}
+      verdict: ${{ steps.cycle.outputs.verdict }}
+      rung: ${{ steps.cycle.outputs.rung }}
+      rung_to: ${{ steps.cycle.outputs.rung_to }}
+      mode: ${{ steps.cycle.outputs.mode }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {fetch-depth: 0, persist-credentials: false}
+      - run: bash .github/pins.sh party.json "$RUNNER_TEMP/deps"
+      - id: cycle
+        run: |
+          set -euo pipefail
+          deps="$RUNNER_TEMP/deps"
+          out="$RUNNER_TEMP/out"
+          mkdir "$out"
+          ledger=()
+          if git show origin/ledger:loop.jsonl > "$out/ledger.jsonl" 2>/dev/null; then ledger=(--ledger "$out/ledger.jsonl"); fi
+          probe=()
+          set +e
+          if bash "$deps/platform/harness/up.sh" "$deps/platform/cage" gitops/apps &&
+            python3 "$deps/platform/loop/probe.py" --context kind-loop --out "$out/probe.json"; then
+            probe=(--probe "$out/probe.json")
+          fi
+          python3 "$deps/platform/loop/loop.py" cycle --party party.json --namespace-file gitops/apps/namespace.yaml \
+            --penalties "$deps/ico/penalty-schema/feed.json" --threats "$deps/feeds/threat-register/feed.json" \
+            --rungs "$deps/platform/cage/rungs.json" "${probe[@]}" "${ledger[@]}" \
+            --cause "$GITHUB_EVENT_NAME" --cluster throwaway --run "$GITHUB_RUN_ID" --commit "$GITHUB_SHA" \
+            --rung-set-by "$(git log -1 --no-merges --format=%an -- gitops/apps/namespace.yaml)" \
+            --out "$out/line.json" --write
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          # Codes 0, 2 and 3 wrote a line. Any other code refused an input: no line, and the job is red.
+          case "$code" in 0|2|3) ;; *) exit 1 ;; esac
+          field() { python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))[sys.argv[2]] or "")' "$out/line.json" "$1"; }
+          verdict=$(field verdict)
+          rung=$(field rung)
+          rung_to=$(field rung_to)
+          mode=$(field mode)
+          : > "$out/rung.patch"
+          : > "$out/pins.patch"
+          if [ "$mode" = act ]; then
+            git diff -- gitops/apps/namespace.yaml > "$out/rung.patch"
+            git checkout -- gitops/apps/namespace.yaml
+            if python3 "$deps/platform/loop/loop.py" bump-pins --party party.json --write; then
+              git diff -- party.json > "$out/pins.patch"
+            else
+              echo "::warning::bump-pins failed, so no pin moves this run"
+            fi
+          fi
+          {
+            echo "verdict=$verdict"
+            echo "rung=$rung"
+            echo "rung_to=$rung_to"
+            echo "mode=$mode"
+            echo "line=$(base64 -w0 "$out/line.json")"
+            echo "rung_patch=$(base64 -w0 "$out/rung.patch")"
+            echo "pins_patch=$(base64 -w0 "$out/pins.patch")"
+          } >> "$GITHUB_OUTPUT"
+  # Carries the red exit: 2 for saturated and cage-ineffective, 3 for could-not-look, 1 for no line.
+  verdict:
+    needs: [cycle]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          CODE: ${{ needs.cycle.outputs.code }}
+        run: exit "${CODE:-1}"
+  # Appends the ledger line and opens the pull requests. It runs no platform code.
+  write:
+    needs: [cycle]
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions: {contents: write, pull-requests: write}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {fetch-depth: 0}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          LINE: ${{ needs.cycle.outputs.line }}
+          RUNG_PATCH: ${{ needs.cycle.outputs.rung_patch }}
+          PINS_PATCH: ${{ needs.cycle.outputs.pins_patch }}
+          VERDICT: ${{ needs.cycle.outputs.verdict }}
+          RUNG: ${{ needs.cycle.outputs.rung }}
+          RUNG_TO: ${{ needs.cycle.outputs.rung_to }}
+          MODE: ${{ needs.cycle.outputs.mode }}
+        run: |
+          set -euo pipefail
+          bot=(-c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com")
+          line=$(base64 -d <<<"$LINE")
+          if [ -n "$line" ]; then
+            git checkout --quiet -B ledger origin/ledger
+            printf '%s\n' "$line" >> loop.jsonl
+            git add loop.jsonl
+            git "${bot[@]}" commit --quiet -m "loop: $VERDICT at $RUNG"
+            git push origin ledger
+          fi
+          [ "$MODE" = act ] || exit 0
+          # propose <branch> <patch, base64> <title>: one pull request for each branch, from this run's commit.
+          propose() {
+            local branch=$1 patch=$2 title=$3 open
+            open=$(gh pr list --head "$branch" --base main --state open --json number,isCrossRepository --jq '.[] | select(.isCrossRepository | not) | .number')
+            if [ -z "$patch" ]; then
+              if [ -n "$open" ]; then gh pr close "$open"; fi
+              return
+            fi
+            git checkout --quiet -B "$branch" "$GITHUB_SHA"
+            base64 -d <<<"$patch" > "$RUNNER_TEMP/patch"
+            git apply --index "$RUNNER_TEMP/patch"
+            git "${bot[@]}" commit --quiet -m "$title"
+            git push --force origin "$branch"
+            if [ -z "$open" ]; then gh pr create --head "$branch" --base main --title "$title" --body "$line"; fi
+          }
+          propose loop/rung "$RUNG_PATCH" "loop: $VERDICT $RUNG to $RUNG_TO"
+          propose loop/pins "$PINS_PATCH" "loop: pins"
+  # Checks each open pull request with the checker from the platform commit that main pins.
+  check:
+    needs: [cycle, write]
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.cycle.outputs.mode == 'act' }}
+    runs-on: ubuntu-latest
+    permissions: {contents: read, pull-requests: read}
+    outputs:
+      land: ${{ steps.check.outputs.land }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with: {ref: main, fetch-depth: 0, persist-credentials: false}
+      - run: bash .github/pins.sh party.json "$RUNNER_TEMP/deps"
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNG: ${{ needs.cycle.outputs.rung }}
+          RUNG_TO: ${{ needs.cycle.outputs.rung_to }}
+        run: |
+          set -euo pipefail
+          platform="$RUNNER_TEMP/deps/platform"
+          land=()
+          for kind in rung pins; do
+            pair=$(gh pr list --head "loop/$kind" --base main --state open --json number,headRefOid,isCrossRepository --jq '.[] | select(.isCrossRepository | not) | "\(.number):\(.headRefOid)"')
+            [ -n "$pair" ] || continue
+            args=(--kind "$kind" --base origin/main --head "${pair#*:}")
+            if [ "$kind" = rung ]; then args+=(--from "$RUNG" --to "$RUNG_TO" --rungs "$platform/cage/rungs.json"); fi
+            if python3 "$platform/loop/loop.py" check-diff "${args[@]}"; then land+=("$pair"); fi
+          done
+          echo "land=${land[*]}" >> "$GITHUB_OUTPUT"
+  # Approves and merges as the app. The only job that names the environment and the key.
+  land:
+    needs: [check]
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.check.outputs.land != '' }}
+    runs-on: ubuntu-latest
+    environment: observation-delivery
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - env:
+          KEY: ${{ secrets.PAVC_OTHER_HAND_PRIVATE_KEY }}
+          LAND: ${{ needs.check.outputs.land }}
+        run: |
+          set -euo pipefail
+          b64url() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+          field() { python3 -c 'import json, sys; print(json.load(sys.stdin)[sys.argv[1]])' "$1"; }
+          # A nine-minute JWT with the app as issuer, signed with the key. The key file lives for these lines only.
+          key="$RUNNER_TEMP/app.pem"
+          trap 'rm -f "$key"' EXIT
+          (umask 077 && printf '%s\n' "$KEY" > "$key")
+          now=$(date +%s)
+          head=$(printf '{"alg":"RS256","typ":"JWT"}' | b64url)
+          claims=$(printf '{"iat":%d,"exp":%d,"iss":"4819564"}' "$((now - 60))" "$((now + 540))" | b64url)
+          signature=$(printf '%s.%s' "$head" "$claims" | openssl dgst -sha256 -sign "$key" | b64url)
+          rm -f "$key"
+          # The JWT buys an installation token for this repository's installation of the app.
+          api() { curl -fsS -H "Authorization: Bearer $head.$claims.$signature" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "$@"; }
+          installation=$(api "https://api.github.com/repos/$GH_REPO/installation" | field id)
+          token=$(api -X POST "https://api.github.com/app/installations/$installation/access_tokens" | field token)
+          echo "::add-mask::$token"
+          export GH_TOKEN="$token"
+          for pair in $LAND; do
+            gh pr review "${pair%%:*}" --approve
+            gh pr merge "${pair%%:*}" --merge --match-head-commit "${pair#*:}"
+          done
