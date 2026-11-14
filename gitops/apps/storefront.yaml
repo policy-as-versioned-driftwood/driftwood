@@ -4,8 +4,6 @@ metadata:
   name: storefront
   namespace: driftwood
   labels:
-    app: storefront
-    app.kubernetes.io/part-of: driftwood
     policy-as-versioned.dev/policy-version: "8.0.0"
 spec:
   securityContext:

@@ -20,8 +20,8 @@ Driftwood is the adopter: the organisation that is caged. A loop prices its expo
 The ledger is `loop.jsonl` on the branch `ledger`. It is not on `main`. Each cycle appends one JSON line. Skip a line with no `verdict`.
 
 ```sh
-git fetch origin ledger
-git show origin/ledger:loop.jsonl | tail -n 1 | python3 -m json.tool
+git fetch origin refs/heads/ledger:refs/remotes/origin/ledger
+git show refs/remotes/origin/ledger:loop.jsonl | tail -n 1 | python3 -m json.tool
 ```
 
 - `figure` is the compared number: `exposure` plus `cost`, the running cost of the current rung in pounds a year. It is compared with `tolerance`.

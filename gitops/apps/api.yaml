@@ -4,8 +4,6 @@ metadata:
   name: api
   namespace: driftwood
   labels:
-    app: api
-    app.kubernetes.io/part-of: driftwood
     policy-as-versioned.dev/policy-version: "8.0.0"
 spec:
   securityContext:

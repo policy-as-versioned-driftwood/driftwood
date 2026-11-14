@@ -27,7 +27,7 @@ while IFS= read -r line; do
     (cd "$dir" && GITSIGN_REKOR_MODE=offline "$dest/gitsign" verify-tag "$ref" --certificate-oidc-issuer=https://token.actions.githubusercontent.com --certificate-identity-regexp="^https://github\.com/${repo}/\.github/workflows/cut-release\.yml@refs/heads/main$")
   else
     # A branch: the pinned commit must have landed on it.
-    git -C "$dir" merge-base --is-ancestor "$commit" "origin/$ref" || refuse "$name: $commit is not on $ref"
+    git -C "$dir" merge-base --is-ancestor "$commit" "refs/remotes/origin/$ref" || refuse "$name: $commit is not on $ref"
   fi
   count=$((count + 1))
 done < "$party"
