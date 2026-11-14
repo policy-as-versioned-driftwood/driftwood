@@ -9,7 +9,7 @@
   "dwell_days": 7,
   "mode": "measure",
   "pins": {
-    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "main", "commit": "ce426addab439b30ec141bcadf6f2cc2b67f2080"},
+    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "main", "commit": "1c9275429b6f792365250e653d83b0cf24bd8192"},
     "ico": {"repo": "policy-as-versioned-ico/ico", "ref": "main", "commit": "93d1fc8608b01b9cbedf9ad9118ff6c0a8866984"},
     "feeds": {"repo": "policy-as-versioned-feeds/feeds", "ref": "main", "commit": "2ea67d15c0b29ea7c99a17bfe6ca13de7e473245"}
   }
