@@ -6,3 +6,4 @@ resources:
   - nist-pin-configmap.yaml
   - pod.yaml
   - storefront.yaml
+  - api.yaml
