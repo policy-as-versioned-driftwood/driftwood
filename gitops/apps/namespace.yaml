@@ -4,4 +4,4 @@ metadata:
   name: driftwood
   labels:
     policy-as-versioned.dev/governed: "true"
-    posture.acme.io/tier: "quarantine"
+    posture.acme.io/tier: "isolated"
