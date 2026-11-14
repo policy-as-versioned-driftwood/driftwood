@@ -1,7 +1,7 @@
 {
   "images": [
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-11-14T13:05:54.014761714Z",
       "digest": "sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "image": "ghcr.io/policy-as-versioned-driftwood/api:v1.0.1@sha256:90ccb85d903b8137863695681c2cf6b8cb85ba59835be5e24857e72895b977a3",
       "scanner_version": "0.69.3",
@@ -11,14 +11,14 @@
           "id": "CVE-2026-107891",
           "installed_version": "1.2.5-r3",
           "package": "musl",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.2.5-r4",
           "id": "CVE-2026-107891",
           "installed_version": "1.2.5-r3",
           "package": "musl-utils",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.26.10, 1.27.3",
@@ -124,11 +124,18 @@
           "installed_version": "v1.27.1",
           "package": "stdlib",
           "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "1.26.11, 1.27.4",
+          "id": "CVE-2026-97054",
+          "installed_version": "v1.27.1",
+          "package": "stdlib",
+          "severity": "UNKNOWN"
         }
       ]
     },
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-11-14T13:05:54.014761714Z",
       "digest": "sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "image": "ghcr.io/policy-as-versioned-driftwood/storefront:v1.0.1@sha256:6affc441f4181ec9e43976ab4115e8b239fe5a73ba30de8f61f5ff691de303d6",
       "scanner_version": "0.69.3",
@@ -230,6 +237,13 @@
           "installed_version": "8.12.1-r1",
           "package": "libcurl",
           "severity": "LOW"
+        },
+        {
+          "fixed_version": "1.1.42-r3",
+          "id": "CVE-2025-10911",
+          "installed_version": "1.1.42-r2",
+          "package": "libxslt",
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "8.14.1-r3",
@@ -684,21 +698,21 @@
           "id": "CVE-2026-107891",
           "installed_version": "1.2.5-r9",
           "package": "musl",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.2.5-r12",
           "id": "CVE-2026-107891",
           "installed_version": "1.2.5-r9",
           "package": "musl-utils",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.1.1-r0",
           "id": "CVE-2026-111497",
           "installed_version": "1.1.0-r2",
           "package": "brotli-libs",
-          "severity": "HIGH"
+          "severity": "CRITICAL"
         },
         {
           "fixed_version": "22.2.1, 21.2.25, 20.3.33",
@@ -715,6 +729,34 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "2.10.0-r0",
+          "id": "CVE-2026-113351",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "2.10.0-r0",
+          "id": "CVE-2026-115506",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "2.10.0-r0",
+          "id": "CVE-2026-117610",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "2.10.0-r0",
+          "id": "CVE-2026-118370",
+          "installed_version": "2.7.0-r0",
+          "package": "libexpat",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "2.5.6, 3.0.5, 4.0.6",
           "id": "CVE-2026-12143",
           "installed_version": "2.3.3",
@@ -722,32 +764,25 @@
           "severity": "HIGH"
         },
         {
+          "fixed_version": "1.1.42-r3",
+          "id": "CVE-2026-125350",
+          "installed_version": "1.1.42-r2",
+          "package": "libxslt",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "8.14.1-r3",
-          "id": "CVE-2026-1965_1",
+          "id": "CVE-2026-1965",
           "installed_version": "8.12.1-r1",
           "package": "curl",
-          "severity": "UNKNOWN"
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "8.14.1-r3",
-          "id": "CVE-2026-1965_1",
+          "id": "CVE-2026-1965",
           "installed_version": "8.12.1-r1",
           "package": "libcurl",
-          "severity": "UNKNOWN"
-        },
-        {
-          "fixed_version": "8.14.1-r3",
-          "id": "CVE-2026-1965_2",
-          "installed_version": "8.12.1-r1",
-          "package": "curl",
-          "severity": "UNKNOWN"
-        },
-        {
-          "fixed_version": "8.14.1-r3",
-          "id": "CVE-2026-1965_2",
-          "installed_version": "8.12.1-r1",
-          "package": "libcurl",
-          "severity": "UNKNOWN"
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.3.2-r0",
@@ -1272,6 +1307,13 @@
           "id": "CVE-2026-46675",
           "installed_version": "1.6.47-r0",
           "package": "libpng",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "1.4-r0",
+          "id": "CVE-2026-4738",
+          "installed_version": "1.3.1-r2",
+          "package": "zlib",
           "severity": "MEDIUM"
         },
         {
@@ -1860,13 +1902,20 @@
           "id": "CVE-2026-85091",
           "installed_version": "1.3.1-r2",
           "package": "zlib",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "10.43-r1",
           "id": "CVE-2026-86145",
           "installed_version": "10.43-r0",
           "package": "pcre2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.1.42-r3",
+          "id": "CVE-2026-87636",
+          "installed_version": "1.1.42-r2",
+          "package": "libxslt",
           "severity": "HIGH"
         },
         {
@@ -1982,23 +2031,23 @@
           "severity": "HIGH"
         },
         {
-          "fixed_version": "",
-          "id": "CVE-2026-93748",
-          "installed_version": "3.8.1",
-          "package": "http-cache-semantics",
-          "severity": "HIGH"
-        },
-        {
           "fixed_version": "2.8.5-r0",
           "id": "CVE-2026-93990",
           "installed_version": "2.7.0-r0",
           "package": "libexpat",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.1.42-r3",
+          "id": "CVE-2026-9947",
+          "installed_version": "1.1.42-r2",
+          "package": "libxslt",
+          "severity": "HIGH"
         }
       ]
     },
     {
-      "database_date": "2026-10-27T07:13:33.504287223Z",
+      "database_date": "2026-11-14T13:05:54.014761714Z",
       "digest": "sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "image": "nginx@sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2",
       "scanner_version": "0.69.3",
@@ -2642,6 +2691,20 @@
         },
         {
           "fixed_version": "",
+          "id": "CVE-2026-100290",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc-bin",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-100290",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc6",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
           "id": "CVE-2026-102010",
           "installed_version": "14.2.0-19",
           "package": "gcc-14-base",
@@ -2726,6 +2789,55 @@
         },
         {
           "fixed_version": "",
+          "id": "CVE-2026-107364",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107364",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107364",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107364",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107496",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "libssl3t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107496",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107496",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl-provider-legacy",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
           "id": "CVE-2026-107708",
           "installed_version": "1.21.3-5+deb13u1",
           "package": "libgssapi-krb5-2",
@@ -2782,6 +2894,34 @@
         },
         {
           "fixed_version": "",
+          "id": "CVE-2026-107884",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107884",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107884",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-107884",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
           "id": "CVE-2026-107928",
           "installed_version": "8.14.1-2+deb13u5",
           "package": "curl",
@@ -2807,12 +2947,334 @@
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
           "severity": "LOW"
+        },
+        {
+          "fixed_version": "3.0.4",
+          "id": "CVE-2026-109518",
+          "installed_version": "3.0.3",
+          "package": "apt",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "3.0.4",
+          "id": "CVE-2026-109518",
+          "installed_version": "3.0.3",
+          "package": "libapt-pkg7.0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-111423",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-111423",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-111423",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-111423",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.1.0-2+deb13u1",
           "id": "CVE-2026-111497",
           "installed_version": "1.1.0-2+b7",
           "package": "libbrotli1",
+          "severity": "CRITICAL"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112314",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112314",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112314",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112314",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112315",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112315",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112315",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112315",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112316",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112316",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112316",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112316",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112317",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112317",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112317",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112317",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112318",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112318",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112318",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112318",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112319",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112319",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112319",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112319",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112320",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112320",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112320",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112320",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112321",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112321",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112321",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112321",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112322",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112322",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112322",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112322",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112323",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112323",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112323",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-112323",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
           "severity": "HIGH"
         },
         {
@@ -2820,14 +3282,182 @@
           "id": "CVE-2026-113351",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114690",
+          "installed_version": "14.2.0-19",
+          "package": "gcc-14-base",
           "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114690",
+          "installed_version": "14.2.0-19",
+          "package": "libgcc-s1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114690",
+          "installed_version": "14.2.0-19",
+          "package": "libgomp1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114690",
+          "installed_version": "14.2.0-19",
+          "package": "libstdc++6",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114691",
+          "installed_version": "14.2.0-19",
+          "package": "gcc-14-base",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114691",
+          "installed_version": "14.2.0-19",
+          "package": "libgcc-s1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114691",
+          "installed_version": "14.2.0-19",
+          "package": "libgomp1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-114691",
+          "installed_version": "14.2.0-19",
+          "package": "libstdc++6",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115455",
+          "installed_version": "14.2.0-19",
+          "package": "gcc-14-base",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115455",
+          "installed_version": "14.2.0-19",
+          "package": "libgcc-s1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115455",
+          "installed_version": "14.2.0-19",
+          "package": "libgomp1",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115455",
+          "installed_version": "14.2.0-19",
+          "package": "libstdc++6",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115456",
+          "installed_version": "14.2.0-19",
+          "package": "gcc-14-base",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115456",
+          "installed_version": "14.2.0-19",
+          "package": "libgcc-s1",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115456",
+          "installed_version": "14.2.0-19",
+          "package": "libgomp1",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115456",
+          "installed_version": "14.2.0-19",
+          "package": "libstdc++6",
+          "severity": "LOW"
         },
         {
           "fixed_version": "",
           "id": "CVE-2026-115506",
           "installed_version": "2.8.3-1~deb13u1",
           "package": "libexpat1",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115819",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc-bin",
           "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-115819",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc6",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-117610",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118370",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118380",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118380",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118380",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-118380",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
         },
         {
           "fixed_version": "",
@@ -2869,6 +3499,104 @@
           "id": "CVE-2026-11856",
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119079",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119079",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119079",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119079",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119371",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119372",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119373",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119374",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119375",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119376",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119377",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "LOW"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119378",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119379",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-119591",
+          "installed_version": "3.46.1-7+deb13u2",
+          "package": "libsqlite3-0",
           "severity": "MEDIUM"
         },
         {
@@ -2879,6 +3607,27 @@
           "severity": "LOW"
         },
         {
+          "fixed_version": "1.23.4-1~deb13u1",
+          "id": "CVE-2026-120208",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.23.4-1~deb13u1",
+          "id": "CVE-2026-120208",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.23.4-1~deb13u1",
+          "id": "CVE-2026-120208",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "",
           "id": "CVE-2026-12064",
           "installed_version": "8.14.1-2+deb13u5",
@@ -2891,6 +3640,13 @@
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
           "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-124317",
+          "installed_version": "2.8.3-1~deb13u1",
+          "package": "libexpat1",
+          "severity": "UNKNOWN"
         },
         {
           "fixed_version": "",
@@ -3054,7 +3810,7 @@
           "severity": "LOW"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1:1.3.dfsg+really1.3.1-1+deb13u1",
           "id": "CVE-2026-27171",
           "installed_version": "1:1.3.dfsg+really1.3.1-1+b1",
           "package": "zlib1g",
@@ -3509,6 +4265,62 @@
           "severity": "MEDIUM"
         },
         {
+          "fixed_version": "",
+          "id": "CVE-2026-71199",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71199",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71199",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71199",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71200",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libgssapi-krb5-2",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71200",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libk5crypto3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71200",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5-3",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-71200",
+          "installed_version": "1.21.3-5+deb13u1",
+          "package": "libkrb5support0",
+          "severity": "HIGH"
+        },
+        {
           "fixed_version": "3.5.7-1~deb13u3",
           "id": "CVE-2026-72897",
           "installed_version": "3.5.7-1~deb13u2",
@@ -3668,6 +4480,13 @@
           "installed_version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
           "package": "libxml2",
           "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "1:1.3.dfsg+really1.3.1-1+deb13u1",
+          "id": "CVE-2026-76844",
+          "installed_version": "1:1.3.dfsg+really1.3.1-1+b1",
+          "package": "zlib1g",
+          "severity": "HIGH"
         },
         {
           "fixed_version": "2.9.0-1~deb13u1",
@@ -4003,7 +4822,7 @@
           "id": "CVE-2026-82560",
           "installed_version": "5.40.1-6+deb13u1",
           "package": "perl-base",
-          "severity": "UNKNOWN"
+          "severity": "MEDIUM"
         },
         {
           "fixed_version": "8.14.1-2+deb13u7",
@@ -4020,88 +4839,102 @@
           "severity": "HIGH"
         },
         {
-          "fixed_version": "1.23.4-1~deb13u1",
-          "id": "CVE-2026-84384",
-          "installed_version": "1.19.8-1+deb13u1",
-          "package": "libheif-plugin-dav1d",
+          "fixed_version": "",
+          "id": "CVE-2026-84243",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc-bin",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-84243",
+          "installed_version": "2.41-12+deb13u4",
+          "package": "libc6",
           "severity": "MEDIUM"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84384",
           "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "HIGH"
+        },
+        {
+          "fixed_version": "1.23.4-1~deb13u1",
+          "id": "CVE-2026-84384",
+          "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84384",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84444",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84444",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84444",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
-          "severity": "UNKNOWN"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84446",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84446",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84446",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84447",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84447",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
           "id": "CVE-2026-84447",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "1.23.4-1~deb13u1",
@@ -4223,11 +5056,11 @@
           "severity": "MEDIUM"
         },
         {
-          "fixed_version": "",
+          "fixed_version": "1:1.3.dfsg+really1.3.1-1+deb13u1",
           "id": "CVE-2026-85091",
           "installed_version": "1:1.3.dfsg+really1.3.1-1+b1",
           "package": "zlib1g",
-          "severity": "MEDIUM"
+          "severity": "HIGH"
         },
         {
           "fixed_version": "",
@@ -4462,6 +5295,48 @@
         },
         {
           "fixed_version": "",
+          "id": "CVE-2026-88822",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "libssl3t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-88822",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-88822",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl-provider-legacy",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-88823",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "libssl3t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-88823",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-88823",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl-provider-legacy",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
           "id": "CVE-2026-89092",
           "installed_version": "2.41-12+deb13u4",
           "package": "libc-bin",
@@ -4557,6 +5432,13 @@
           "installed_version": "8.14.1-2+deb13u5",
           "package": "libcurl4t64",
           "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-91094",
+          "installed_version": "1.22.22",
+          "package": "dpkg",
+          "severity": "UNKNOWN"
         },
         {
           "fixed_version": "",
@@ -4735,13 +5617,6 @@
         },
         {
           "fixed_version": "",
-          "id": "CVE-2026-95209",
-          "installed_version": "3.8.9-3+deb13u4",
-          "package": "libgnutls30t64",
-          "severity": "LOW"
-        },
-        {
-          "fixed_version": "",
           "id": "CVE-2026-95210",
           "installed_version": "3.8.9-3+deb13u4",
           "package": "libgnutls30t64",
@@ -4819,6 +5694,48 @@
         },
         {
           "fixed_version": "",
+          "id": "CVE-2026-95691",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "libssl3t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-95691",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-95691",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl-provider-legacy",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-95692",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "libssl3t64",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-95692",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
+          "id": "CVE-2026-95692",
+          "installed_version": "3.5.7-1~deb13u2",
+          "package": "openssl-provider-legacy",
+          "severity": "MEDIUM"
+        },
+        {
+          "fixed_version": "",
           "id": "CVE-2026-95818",
           "installed_version": "2.41-12+deb13u4",
           "package": "libc-bin",
@@ -4881,6 +5798,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-0A1CC5",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-0A1CC5",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-0A1CC5",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-0F03E5",
           "installed_version": "1.19.8-1+deb13u1",
@@ -4918,6 +5856,48 @@
         {
           "fixed_version": "",
           "id": "TEMP-0000000-153207",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-16F469",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-16F469",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-16F469",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-177737",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-177737",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-177737",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
@@ -4965,6 +5945,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-1FC908",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-1FC908",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-1FC908",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-21F713",
           "installed_version": "1.19.8-1+deb13u1",
@@ -4981,6 +5982,27 @@
         {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-21F713",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-25573F",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-25573F",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-25573F",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
@@ -5007,6 +6029,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-35A060",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-35A060",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-35A060",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-415AE1",
           "installed_version": "1.19.8-1+deb13u1",
@@ -5025,6 +6068,13 @@
           "id": "TEMP-0000000-415AE1",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-4A15ED",
+          "installed_version": "2.3.3-14~deb13u1",
+          "package": "libgd3",
           "severity": "UNKNOWN"
         },
         {
@@ -5091,6 +6141,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-625D50",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-625D50",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-625D50",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-6C5194",
           "installed_version": "1.19.8-1+deb13u1",
@@ -5107,6 +6178,34 @@
         {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-6C5194",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-74F32F",
+          "installed_version": "2.3.3-14~deb13u1",
+          "package": "libgd3",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-75D4C4",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-75D4C4",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-75D4C4",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
@@ -5133,6 +6232,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-7FD9AF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-7FD9AF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-7FD9AF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-809756",
           "installed_version": "1.19.8-1+deb13u1",
@@ -5149,6 +6269,27 @@
         {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-809756",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-81967A",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-81967A",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-81967A",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
@@ -5196,6 +6337,27 @@
           "severity": "UNKNOWN"
         },
         {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9465BB",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9465BB",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9465BB",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-956D99",
           "installed_version": "1.19.8-1+deb13u1",
@@ -5212,6 +6374,48 @@
         {
           "fixed_version": "1.23.6-2~deb13u1",
           "id": "TEMP-0000000-956D99",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-98A003",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-98A003",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-98A003",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9D6901",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9D6901",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-9D6901",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
@@ -5245,64 +6449,120 @@
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.4-1~deb13u1",
-          "id": "TEMP-0000000-D1A721",
+          "fixed_version": "",
+          "id": "TEMP-0000000-C11E78",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.4-1~deb13u1",
-          "id": "TEMP-0000000-D1A721",
+          "fixed_version": "",
+          "id": "TEMP-0000000-C11E78",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.4-1~deb13u1",
-          "id": "TEMP-0000000-D1A721",
+          "fixed_version": "",
+          "id": "TEMP-0000000-C11E78",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-C52F0F",
+          "installed_version": "2.3.3-14~deb13u1",
+          "package": "libgd3",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-C86CAF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-C86CAF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-C86CAF",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif1",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "",
+          "id": "TEMP-0000000-C88422",
+          "installed_version": "2.3.3-14~deb13u1",
+          "package": "libgd3",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "TEMP-0000000-D2EEB5",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-dav1d",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "TEMP-0000000-D2EEB5",
+          "installed_version": "1.19.8-1+deb13u1",
+          "package": "libheif-plugin-libde265",
+          "severity": "UNKNOWN"
+        },
+        {
+          "fixed_version": "1.23.6-2~deb13u1",
+          "id": "TEMP-0000000-D2EEB5",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
           "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-D2EEB5",
+          "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
           "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-D2EEB5",
+          "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
           "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-D2EEB5",
+          "id": "TEMP-0000000-DB3DE2",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-DB3DE2",
+          "fixed_version": "",
+          "id": "TEMP-0000000-E83054",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-dav1d",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-DB3DE2",
+          "fixed_version": "",
+          "id": "TEMP-0000000-E83054",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif-plugin-libde265",
           "severity": "UNKNOWN"
         },
         {
-          "fixed_version": "1.23.6-2~deb13u1",
-          "id": "TEMP-0000000-DB3DE2",
+          "fixed_version": "",
+          "id": "TEMP-0000000-E83054",
           "installed_version": "1.19.8-1+deb13u1",
           "package": "libheif1",
           "severity": "UNKNOWN"
