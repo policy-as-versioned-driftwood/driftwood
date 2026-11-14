@@ -1,8 +1,0 @@
-# Signed initial twin source release, published 2026-10-23 at 15:56:21 UTC.
-# Annotated tag b0d6140154d3619d6eff9ef499d837f8a8444300 resolves to hub_commit.
-# Canonical main cut-workflow identity and GitHub OIDC issuer verified offline.
-# world_ref and all vendored world bytes remain independent and unchanged.
-twin_version: 0.1.0
-twin_tag: twin/v0.1.0
-tag_cut: true
-hub_commit: 0e353029f7f5b497a2fe19ef2874846119376d6e
