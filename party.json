@@ -7,7 +7,7 @@
   "tolerance": {"amount": 40000, "basis": "fixture 2026-07-31, not owner-declared"},
   "margin": 0.2,
   "dwell_days": 7,
-  "mode": "measure",
+  "mode": "act",
   "pins": {
     "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "policy/v8.0.0", "commit": "1c9275429b6f792365250e653d83b0cf24bd8192"},
     "ico": {"repo": "policy-as-versioned-ico/ico", "ref": "v5.0.0", "commit": "93d1fc8608b01b9cbedf9ad9118ff6c0a8866984"},
