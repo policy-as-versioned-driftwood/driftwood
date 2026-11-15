@@ -4,11 +4,13 @@
 
 Driftwood is the adopter: the organisation that is caged. A loop prices its exposure in pounds a year, adds the running cost of the cage, compares the sum with the tolerance, and moves the cage one notch at a time. The loop's code is in [platform](https://github.com/policy-as-versioned-platform/platform). The numbers come from [ico](https://github.com/policy-as-versioned-ico/ico) and [feeds](https://github.com/policy-as-versioned-feeds/feeds). `LOOP.md` in the [hub](https://github.com/policy-as-versioned-flux/policy-as-versioned-flux) says what the loop is, and `CONTEXT.md` there defines the terms.
 
+The loop follows ico and feeds by itself. The platform pin moves only by a pull request, whose own cycle runs the new platform on a cluster before it lands.
+
 ## Where things are
 
 | Path | What it holds |
 |---|---|
-| `party.json` | Turnover, tolerance, margin, dwell and mode. The three pins: the exact commits of platform, ico and feeds that the loop uses. |
+| `party.json` | Turnover, tolerance, margin, dwell and mode. The three pins are signed tags of platform, ico and feeds, each with its commit. |
 | `gitops/apps/namespace.yaml` | The governed Namespace and the one rung line. A notch changes that line and nothing else. |
 | `gitops/apps/` | The three workloads, as bare Pods. `pod.yaml` is the probe pod. |
 | `.github/workflows/loop.yml` | The cycle. It runs once a day, and after each merge that changes `party.json` or `gitops/apps/`. |
