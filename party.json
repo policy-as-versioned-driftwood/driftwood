@@ -9,7 +9,7 @@
   "dwell_days": 7,
   "mode": "act",
   "pins": {
-    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "policy/v8.0.1", "commit": "e91e5dbaf73eeff62eabb5c47353e2810505bce5"},
+    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "policy/v8.0.2", "commit": "f5ef7c76980d252962f871b8af9748093cdf8867"},
     "ico": {"repo": "policy-as-versioned-ico/ico", "ref": "v5.1.0", "commit": "39ddfaf5f9a759e229038781425bdaa4ca031bcb"},
     "feeds": {"repo": "policy-as-versioned-feeds/feeds", "ref": "threat-register/v5.1.0", "commit": "489e2fe5b9f57caa9afedfb786af49ae81cbd6ae"}
   }
