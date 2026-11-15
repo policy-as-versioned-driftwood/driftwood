@@ -15,7 +15,7 @@ The loop follows ico and feeds by itself. The platform pin moves only by a pull 
 | `gitops/apps/` | The three workloads, as bare Pods. `pod.yaml` is the probe pod. |
 | `.github/workflows/loop.yml` | The cycle. It runs once a day, and after each merge that changes `party.json` or `gitops/apps/`. |
 | `.github/pins.sh` | Checks out the three pins and verifies them. |
-| `renovate.json` | Keeps the hosted Renovate app silent. |
+| `renovate.json` | Tells the hosted Renovate app what to watch here: the images in `gitops/apps/` and the gitsign download. The pins in `party.json` are the loop's, not Renovate's. |
 
 ## How to read the ledger
 
