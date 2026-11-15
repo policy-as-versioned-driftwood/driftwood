@@ -4,12 +4,12 @@
   "currency": "GBP",
   "turnover": 86000000,
   "turnover_as_of": "2026-06-30",
-  "tolerance": {"share_of_turnover": 0.005, "basis": "0.5% of turnover, the low end of audit materiality: GBP 430,000 at this turnover. Chosen by the owner on 2026-11-15, from options the assistant offered."},
+  "tolerance": {"share_of_turnover": 0.005, "basis": "0.5% of turnover, the low end of audit materiality. Chosen by the owner on 2026-11-15, from options the assistant offered."},
   "margin": 0.2,
   "dwell_days": 7,
   "mode": "act",
   "pins": {
-    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "policy/v8.0.2", "commit": "f5ef7c76980d252962f871b8af9748093cdf8867"},
+    "platform": {"repo": "policy-as-versioned-platform/platform", "ref": "policy/v8.0.3", "commit": "1b7fcf9c1b816975b2de7eda0aacac5ac2b9f44f"},
     "ico": {"repo": "policy-as-versioned-ico/ico", "ref": "v5.1.1", "commit": "27c5c49940570e5a1c564b471b00ee6916173331"},
     "feeds": {"repo": "policy-as-versioned-feeds/feeds", "ref": "threat-register/v5.1.0", "commit": "489e2fe5b9f57caa9afedfb786af49ae81cbd6ae"}
   }
